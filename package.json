@@ -1,0 +1,24 @@
+{
+  "name": "ttog-mern-boiler",
+  "version": "1.0.0",
+  "description": "TTOG Specific MERN Boiler",
+  "main": "index.js",
+  "repository": "https://github.com/troveofgems/ttog_mern_boiler.git",
+  "author": "Dustin Kent Greco <dkgreco@thetroveofgems.tech>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "bumpProjectVersion": "VERSION=$(npm version patch) echo $VERSION | git tag $VERSION && git push --tags",
+    "bumpClientVersion": "echo Configure Client Bump Version Here",
+    "bumpServerVersion": "echo Configure Server Bump Version Here",
+    "server": "yarn --cwd packages/server watch-express",
+    "server-install": "yarn --cwd packages/server install",
+    "client": "yarn --cwd packages/client start",
+    "client-install": "yarn --cwd packages/client install",
+    "export-client": "yarn --cwd packages/client build",
+    "dev": "concurrently \"yarn run server\" \"yarn run client\""
+  },
+  "dependencies": {
+    "concurrently": "^6.4.0"
+  }
+}

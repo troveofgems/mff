@@ -1,0 +1,17 @@
+<div class="col-lg-8 col-md-8 col-sm-12 main-page-content d-flex justify-content-center">
+    <div id="main-content">
+        <h2 class="mb-5">Popular Features Now Playing</h2>
+        <div class="container">
+            <div class="box mb-4">
+                <% _dao.movieData.forEach(movie => {  %>
+                    <div class="movie-tile">
+                        <a href="/mfe/v1/movie/detail/<%= movie.id %>">
+                            <img src="http://image.tmdb.org/t/p/w300<%= movie.poster_path %>"
+                                 alt="Poster For <%= movie.title %>" />
+                        </a>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
