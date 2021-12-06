@@ -1,0 +1,72 @@
+{
+  "products": [
+    {
+      "_id":  "1abc",
+      "productName": "Card",
+      "productImage": "christoffer-engstrom-wc9avd2RaN0-unsplash.jpg",
+      "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "productBrand": "Frickn' Fish",
+      "productCategory": "Misc",
+      "productPrice": "1.00",
+      "productRating": "4",
+      "productReviewCount": "50",
+      "productPublishedToShop": "true"
+    },    {
+      "_id":  "2cba",
+      "productName": "Cup",
+      "productImage": "christoffer-engstrom-wc9avd2RaN0-unsplash.jpg",
+      "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "productBrand": "Frickn' Fish",
+      "productCategory": "Misc",
+      "productPrice": "12.99",
+      "productRating": "4.5",
+      "productReviewCount": "45",
+      "productPublishedToShop": "true"
+    }, {
+      "_id":  "3bac",
+      "productName": "Pencil",
+      "productImage": "christoffer-engstrom-wc9avd2RaN0-unsplash.jpg",
+      "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "productBrand": "Frickn' Fish",
+      "productCategory": "Misc",
+      "productPrice": "3.99",
+      "productRating": "4",
+      "productReviewCount": "40",
+      "productPublishedToShop": "true"
+    }, {
+      "_id":  "4cab",
+      "productName": "Shirt",
+      "productImage": "christoffer-engstrom-wc9avd2RaN0-unsplash.jpg",
+      "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "productBrand": "Frickn' Fish",
+      "productCategory": "Misc",
+      "productPrice": "12.99",
+      "productSizes": ["small", "medium", "large", "x-large"],
+      "productRating": "4",
+      "productReviewCount": "35",
+      "productPublishedToShop": "true"
+    }, {
+      "_id":  "5bca",
+      "productName": "Confetti",
+      "productImage": "christoffer-engstrom-wc9avd2RaN0-unsplash.jpg",
+      "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "productBrand": "Frickn' Fish",
+      "productCategory": "Misc",
+      "productPrice": "3.99",
+      "productRating": "4.5",
+      "productReviewCount": "30",
+      "productPublishedToShop": "true"
+    }, {
+      "_id":  "6acb",
+      "productName": "Donate To The Ocean",
+      "productImage": "christoffer-engstrom-wc9avd2RaN0-unsplash.jpg",
+      "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "productBrand": "Frickn' Fish",
+      "productCategory": "Misc",
+      "productPrice": "20",
+      "productRating": "5",
+      "productReviewCount": "25",
+      "productPublishedToShop": "true"
+    }
+  ]
+}

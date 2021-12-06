@@ -1,7 +1,7 @@
 const
-  AccountInfoSchema = require('./accountInfo.schema'),
-  AddressInfoSchema = require('./addressInfo.schema'),
-  ContactInfoSchema = require('./contactInfo.schema'),
+  //AccountInfoSchema = require('./accountInfo.schema'),
+  //AddressInfoSchema = require('./addressInfo.schema'),
+  //ContactInfoSchema = require('./contactInfo.schema'),
   {
     encryptPassword,
     getSignedJwt,
@@ -14,9 +14,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'First Name Is Required']
   },
-  middleInitial: {
-    type: String
-  },
   lastName: {
     type: String,
     required: [true, 'Last Name Is Required']
@@ -28,10 +25,15 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'A 16 Character Password Is Required'],
-    minlength: 16,
+    required: [true, 'An Eight (8) Character Or Greater Password Is Required'],
+    minlength: 8,
     select: false
   },
+  isAppAdmin: {
+    type: Boolean,
+    required: true,
+    default: false
+  }/*,
   accountInfo: {
     type: AccountInfoSchema
   },
@@ -40,7 +42,7 @@ const UserSchema = new mongoose.Schema({
   },
   addressInfo: {
     type: AddressInfoSchema
-  }
+  }*/
 }, {
   timestamps: true
 });

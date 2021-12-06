@@ -9,12 +9,15 @@
   "scripts": {
     "bumpVersion": "VERSION=$(npm version patch) echo $VERSION | git tag $VERSION && git push --tags",
     "start-express": "node -r dotenv/config express-server.js",
-    "watch-express": "nodemon -r dotenv/config express-server.js"
+    "watch-express": "nodemon -r dotenv/config express-server.js",
+    "cleanServerData": "node -r dotenv/config db/data/seedDB.js -d",
+    "importServerData": "node -r dotenv/config db/data/seedDB.js -i"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "express-async-handler": "^1.2.0",
     "express-mongo-sanitize": "^2.1.0",
     "express-rate-limit": "^5.5.1",
     "express-session": "^1.17.2",

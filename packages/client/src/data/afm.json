@@ -1,0 +1,18 @@
+{
+  "appName": "Frickn' Fish",
+  "appOwner": "Frickn' Fish",
+  "navbar": {
+    "brandName": "Frickn' Fish",
+    "navLinks": {
+      "cartLink": "Cart",
+      "loginLink": "Sign In",
+      "logoutLink": "Logout"
+    }
+  },
+  "appPages": {
+
+  },
+  "footer": {
+
+  }
+}

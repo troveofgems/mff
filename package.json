@@ -11,12 +11,14 @@
     "bumpProjectVersion": "VERSION=$(npm version patch) echo $VERSION | git tag $VERSION && git push --tags",
     "bumpClientVersion": "echo Configure Client Bump Version Here",
     "bumpServerVersion": "echo Configure Server Bump Version Here",
-    "server": "yarn --cwd packages/server watch-express",
-    "server-install": "yarn --cwd packages/server install",
     "client": "yarn --cwd packages/client start",
     "client-install": "yarn --cwd packages/client install",
+    "data:import": "yarn --cwd packages/server importServerData",
+    "data:clean": "yarn --cwd packages/server cleanServerData",
+    "dev": "concurrently \"yarn run server\" \"yarn run client\"",
     "export-client": "yarn --cwd packages/client build",
-    "dev": "concurrently \"yarn run server\" \"yarn run client\""
+    "server": "yarn --cwd packages/server watch-express",
+    "server-install": "yarn --cwd packages/server install"
   },
   "dependencies": {
     "concurrently": "^6.4.0"

@@ -3,7 +3,7 @@ const ErrorResponse = require('../../../../middleware/Error');
 
 const
   { asyncHandler } = require('../../../../middleware/Helpers/async-handler.middleware'),
-  User = require('../../../../db/models/users');
+  User = require('../../../../db/models/Users');
 
 const
   _handleInvalidCredentials = (req, res, next) => {

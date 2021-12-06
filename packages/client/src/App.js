@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {BrowserRouter as Router, Routes} from 'react-router-dom';
 
-function App() {
+import Container from 'react-bootstrap/Container';
+
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+
+import mainRouter from "./router/main.router";
+
+import './styles/App.css';
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+   <Router>
+     <Header />
+      <main className={"main"}>
+        <Container>
+          <h1>Welcome To Frickn' Fish</h1>
+          <Routes>
+            {mainRouter}
+          </Routes>
+        </Container>
+        {/*<video id="background-video" preload={"auto"}>
+          <source src="img/video.mp4" type="video/mp4" />
+        </video>*/}
+      </main>
+     <Footer />
+   </Router>
   );
 }
 

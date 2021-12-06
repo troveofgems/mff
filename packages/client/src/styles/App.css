@@ -1,0 +1,58 @@
+main {
+    color: #fff;
+    min-height: 80vh;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, .75);
+    color: #2A9CBE;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+button {
+    color: #fff;
+}
+
+#siteBody {
+    background-image: url("../img/video.gif");
+}
+
+#background-video {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+.btn-goBack {
+    color: #fff;
+}
+
+.main {
+    background-color: rgba(0, 0, 0, .5);
+    padding-top: 1rem;
+}
+
+.navlinkTag {
+    color: white;
+    font-size: 1rem;
+    padding-right: 12px;
+    text-decoration: none;
+}
+.navlinkTag:hover,
+.btn-goBack:hover {
+    color: #2A9CBE;
+}
+
+.makePurchase-card {
+    background-color: transparent!important;
+    border-color: transparent!important;
+}
