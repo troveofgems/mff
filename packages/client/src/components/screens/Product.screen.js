@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams } from "react-router-dom";
 
 import Row from 'react-bootstrap/Row';
@@ -8,78 +9,100 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
-import { products } from '../../data/product_dummyData.json';
+import Loader from '../layout/Loader';
+import Notification from "../layout/Notification";
 import Rating from "../Rating/Rating";
 
+import { listProductDetails } from '../../redux/actions/product.actions';
+
 const ProductScreen = () => {
+  const [quantity, setQuantity] = useState(0);
   const
+    dispatch = useDispatch(),
     { id: routeId } = useParams(),
-    product = products.find(product => product._id === routeId);
+    {
+      loading: productDetailLoading,
+      error: productDetailError,
+      product
+    } = useSelector(state => state.productDetails);
+
+  useEffect(() => {
+    dispatch(listProductDetails(routeId));
+  }, [dispatch, routeId]);
+
   return (
     <>
       <NavLink to={'/'} className={"btn-goBack"}>Go Back</NavLink>
-      <Row>
-        <Col md={6}>
-          <Image src={`/img/${product.productImage}`} alt={product.productName} fluid />
-        </Col>
-        <Col md={3}>
-          <ListGroup variant={"flush"}>
-            <ListGroup.Item>
-              <h3>{product.productName}</h3>
-            </ListGroup.Item>
-            <ListGroup.Item variant={"flush"}>
-              <Rating productRatingInfo={{
-                productRating: product.productRating,
-                productReviewCount: product.productReviewCount
-              }}
-              />
-            </ListGroup.Item>
-            <ListGroup.Item variant={"flush"}>
-              Price: ${product.productPrice}
-            </ListGroup.Item>
-            <ListGroup.Item variant={"flush"}>
-              {product.productDescription}
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-        <Col md={3}>
-          <Card className={"makePurchase-card"}>
+      {productDetailLoading ? (
+        <Loader />
+      ) : productDetailError ? (
+        <Notification variant={"danger"}>
+          {productDetailError}
+        </Notification>
+      ) : (
+        <Row>
+          <Col md={6}>
+            <Image src={`/img/${product.image}`} alt={product.name} fluid />
+          </Col>
+          <Col md={3}>
             <ListGroup variant={"flush"}>
               <ListGroup.Item>
-                <Row>
-                  <Col>Price:</Col>
-                  <Col>
-                    <strong>
-                      ${product.productPrice}
-                    </strong>
-                  </Col>
-                </Row>
+                <h3>{product.name}</h3>
+              </ListGroup.Item>
+              <ListGroup.Item variant={"flush"}>
+                <Rating productRatingInfo={{
+                  productRating: product.rating,
+                  productReviewCount: product.reviewCount
+                }}
+                />
+              </ListGroup.Item>
+              <ListGroup.Item variant={"flush"}>
+                Price: ${product.price}
+              </ListGroup.Item>
+              <ListGroup.Item variant={"flush"}>
+                {product.description}
               </ListGroup.Item>
             </ListGroup>
-            <ListGroup variant={"flush"}>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Status:</Col>
-                  <Col>
-                    <strong>
-                      {product.productInStock ? 'In Stock' : 'Out Of Stock'}
-                    </strong>
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-            </ListGroup>
-            <ListGroup variant={"flush"}>
-              <ListGroup.Item className={"text-center"}>
-               <Button className={"btn-block"} type={"button"}
-                disabled={!product.productInStock}
-               >
-                 Add To Cart
-               </Button>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card>
-        </Col>
-      </Row>
+          </Col>
+          <Col md={3}>
+            <Card className={"makePurchase-card"}>
+              <ListGroup variant={"flush"}>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Price:</Col>
+                    <Col>
+                      <strong>
+                        ${product.price}
+                      </strong>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              </ListGroup>
+              <ListGroup variant={"flush"}>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Status:</Col>
+                    <Col>
+                      <strong>
+                        {product.inStock ? 'In Stock' : 'Out Of Stock'}
+                      </strong>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              </ListGroup>
+              <ListGroup variant={"flush"}>
+                <ListGroup.Item className={"text-center"}>
+                  <Button className={"btn-block"} type={"button"}
+                          disabled={!product.inStock}
+                  >
+                    Add To Cart
+                  </Button>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </>
   );
 };

@@ -10,7 +10,9 @@ const
   initialState = configureStore.initialStates,
   middleware 	 = [thunk];
 
-const store = createStore(rootReducer, initialState,
+const store = createStore(
+  rootReducer,
+  initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
 

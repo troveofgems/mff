@@ -9,26 +9,26 @@ const Product = ({ product }) => {
   return (
     <Card className={"my-3 p-3 rounded"}>
       <NavLink to={`/product/${product._id}`}>
-        <Card.Img src={`img/${product.productImage}`} variant={'top'} />
+        <Card.Img src={`img/${product.image}`} variant={'top'} />
       </NavLink>
       <Card.Body>
         <NavLink to={`/product/${product._id}`}>
           <Card.Title as={"div"}>
             <strong>
-              {product.productName}
+              {product.name}
             </strong>
           </Card.Title>
         </NavLink>
         <Card.Text as={"div"}>
           <Rating
             productRatingInfo={{
-              productRating: product.productRating,
-              productReviewCount: product.productReviewCount
+              productRating: product.rating,
+              productReviewCount: product.reviewCount
             }}
           />
         </Card.Text>
         <Card.Text as={"h3"}>
-          ${product.productPrice}
+          ${product.price}
         </Card.Text>
       </Card.Body>
     </Card>

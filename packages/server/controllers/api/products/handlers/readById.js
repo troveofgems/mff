@@ -1,4 +1,5 @@
 const
+  ErrorResponse = require('../../../../class/ErrorResponse'),
   asyncHandler = require('express-async-handler'),
   Product = require('../../../../db/models/Product');
 
@@ -11,8 +12,9 @@ module.exports.readByIdHandler = asyncHandler(async (req, res, next) => {
 
   // Mutate the body prior to sending back
   console.log('Looking for: ', req.params);
-  const product = await Product.findById();
-  console.log(product);
+  const product = await Product.findById(req.params.id);
+
+  if (!product) { throw new ErrorResponse('Product Does Not Exist', 200); }
 
   body.success = true;
   body.data = product;
