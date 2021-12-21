@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,8 +16,9 @@ import Rating from "../Rating/Rating";
 import { listProductDetails } from '../../redux/actions/product.actions';
 
 const ProductScreen = () => {
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const
+    navigate = useNavigate(),
     dispatch = useDispatch(),
     { id: routeId } = useParams(),
     {
@@ -30,9 +31,14 @@ const ProductScreen = () => {
     dispatch(listProductDetails(routeId));
   }, [dispatch, routeId]);
 
+  // Component Handlers
+  const addToCartHandler = () => {
+    navigate({ pathname: `/cart/${routeId}?quantity=${quantity}` });
+  };
+
   return (
     <>
-      <NavLink to={'/'} className={"btn-goBack"}>Go Back</NavLink>
+      <NavLink to={'/'} className={"btn-goBack"} role={"button"}>Go Back</NavLink>
       {productDetailLoading ? (
         <Loader />
       ) : productDetailError ? (
@@ -93,7 +99,7 @@ const ProductScreen = () => {
               <ListGroup variant={"flush"}>
                 <ListGroup.Item className={"text-center"}>
                   <Button className={"btn-block"} type={"button"}
-                          disabled={!product.inStock}
+                          disabled={!product.inStock} onClick={addToCartHandler}
                   >
                     Add To Cart
                   </Button>

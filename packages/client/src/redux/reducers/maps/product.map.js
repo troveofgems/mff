@@ -1,4 +1,3 @@
-/*Product Reducers*/
 import {
   productListReducer,
   productDetailsReducer

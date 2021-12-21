@@ -1,77 +1,68 @@
 import React 		from 'react';
 import * as Yup from 'yup';
 import { // App Constant Values
-  MAX_ALIAS_LEN,
-  MAX_EMAIL_LEN,
-  MAX_FIRST_NAME_LEN,
-  MAX_LAST_NAME_LEN,
-  MAX_PASSWORD_LEN
-} from "../../../validation/constants/max.len";
-import {
-  MIN_ALIAS_LEN,
-  MIN_EMAIL_LEN,
-  MIN_FIRST_NAME_LEN,
-  MIN_LAST_NAME_LEN,
-  MIN_PASSWORD_LEN
-} from "../../../validation/constants/min.len";
-import {IGL_USER_ID_REGEX} from "../../../validation/constants/regex.constants";
+  EMAIL_MIN_LEN,
+  EMAIL_MAX_LEN,
+  FIRST_NAME_MIN_LEN,
+  FIRST_NAME_MAX_LEN,
+  LAST_NAME_MIN_LEN,
+  LAST_NAME_MAX_LEN,
+  PASSWORD_MIN_LEN,
+  PASSWORD_MAX_LEN,
+  BIRTH_YEAR_MIN_LEN,
+  BIRTH_MONTH_MAX_LEN,
+  BIRTH_MONTH_MIN_LEN
+} from "./formik.validation.constants";
 
 const formikRegisterValidationSchema = Yup.object({
   register_firstName:
     Yup
       .string()
-      .max(MAX_FIRST_NAME_LEN, `Must be less than ${MAX_FIRST_NAME_LEN} chars`)
-      .min(MIN_FIRST_NAME_LEN, `Must be greater than ${MIN_FIRST_NAME_LEN} chars`)
+      .max(FIRST_NAME_MAX_LEN, `Must be less than ${FIRST_NAME_MAX_LEN} chars`)
+      .min(FIRST_NAME_MIN_LEN, `Must be greater than ${FIRST_NAME_MIN_LEN} chars`)
       .trim()
       .required('* First Name Is Required'),
   register_lastName:
     Yup
       .string()
-      .max(MAX_LAST_NAME_LEN, `Must be less than ${MAX_LAST_NAME_LEN} chars`)
-      .min(MIN_LAST_NAME_LEN, `Must be greater than ${MIN_LAST_NAME_LEN} chars`)
+      .max(LAST_NAME_MAX_LEN, `Must be less than ${LAST_NAME_MAX_LEN} chars`)
+      .min(LAST_NAME_MIN_LEN, `Must be greater than ${LAST_NAME_MIN_LEN} chars`)
       .trim()
       .required('* Last Name Is Required'),
   register_email:
     Yup
       .string()
       .email('Invalid Email Address Format')
-      .max(MAX_EMAIL_LEN, `Must be less than ${MAX_EMAIL_LEN} chars`)
-      .min(MIN_EMAIL_LEN, `Must be greater than ${MIN_EMAIL_LEN} chars`)
+      .max(EMAIL_MAX_LEN, `Must be less than ${EMAIL_MAX_LEN} chars`)
+      .min(EMAIL_MIN_LEN, `Must be greater than ${EMAIL_MIN_LEN} chars`)
       .trim()
       .required('* Email Address Is Required'),
-  register_username:
+  register_birth_month:
     Yup
       .string()
-      .max(MAX_ALIAS_LEN, `Must be less than ${MAX_ALIAS_LEN} chars`)
-      .min(MIN_ALIAS_LEN, `Must be greater than ${MIN_ALIAS_LEN} chars`)
       .trim()
-      .matches(IGL_USER_ID_REGEX, 'Please Select A Valid Username')
-      .required('* Username Is Required'),
+      .max(BIRTH_MONTH_MAX_LEN, `Must be less than ${10} chars`)
+      .min(BIRTH_MONTH_MIN_LEN, `Must be greater than ${5} chars`)
+      .required('* Your Birth Month Is Required'),
+  register_birth_year:
+    Yup
+      .string()
+      .trim()
+      .min(BIRTH_YEAR_MIN_LEN, `Must equal 4 chars`)
+      .required('* Your Birth Year Is Required'),
   register_pwd:
     Yup
       .string()
-      .max(MAX_PASSWORD_LEN, `Must be less than ${MAX_PASSWORD_LEN} chars`)
-      .min(MIN_PASSWORD_LEN, `Must be greater than ${MIN_PASSWORD_LEN} chars`)
+      .max(PASSWORD_MAX_LEN, `Must be less than ${PASSWORD_MAX_LEN} chars`)
+      .min(PASSWORD_MIN_LEN, `Must be greater than ${PASSWORD_MIN_LEN} chars`)
       .required('* Password Is Required'),
   register_pwd_repeat:
     Yup
       .string()
       .oneOf([Yup.ref('register_pwd')],'Passwords Do Not Match')
-      .max(MAX_PASSWORD_LEN, `Must be less than ${MAX_PASSWORD_LEN} chars`)
-      .min(MIN_PASSWORD_LEN, `Must be greater than ${MIN_PASSWORD_LEN} chars`)
-      .required('* Retyping your password accurately is required'),
-  register_ageConfirmation:
-    Yup
-      .bool()
-      .oneOf([true], "You must confirm that you are over the age of 13 at the time of account creation"),
-  register_privacyPolicyConfirmation:
-    Yup
-      .bool()
-      .oneOf([true], "You must read and agree to IGLeague's Privacy Policy"),
-  register_termsOfUseConfirmation:
-    Yup
-      .bool()
-      .oneOf([true], "You must accept IGLeague's Terms Of Use")
+      .max(PASSWORD_MAX_LEN, `Must be less than ${PASSWORD_MAX_LEN} chars`)
+      .min(PASSWORD_MIN_LEN, `Must be greater than ${PASSWORD_MIN_LEN} chars`)
+      .required('* Retyping your password accurately is required')
 });
 
 export default formikRegisterValidationSchema;

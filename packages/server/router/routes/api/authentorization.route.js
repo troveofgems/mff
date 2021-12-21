@@ -1,7 +1,8 @@
 const
   {
     authentication: {
-      serveSanityCheck: serveAuthenticationCheck, registerUser, loginUser
+      serveSanityCheck: serveAuthenticationCheck, registerUser, loginUser, getAuthenticatedProfile,
+      updateUserProfile
     },
     authorization: {
       serveSanityCheck: serveAuthorizationCheck
@@ -10,6 +11,12 @@ const
   express = require('express'),
   { validate } = require('express-validation'),
   router = express.Router(),
+  {
+    setUserRoleMiddleware
+  } = require('../../../middleware/Helpers/setUserRole.middleware'),
+  {
+    protect
+  } = require('../../../middleware/Helpers/route-authentication.middleware'),
   {
     registerUserValidation, loginUserValidation
   } = require('../../../validation/authentication.validation');
@@ -25,7 +32,15 @@ router
 
 router
   .route('/authentication/register')
-  .post(validate(registerUserValidation), registerUser);
+  .post(setUserRoleMiddleware, validate(registerUserValidation), registerUser);
+
+router
+  .route('/authentication/updateUser')
+  .put(protect, updateUserProfile);
+
+router
+  .route('/authentication/authenticatedProfile')
+  .get(protect, getAuthenticatedProfile);
 
 /************ Authorization Routes ****************/
 router

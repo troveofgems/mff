@@ -1,19 +1,22 @@
 import {useField} from "formik";
 import React from "react";
 
-const formikTextInput = ({ label, ...props }) => {
+const FormikTextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <>
-      <label htmlFor={props.id || props.name}>
-        {label}
-      </label>
-      <input className="text-input" {...field} {...props} />
+      <div>
+        <label htmlFor={props.id || props.name}>{label}</label>
+      </div>
+      <input className="text-input" {...field} {...props} style={{fontSize: '1.25rem'}} />
       {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
+        <div className={"formikErrorMessage"}>
+          <i className={"fas fa-exclamation-triangle"} />{' '}
+          {meta.error}
+        </div>
       ) : null}
     </>
   );
 };
 
-export default formikTextInput;
+export default FormikTextInput;

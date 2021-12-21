@@ -1,25 +1,48 @@
-const jwt = require('jsonwebtoken'),
-  asyncHandler = require('async-handler.middleware').asyncHandler,
-  ErrorResponse = require('../Error'),
+const
+  jwt = require('jsonwebtoken'),
+  {errorHandler} = require('../Error'),
+  //{discoverObject} = require('../Error/probe'),
+  asyncHandler = require('express-async-handler'),
   User = require('../../db/models/Users');
 
 // Protect Routes
 exports.protect = asyncHandler(async (req, res, next) => {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.token) {
-    token = req.cookies.token;
+  const
+    handleInvalidRequest = additionalInfo => {
+      const DEFAULT_MESSAGE = 'Not Authorized To Access This Route';
+      let amendedMessage;
+      if (additionalInfo) {
+        switch(additionalInfo.name) {
+          case 'TokenExpiredError':
+            amendedMessage = `${DEFAULT_MESSAGE}::${additionalInfo.message} @ ${additionalInfo.expiredAt}`;
+            break;
+          default:
+            break;
+        }
+      }
+      return next(errorHandler({
+        message: amendedMessage || DEFAULT_MESSAGE,
+        statusCode: 401
+      }, req, res, next));
+    };
+
+  let
+    token,
+    xAuthToken = req.headers['x-auth-token'];
+
+  console.log(req.headers);
+
+  if (xAuthToken) {
+    token = xAuthToken;
   }
 
-  if (!token) {
-    return next(new ErrorResponse({
-      message: 'Not Authorized To Access This Route',
-      statusCode: 401
-    }, req, res, next));
+  /* Not super sure if cookies should be used going forward...
+  else if (req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  }*/
+
+  if (!token) { // We have no token. Don't continue. No Detailed Message Needed.
+    return handleInvalidRequest();
   }
 
   try {
@@ -27,9 +50,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
     req.user = await User.findById(decodedToken.id);
     next();
   } catch (err) {
-    return next(new ErrorResponse({
-      message: 'Not Authorized To Access This Route',
-      statusCode: 401
-    }, req, res, next));
+    return handleInvalidRequest(err);
   }
 });

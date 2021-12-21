@@ -11,11 +11,8 @@ export const registrationFormSchema = {
   register_firstName: 								'',
   register_lastName: 									'',
   register_email: 										'',
-  register_username: 									'',
+  register_birth_month:               '',
+  register_birth_year:                '',
   register_pwd: 											'',
-  register_pwd_repeat: 								'',
-  register_dateOfBirth: 							'',
-  register_ageConfirmation: 					false,
-  register_privacyPolicyConfirmation: false,
-  register_termsOfUseConfirmation: 		false
+  register_pwd_repeat: 								''
 };

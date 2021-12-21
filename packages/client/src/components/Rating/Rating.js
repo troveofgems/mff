@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const Rating = ({ starFillColor = '#006994', productRatingInfo: { productRating, productReviewCount } }) => {
   const _printStars = () => {
     let

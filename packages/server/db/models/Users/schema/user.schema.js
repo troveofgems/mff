@@ -23,6 +23,11 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'An Email Address Is Required'],
     unique: true
   },
+  birthMonth: {
+    type: String,
+    maxlength: 10,
+    required: [true, 'A Birth Month Is Required']
+  },
   password: {
     type: String,
     required: [true, 'An Eight (8) Character Or Greater Password Is Required'],

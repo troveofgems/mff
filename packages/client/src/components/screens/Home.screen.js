@@ -34,12 +34,9 @@ const HomeScreen = () => {
         </Notification>
       ) : (
         <Row>
-          {products.map(product => (
-            <Col
-              sm={12} md={6} lg={4}
-              key={`${product._id}_${new Date().getMilliseconds()}`}
-            >
-              <Product product={product} />
+          {products.map((product, index) => (
+            <Col sm={12} md={6} lg={4} key={`${index}_${product.name}`}>
+              <Product product={product} key={index}/>
             </Col>
           ))}
         </Row>

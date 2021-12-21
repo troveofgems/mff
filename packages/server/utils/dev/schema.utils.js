@@ -4,13 +4,23 @@ const
 
 module.exports.encryptPassword = async function(next) {
   const
-    { BCRYPT_GEN_ROUNDS } = process.env,
-    ROUNDS = BCRYPT_GEN_ROUNDS ? parseInt(BCRYPT_GEN_ROUNDS) : 10,
-    salt = await bcryptjs.genSalt(ROUNDS);
+    encryptThePassword = async () => {
+      const
+        { BCRYPT_GEN_ROUNDS } = process.env,
+        ROUNDS = BCRYPT_GEN_ROUNDS ? parseInt(BCRYPT_GEN_ROUNDS) : 10,
+        salt = await bcryptjs.genSalt(ROUNDS);
 
-  this.password = await bcryptjs.hash(this.password, salt);
+      return this.password = await bcryptjs.hash(this.password, salt);
+    };
 
-  next();
+  if (this.__v >= 0 && this.password === undefined) {
+    // This is an update without an update to the password field. Simply Continue.
+    return next();
+  } else if (this.password) { // This is either registration or the password has been updated.
+    await encryptThePassword();
+  }
+
+  return next();
 };
 
 module.exports.getSignedJwt = function() {
@@ -22,7 +32,7 @@ module.exports.getSignedJwt = function() {
     IS_PRODUCTION = NODE_ENV === 'production';
 
   return jwt.sign({ id: this._id }, JWT_TOKEN_KEY, {
-    expiresIn: IS_PRODUCTION ? parseInt(JWT_TOKEN_EXPIRATION_PROD) : parseInt(JWT_TOKEN_EXPIRATION_DEVTEST)
+    expiresIn: IS_PRODUCTION ? JWT_TOKEN_EXPIRATION_PROD : JWT_TOKEN_EXPIRATION_DEVTEST
   });
 };
 

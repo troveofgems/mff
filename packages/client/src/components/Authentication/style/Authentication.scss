@@ -1,0 +1,70 @@
+#tab-login-register {
+  text-align: center;
+}
+
+#loginTile,
+#registerTile {
+  background-color: rgba(210, 209, 205, .45);
+  border-radius: 15px;
+  color: #000;
+  font-size: 1.75rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 auto;
+  width: 35%;
+}
+
+
+
+.content-wrapper {
+  background: rgba(210, 209, 205, .8);
+  border-radius: 15px;
+  padding: 1rem;
+  margin: 0 auto;
+  overflow: hidden;
+  width: 35%;
+}
+
+.fieldContainer {
+
+}
+
+.form-row {
+  color: black;
+  padding: 5px;
+}
+
+.registration-form-item > input,
+.login-form-item > input {
+  width: 65%;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+.formikErrorMessage {
+  color: #880808!important;
+  font-size: 1.25rem;
+  padding: .25rem;
+}
+
+.login-btn {
+  font-size: 1.25rem;
+}
+
+.tab-header-item-text {
+  cursor: pointer;
+}
+
+.formikFormWrapper {
+  padding: 1.25rem;
+}
+
+.selected {
+  letter-spacing: 5px;
+  text-decoration: underline;
+  font-size: 2.5rem!important;
+}
+
+small.text-black {
+  font-size: 1.25rem;
+}

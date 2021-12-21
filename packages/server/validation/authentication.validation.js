@@ -5,14 +5,17 @@ module.exports.registerUserValidation = {
   body: Joi.object({
     firstName: Joi.string()
       .required(),
-    middleInitial: Joi.string(),
     lastName: Joi.string()
       .required(),
     email: Joi.string()
       .email()
       .required(),
+    birthMonth: Joi.string()
+      .required(),
     password: Joi.string()
-      .regex(/[a-zA-Z0-9]{16,32}/)
+      .regex(/[a-zA-Z0-9]{8,32}/)
+      .required(),
+    isAppAdmin: Joi.bool()
       .required()
   })
 };
@@ -24,7 +27,7 @@ module.exports.loginUserValidation = {
       .email()
       .required(),
     password: Joi.string()
-      .regex(/[a-zA-Z0-9]{16,32}/)
+      .regex(/[a-zA-Z0-9]{8,32}/)
       .required()
   })
 };

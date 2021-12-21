@@ -5,9 +5,10 @@ import Card from 'react-bootstrap/Card';
 import Rating from "../Rating/Rating";
 import {NavLink} from "react-router-dom";
 
+import './accessibilityTest.scss';
 const Product = ({ product }) => {
   return (
-    <Card className={"my-3 p-3 rounded"}>
+    <Card className={"my-3 p-3 rounded applyAccessibilityStyles"} key={product._id}>
       <NavLink to={`/product/${product._id}`}>
         <Card.Img src={`img/${product.image}`} variant={'top'} />
       </NavLink>
@@ -19,7 +20,7 @@ const Product = ({ product }) => {
             </strong>
           </Card.Title>
         </NavLink>
-        <Card.Text as={"div"}>
+        <Card.Text as={"div"} className={"text-black"}>
           <Rating
             productRatingInfo={{
               productRating: product.rating,
@@ -27,13 +28,15 @@ const Product = ({ product }) => {
             }}
           />
         </Card.Text>
-        <Card.Text as={"h3"}>
+        <Card.Text as={"h3"} className={"text-black"}>
           ${product.price}
         </Card.Text>
       </Card.Body>
     </Card>
   );
 };
+
+
 
 Product.propTypes = {
   product: PropTypes.object.isRequired

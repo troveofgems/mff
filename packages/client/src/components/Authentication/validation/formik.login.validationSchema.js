@@ -1,23 +1,25 @@
 import React 		from 'react';
 import * as Yup from 'yup';
 // App Constant Values
-import {MAX_EMAIL_LEN, MAX_PASSWORD_LEN} from "../../../validation/constants/max.len";
-import {MIN_EMAIL_LEN, MIN_PASSWORD_LEN} from "../../../validation/constants/min.len";
+import {
+  EMAIL_MIN_LEN, EMAIL_MAX_LEN,
+  PASSWORD_MIN_LEN, PASSWORD_MAX_LEN
+} from './formik.validation.constants';
 
 const formikLoginValidationSchema = Yup.object({
   login_email:
     Yup
       .string()
       .email('Invalid Email Address Format')
-      .max(MAX_EMAIL_LEN, `Must be less than ${MAX_EMAIL_LEN} chars`)
-      .min(MIN_EMAIL_LEN, `Must be greater than ${MIN_EMAIL_LEN} chars`)
+      .max(EMAIL_MAX_LEN, `Must be less than ${EMAIL_MAX_LEN} chars`)
+      .min(EMAIL_MIN_LEN, `Must be greater than ${EMAIL_MIN_LEN} chars`)
       .trim()
       .required('* Email Address Is Required'),
   login_pwd:
     Yup
       .string()
-      .max(MAX_PASSWORD_LEN, `Must be less than ${MAX_PASSWORD_LEN} chars`)
-      .min(MIN_PASSWORD_LEN, `Must be greater than ${MIN_PASSWORD_LEN} chars`)
+      .max(PASSWORD_MAX_LEN, `Must be less than ${PASSWORD_MAX_LEN} chars`)
+      .min(PASSWORD_MIN_LEN, `Must be greater than ${PASSWORD_MIN_LEN} chars`)
       .required('* Password Is Required'),
 });
 
