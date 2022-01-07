@@ -11,13 +11,12 @@ const orderSchema = mongoose.Schema({
 const OrderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   },
-  orderItems: [
+  cartItems: [
     {
       name: { type: String, required: true },
-      qty: { type: Number, required: true },
+      quantityRequested: { type: Number },
       image: { type: String, required: true },
       price: { type: Number, required: true },
       product: {
@@ -27,6 +26,9 @@ const OrderSchema = new mongoose.Schema({
       }
     }
   ],
+  promoCode: {
+    type: String
+  },
   shippingAddress: {
     address_1: {
       type: String,
@@ -43,16 +45,48 @@ const OrderSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    state: {
+      type: String,
+      required: true
+    },
     country: {
       type: String,
       required: true,
-      enum: ['USA'],
-      default: 'USA'
+      enum: ['usa'],
+      default: 'usa'
+    }
+  },
+  billingAddress: {
+    address_1: {
+      type: String,
+      required: true
+    },
+    address_2: {
+      type: String
+    },
+    city: {
+      type: String,
+      required: true
+    },
+    postalCode: {
+      type: String,
+      required: true
+    },
+    state: {
+      type: String,
+      required: true
+    },
+    country: {
+      type: String,
+      required: true,
+      enum: ['usa'],
+      default: 'usa'
     }
   },
   paymentMethod: {
-    type: String,
-    required: true
+    type: Number,
+    required: true,
+    default: 0
   },
   paymentResult: {
     id: { type: String },
@@ -60,20 +94,25 @@ const OrderSchema = new mongoose.Schema({
     update_time: { type: String },
     email_address: { type: String }
   },
-  taxPrice: {
+  taxCost: {
     type: Number,
     required: true,
-    default: 0.0
+    default: 0.00
   },
-  shippingPrice: {
+  shippingCost: {
     type: Number,
     required: true,
-    default: 0.0
+    default: 0.00
   },
-  totalPrice: {
+  cartCost: {
     type: Number,
     required: true,
-    default: 0.0
+    default: 0.00
+  },
+  totalCost: {
+    type: Number,
+    required: true,
+    default: 0.00
   },
   isPaid: {
     type: Boolean,
@@ -91,6 +130,11 @@ const OrderSchema = new mongoose.Schema({
   deliveredAt: {
     type: Date
   },
+  isGuestCheckout: {
+    type: Boolean,
+    required: true,
+    default: true
+  }
 }, {
   timestamps: true
 });

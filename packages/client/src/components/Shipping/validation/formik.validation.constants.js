@@ -1,0 +1,30 @@
+export const ADDRESS_LINE_1_MIN_LEN = 5;
+export const ADDRESS_LINE_1_MAX_LEN = 250;
+
+export const ADDRESS_LINE_2_MIN_LEN = 5;
+export const ADDRESS_LINE_2_MAX_LEN = 250;
+
+export const ADDRESS_CITY_MIN_LEN = 5;
+export const ADDRESS_CITY_MAX_LEN = 250;
+
+export const ADDRESS_POSTAL_CODE_MIN_LEN = 5;
+export const ADDRESS_POSTAL_CODE_MAX_LEN = 12;
+
+export const ADDRESS_COUNTRY_MIN_LEN = 2;
+export const ADDRESS_COUNTRY_MAX_LEN = 5;
+
+export const ADDRESS_TYPE_MAIL = 'mailing';
+
+export const MAILING_ADDRESS_LINE_1_PLACEHOLDER = '123 Misty Lagoon Ln, ';
+export const MAILING_ADDRESS_LINE_2_PLACEHOLDER = '';
+export const MAILING_ADDRESS_CITY_PLACEHOLDER = 'Ballonea, ';
+export const MAILING_ADDRESS_STATE_PLACEHOLDER = 'or';
+export const MAILING_ADDRESS_POSTALCODE_PLACEHOLDER = '97229 ';
+export const MAILING_ADDRESS_COUNTRY_PLACEHOLDER = 'usa';
+
+export const BILLING_ADDRESS_LINE_1_PLACEHOLDER = '500 Main St, ';
+export const BILLING_ADDRESS_LINE_2_PLACEHOLDER = '';
+export const BILLING_ADDRESS_CITY_PLACEHOLDER = 'El Segundo, ';
+export const BILLING_ADDRESS_STATE_PLACEHOLDER = 'ca';
+export const BILLING_ADDRESS_POSTALCODE_PLACEHOLDER = '90245 ';
+export const BILLING_ADDRESS_COUNTRY_PLACEHOLDER = 'usa';

@@ -1,4 +1,7 @@
-const {discoverObject} = require('../../middleware/Error/probe');
+const
+  { v4: uuidv4 } = require('uuid'),
+  { discoverObject, logTheError } = require('../../middleware/Error/probe');
+
 //  NOT FOUND HANDLER
 /////////////////////
 const notFound = (req, res, next) => {
@@ -16,7 +19,6 @@ const notFound = (req, res, next) => {
 //  SERVER ERROR HANDLER
 ////////////////////////
 const errorHandler = (err, req, res, next) => {
-  //console.log('error probe', err);
   let error = {};
   if (process.env.NODE_ENV === 'development') { console.error(err); }
 
@@ -53,8 +55,15 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.statusCode === 401) { // Any 401s should just reflect the server response message and status.
     error = {...err};
   } else {
+    let logId = uuidv4();
+    logId = logId.split('-')[4];
     discoverObject(err);
-    error = { message: 'Unspecified Server Error - Contact App Admin', statusCode: err.statusCode };
+    logTheError(err, '', null, 4, logId);
+    error = {
+      message: `Server Error - Contact Support And Reference the Log Id: ${logId}`,
+      statusCode:
+      err.statusCode
+    };
   }
 
   //console.log('TO OUTPUT: ', error);

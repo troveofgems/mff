@@ -1,4 +1,4 @@
-import React 		from 'react';
+import React from 'react';
 import * as Yup from 'yup';
 import { // App Constant Values
   EMAIL_MIN_LEN,
@@ -10,8 +10,6 @@ import { // App Constant Values
   PASSWORD_MIN_LEN,
   PASSWORD_MAX_LEN,
   BIRTH_YEAR_MIN_LEN,
-  BIRTH_MONTH_MAX_LEN,
-  BIRTH_MONTH_MIN_LEN
 } from "./formik.validation.constants";
 
 const formikRegisterValidationSchema = Yup.object({
@@ -32,17 +30,14 @@ const formikRegisterValidationSchema = Yup.object({
   register_email:
     Yup
       .string()
-      .email('Invalid Email Address Format')
+      .email('Invalid Email Shipping Format')
       .max(EMAIL_MAX_LEN, `Must be less than ${EMAIL_MAX_LEN} chars`)
       .min(EMAIL_MIN_LEN, `Must be greater than ${EMAIL_MIN_LEN} chars`)
       .trim()
-      .required('* Email Address Is Required'),
+      .required('* Email Shipping Is Required'),
   register_birth_month:
     Yup
-      .string()
-      .trim()
-      .max(BIRTH_MONTH_MAX_LEN, `Must be less than ${10} chars`)
-      .min(BIRTH_MONTH_MIN_LEN, `Must be greater than ${5} chars`)
+      .number()
       .required('* Your Birth Month Is Required'),
   register_birth_year:
     Yup

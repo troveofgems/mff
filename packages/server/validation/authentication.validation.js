@@ -7,7 +7,7 @@ module.exports.registerUserValidation = {
       .required(),
     lastName: Joi.string()
       .required(),
-    email: Joi.string()
+    currentEmail: Joi.string()
       .email()
       .required(),
     birthMonth: Joi.string()
@@ -23,7 +23,7 @@ module.exports.registerUserValidation = {
 // Login User Validation Schema
 module.exports.loginUserValidation = {
   body: Joi.object({
-    email: Joi.string()
+    currentEmail: Joi.string()
       .email()
       .required(),
     password: Joi.string()
@@ -35,7 +35,7 @@ module.exports.loginUserValidation = {
 // Forgotten Password Request Validation Schema
 module.exports.forgottenPasswordRequestValidation = {
   body: Joi.object({
-    email: Joi.string()
+    currentEmail: Joi.string()
       .email()
       .required()
   })

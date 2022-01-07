@@ -1,24 +1,18 @@
 import React, { useState, useEffect } 	from 'react';
-import { useSelector } from "react-redux";
-import {Link, useNavigate} from "react-router-dom";
 
 import { Formik, Form } from "formik";
 import FormikTextInput	from "../../../formik/textInput";
 
 import { forgotPasswordFormSchema }	from '../schema/formSchematics';
-//import formikFo 	from "../validation/formik.login.validationSchema";
 
 import Notification from "../../layout/Notification";
 
 import { EMAIL_MIN_LEN, EMAIL_MAX_LEN } from '../validation/formik.validation.constants';
-/*import {
-  resetPasswordForUser
-} from "../../../redux/actions/auth.actions";*/
-import {useDispatch} from "react-redux";
+//import {useDispatch} from "react-redux";
 
 const ForgotPasswordFeature = () => {
   const
-    dispatch = useDispatch(), // Need state to track password reset
+    //dispatch = useDispatch(), // Need state to track password reset
     [globalError, setGlobalError] = useState(null);
 
   return (

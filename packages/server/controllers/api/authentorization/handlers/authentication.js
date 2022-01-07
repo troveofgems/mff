@@ -1,4 +1,4 @@
-const {buildAPIBodyResponse} = require("../../../../utils/dev/controller.utils");
+const { buildAPIBodyResponse } = require("../../../../utils/dev/controller.utils");
 const ErrorResponse = require('../../../../middleware/Error').errorHandler;
 
 const
@@ -23,10 +23,20 @@ const serveSanityCheck = asyncHandler(async (req, res, next) => {
     .json(response);
 });
 
+
+const _verifyOldPassword = async (email, oldPassword) => {
+  let user = await User // Search & Return User Data
+    .findOne({ currentEmail: email })
+    .select('+password');
+
+  return user.verifyCredentials(oldPassword);
+};
+
 // @desc  Register User Account
 // @route POST /api/vX/authentorization/authentication/register
 // @access PUBLIC
 const registerUser = asyncHandler(async (req, res, next) => {
+  console.log('To Register: ', req.body);
   let
     apiResponse = buildAPIBodyResponse('/authenticate/registerUser'),
     registrationData = req.body,
@@ -51,7 +61,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
     apiResponse = buildAPIBodyResponse('/authenticate/loginUser'),
     loginData = req.body,
     user = await User // Search & Return User Data
-      .findOne({ email: loginData.email })
+      .findOne({ currentEmail: loginData.currentEmail })
       .select('+password');
 
   if (!user) { return _handleInvalidLoginAttempt(req, res, next); }
@@ -63,16 +73,14 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
   // Create JWT For User
   apiResponse.userPog = user.getSignedJwt();
-  console.log(user);
   apiResponse.data = {
     firstName: user.firstName,
     lastName: user.lastName,
-    email: user.email,
+    currentEmail: user.currentEmail,
     userRole: user.isAppAdmin ? "appAdmin" : "base",
     token: apiResponse.userPog
   };
 
-  console.log('To Send Response: ', apiResponse);
   return res
     .status(200)
     .json(apiResponse);
@@ -102,18 +110,33 @@ const getAuthenticatedProfile = asyncHandler(async (req, res, next) => {
 // @access PRIVATE
 const updateUserProfile = asyncHandler(async (req, res, next) => {
   let
-    apiResponse = buildAPIBodyResponse('/authenticate/authenticatedProfile'),
+    apiResponse = buildAPIBodyResponse('/authentication/updateUser'),
     user = await User // Search & Return User Data
       .findById(req.user._id);
 
   if (user) {
-    user.firstName = req.body.firstName || req.user.firstName;
-    user.lastName = req.body.lastName || req.user.lastName;
-    user.email = req.body.email || req.user.email;
-    if (req.body.password) {
-      user.password = req.body.password;
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
+    user.birthMonth = req.body.birthMonth || user.birthMonth;
+    user.rememberMyAddress = req.body.rememberMyAddress || user.rememberMyAddress;
+
+    if (req.body.update_email) {
+      user.awaitingEmailVerification = req.body.awaitingEmailVerification;
+      user.placeholderEmail = req.body.placeholderEmail;
+    }
+
+    if (req.body.update_password) {
+      const oldPasswordVerified = await _verifyOldPassword(user.currentEmail, req.body.old_password);
+      if (oldPasswordVerified && req.body.password !== "") {
+        user.password = req.body.password;
+        user.pwdType = req.body.pwdType;
+      } else {
+        // TODO: Need to throw failed password check and disallow the update to proceed.
+      }
     }
   }
+
+  user.authTokenType = req.body.authTokenType || user.authTokenType;
 
   const updatedUser = await user.save();
 

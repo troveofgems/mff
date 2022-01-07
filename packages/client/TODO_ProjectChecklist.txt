@@ -1,0 +1,7 @@
+List Options
+------------
+TODO: Optimize Pattern
+TODO: Possible need to route to shipping here too...
+TODO: Correct This useEffect Call
+TODO: Prefill Form With LocalStorage ShippingData If Required To Do So By Flag
+TODO: Configure logic for step 1 to check for guest or logged in user

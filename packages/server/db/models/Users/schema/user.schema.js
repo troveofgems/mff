@@ -10,6 +10,49 @@ const
   mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+  accountLockout: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  authTokenType: {
+    type: Number,
+    enum: [
+      0,
+      1
+    ],
+    default: 0
+  },
+  loginAttempts: {
+    type: Number,
+    required: true,
+    default: 0,
+    max: 3
+  },
+  awaitingEmailVerification: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  birthMonth: {
+    type: Number,
+    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    required: [true, 'A Birth Month Is Required'],
+    default: 12
+  },
+  currentEmail: {
+    type: String,
+    required: [true, 'An Email Shipping Is Required'],
+    unique: true
+  },
+  placeholderEmail: {
+    type: String,
+    required: false
+  },
+  emailVerificationTo: {
+    type: String,
+    required: false
+  },
   firstName: {
     type: String,
     required: [true, 'First Name Is Required']
@@ -18,15 +61,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Last Name Is Required']
   },
-  email: {
-    type: String,
-    required: [true, 'An Email Address Is Required'],
-    unique: true
-  },
-  birthMonth: {
-    type: String,
-    maxlength: 10,
-    required: [true, 'A Birth Month Is Required']
+  pwdType: {
+    type: Number,
+    enum: [
+      0,
+      1
+    ],
+    default: 0
   },
   password: {
     type: String,
@@ -38,7 +79,18 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
-  }/*,
+  },
+  rememberMyAddress: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  rememberMyCart: {
+    type: Boolean,
+    required: true,
+    default: true
+  }
+/*,
   accountInfo: {
     type: AccountInfoSchema
   },

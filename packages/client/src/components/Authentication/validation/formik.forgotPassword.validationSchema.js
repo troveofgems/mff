@@ -8,11 +8,11 @@ const formikForgotPasswordValidationSchema = Yup.object({
   forgot_email:
     Yup
       .string()
-      .email('Invalid Email Address Format')
+      .email('Invalid Email Shipping Format')
       .max(MAX_EMAIL_LEN, `Must be less than ${MAX_EMAIL_LEN} chars`)
       .min(MIN_EMAIL_LEN, `Must be greater than ${MIN_EMAIL_LEN} chars`)
       .trim()
-      .required('* Email Address Is Required')
+      .required('* Email Shipping Is Required')
 });
 
 export default formikForgotPasswordValidationSchema;

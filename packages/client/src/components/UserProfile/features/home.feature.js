@@ -1,13 +1,13 @@
-import React, { useState, useEffect } 	from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import React, { /*useState, useEffect*/ } 	from 'react';
+//import { /*useDispatch,*/ useSelector } from "react-redux";
 
 import Notification from "../../layout/Notification";
 
 const HomeFeature = () => {
-  const
-    dispatch = useDispatch(),
-    userLogin = useSelector(state => state.userLogin),
-    { loading: authLoading, error: authError, auth } = userLogin;
+  //const
+    //dispatch = useDispatch(),
+    //userLogin = useSelector(state => state.userLogin),
+    //{ loading: authLoading, error: authError, auth } = userLogin;
 
   const notificationMessage = (`
     All Is Good, In The Application Neighborhood. Any News like site maintenance or major 

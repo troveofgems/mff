@@ -1,62 +1,67 @@
 [
   {
-    "id": 1,
+    "id": 0,
     "label": "January",
-    "value": "jan"
+    "value": 0
+  },
+  {
+    "id": 1,
+    "label": "February",
+    "value": 1
   },
   {
     "id": 2,
-    "label": "February",
-    "value": "feb"
+    "label": "March",
+    "value": 2
   },
   {
     "id": 3,
-    "label": "March",
-    "value": "mar"
+    "label": "April",
+    "value": 3
   },
   {
     "id": 4,
-    "label": "April",
-    "value": "apr"
+    "label": "May",
+    "value": 4
   },
   {
     "id": 5,
-    "label": "May",
-    "value": "may"
+    "label": "June",
+    "value": 5
   },
   {
     "id": 6,
-    "label": "June",
-    "value": "june"
+    "label": "July",
+    "value": 6
   },
   {
     "id": 7,
-    "label": "July",
-    "value": "jul"
+    "label": "August",
+    "value": 7
   },
   {
     "id": 8,
-    "label": "August",
-    "value": "aug"
+    "label": "September",
+    "value": 8
   },
   {
     "id": 9,
-    "label": "September",
-    "value": "sep"
+    "label": "October",
+    "value": 9
   },
   {
     "id": 10,
-    "label": "October",
-    "value": "oct"
+    "label": "November",
+    "value": 10
   },
   {
     "id": 11,
-    "label": "November",
-    "value": "nov"
+    "label": "December",
+    "value": 11
   },
   {
     "id": 12,
-    "label": "December",
-    "value": "dec"
+    "label": "What month were you born?",
+    "value": 12
   }
 ]

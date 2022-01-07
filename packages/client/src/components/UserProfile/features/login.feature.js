@@ -1,58 +1,33 @@
 import React, { useState, useEffect } 	from 'react';
 import { useDispatch, useSelector } from "react-redux";
-
-import Notification from "../../layout/Notification";
-import Loader from "../../layout/Loader";
+// Formik Imports
 import {Form, Formik} from "formik";
 import FormikTextInput from "../../../formik/textInput";
-import {
-  EMAIL_MAX_LEN,
-  EMAIL_MIN_LEN,
-  FIRST_NAME_MAX_LEN,
-  FIRST_NAME_MIN_LEN, LAST_NAME_MAX_LEN,
-  LAST_NAME_MIN_LEN, PASSWORD_MAX_LEN, PASSWORD_MIN_LEN
-} from "../../Authentication/validation/formik.validation.constants";
 import FormikCheckbox from "../../../formik/checkbox";
 import FormikRadioGroup from "../../../formik/radioGroup";
-import {useNavigate} from "react-router-dom";
-import {getLoggedInUserProfile} from "../../../redux/actions/auth.actions";
+
+import Loader from "../../layout/Loader";
+import Notification from "../../layout/Notification";
+
+import {
+  EMAIL_MAX_LEN, EMAIL_MIN_LEN,
+  PASSWORD_MAX_LEN, PASSWORD_MIN_LEN
+} from "../../Authentication/validation/formik.validation.constants";
+
+import {getLoggedInUserProfile, updateUserProfile} from "../../../redux/actions/auth.actions";
+
+import {userProfile_loginSchema} from '../schema/formSchematics';
+import formikUPLoginValidationSchema from '../validation/formik.upLogin.validationSchema';
 
 const LoginFeature = () => {
   const
-    [showChangePassword, setShowChangePassword] = useState(false),
     [showPrefilledForm, setShowPrefilledForm] = useState(true),
     [formValues, setFormValues] = useState(null),
     dispatch = useDispatch(),
-    navigate = useNavigate(),
-    userProfileDetails = useSelector(state => state.userUpdateProfileDetails),
-    userLogin = useSelector(state => state.userLogin),
     userViewProfile = useSelector(state => state.userViewProfile),
     [formMessage, setFormMessage] = useState(null),
     [formMessageType, setFormMessageType] = useState(null),
-    {loading: loadingProfile, error: viewProfileError, success: viewProfileSuccess, user} = userViewProfile,
-    {auth} = userLogin;
-
-  let
-    baseSchema = {
-      update_registrationId: 'First Render - Empty Form',
-      update_createdAccountTS: 'First Render - Empty Form',
-      update_lastModifiedAccountTS: 'First Render - Empty Form',
-      update_firstName: 'First Render - Empty Form',
-      update_lastName: 'First Render - Empty Form',
-      update_email: 'First Render - Empty Form',
-      update_password_type: '0',
-      update_authtoken_type: '0'
-    },
-    savedDataSchema = {
-      update_registrationId: 'Manually Loaded Data',
-      update_createdAccountTS: 'Manually Loaded Data',
-      update_lastModifiedAccountTS: 'Manually Loaded Data',
-      update_firstName: 'Manually Loaded Data',
-      update_lastName: 'Manually Loaded Data',
-      update_email: 'Manually Loaded Data',
-      update_password_type: '0',
-      update_authtoken_type: '0'
-    };
+    {loading: loadingProfile, error: viewProfileError, success: viewProfileSuccess, user} = userViewProfile;
 
   useEffect(() => {
     dispatch(getLoggedInUserProfile());
@@ -60,33 +35,44 @@ const LoginFeature = () => {
 
   useEffect(() => {
     if (viewProfileSuccess) {
-      console.log('Successfully retrieved User Profile');
-      let prefilledSchema = createPrefillSchema(user);
+      // TODO: Correct This useEffect Call
+      let prefilledSchema = createPrefillSchema(user, userProfile_loginSchema);
       return setFormValues(prefilledSchema);
     }
   }, [viewProfileSuccess]);
 
-  /*  const handlePasswordChangeView = () => {
-      console.log('I was clicked!');
-      //return setShowChangePassword(!showChangePassword);
-    };*/
+  const createPrefillSchema = (prefillData, schema) => {
+    schema.update_registrationId = prefillData._id;
+    schema.immutable_pending_email = prefillData.placeholderEmail;
+    schema.awaitingEmailVerification = prefillData.awaitingEmailVerification;
+    schema.immutable_current_email = prefillData.currentEmail;
+    schema.update_password_type = prefillData.pwdType;
+    schema.update_authTokenType = prefillData.authTokenType;
 
-  const createPrefillSchema = prefillData => {
-    return {
-      update_registrationId: prefillData._id,
-      update_createdAccountTS: prefillData.createdAt,
-      update_lastModifiedAccountTS: prefillData.updatedAt,
-      update_firstName: prefillData.firstName,
-      update_lastName: prefillData.lastName,
-      update_email: prefillData.email,
-      update_password_type: '0',
-      update_authtoken_type: '0'
-    };
+    return schema;
   };
 
-  const manuallyLoadData = () => {
-    console.log('Running Manually Load Data');
-    return setFormValues(savedDataSchema);
+  const processChanges = (formikValues, user) => {
+    let preprocessedUpdates = {};
+
+    preprocessedUpdates.update_registrationId = user._id;
+
+    // Three Main Possible Updates To Make
+    if (formikValues.update_email !== user.currentEmail && formikValues.update_email.length !== 0) {
+      preprocessedUpdates.update_email = true;
+      preprocessedUpdates.placeholderEmail = formikValues.update_email;
+      preprocessedUpdates.awaitingEmailVerification = true;
+    }
+    if (formikValues.update_password) {
+      preprocessedUpdates.update_password = formikValues.update_password;
+      preprocessedUpdates.old_password =  formikValues.old_password;
+      preprocessedUpdates.password = formikValues.update_pwd;
+      preprocessedUpdates.pwdType = parseInt(formikValues.update_password_type);
+    }
+    if (formikValues.update_authenticationType) {
+      preprocessedUpdates.authTokenType = formikValues.update_authTokenType;
+    }
+    return preprocessedUpdates;
   };
 
   return (
@@ -96,12 +82,12 @@ const LoginFeature = () => {
           <Loader/>
         ) : (
           <Formik
-            initialValues={formValues || baseSchema}
-            //validationSchema={formikRegisterValidationSchema}
+            initialValues={formValues || userProfile_loginSchema}
+            validationSchema={formikUPLoginValidationSchema}
             onSubmit={async (formData, {setSubmitting}) => {
+              let updates = processChanges(formData, user);
               setSubmitting(true);
-              console.log('Form Submit', formData);
-              //await dispatch(updateUserProfile(formData));
+              await dispatch(updateUserProfile(updates));
               setSubmitting(false);
             }}
             enableReinitialize
@@ -131,14 +117,25 @@ const LoginFeature = () => {
                                 <div className="form-item registration-form-item mb-2">
                                   <FormikTextInput
                                     label='Current Email Address'
-                                    id={'update_email'} name={'update_email'}
+                                    id={'immutable_current_email'} name={'immutable_current_email'}
                                     type='email' placeholder='Your New Email Here...'
                                     readOnly disabled
                                   />
                                 </div>
+                                {
+                                  formik.values.awaitingEmailVerification && (
+                                    <div className="form-item registration-form-item mb-2">
+                                      <FormikTextInput
+                                        label='New Email Pending Verification'
+                                        id={'immutable_pending_email'} name={'immutable_pending_email'}
+                                        type='email'
+                                        readOnly disabled
+                                      />
+                                    </div>
+                                )}
                                 <div className="form-item registration-form-item">
                                   <FormikTextInput
-                                    label='Email Address'
+                                    label='New Email Address'
                                     id={'update_email'} name={'update_email'}
                                     type='email' placeholder='Your New Email Here...'
                                     minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
@@ -167,7 +164,7 @@ const LoginFeature = () => {
                                         Requirements
                                       </h4>
                                       <small>
-                                        {formik.values.update_password_type === '0' && (
+                                        {parseInt(formik.values.update_password_type) === 0 && (
                                           <>
                                             <p className={"m-2"}>
                                               Your password must be between 8-32 ASCII Characters and contain some
@@ -179,7 +176,7 @@ const LoginFeature = () => {
                                             </div>
                                           </>
                                         )}
-                                        {formik.values.update_password_type === '1' && (
+                                        {parseInt(formik.values.update_password_type) === 1 && (
                                           <>
                                             <p className={"m-2"}>
                                               Your password must contain at least 4 kebab-case strings with at least one
@@ -197,7 +194,7 @@ const LoginFeature = () => {
                                       <div className="form-item registration-form-item">
                                         <FormikTextInput
                                           label='Old Password'
-                                          id={'confirmation_pwd'} name={'confirmation_pwd'}
+                                          id={'old_password'} name={'old_password'}
                                           type='password' placeholder='Your Old Password Here...'
                                           minLength={PASSWORD_MIN_LEN} maxLength={PASSWORD_MAX_LEN}
                                         />
@@ -250,28 +247,30 @@ const LoginFeature = () => {
                                         </h5>
                                         <FormikRadioGroup
                                           label={""}
-                                          name={"update_authtoken_type"}
+                                          name={"update_authTokenType"}
                                           options={[{valueLabel: "Default"}, {valueLabel: "Advanced"}]}
                                           idPrefix={"authTokenType"}
-                                          currentlySelectedOption={formik.values.update_authtoken_type}
+                                          currentlySelectedOption={parseInt(formik.values.update_authTokenType)}
                                         />
                                         <div className={"authTokenSettingsContainer"} style={{width: '50%'}}>
                                           <h5 className={"mt-3 text-center text-decoration-underline"}>
                                             Login Session Life-time
                                           </h5>
                                           <h6 className={"mt-1 text-center"}>
-                                            {formik.values.update_authtoken_type === '0' && (
+                                            {parseInt(formik.values.update_authTokenType) === 0 && (
                                               <>
-                                                (3) THREE HOURS
+                                                <div>3</div>
+                                                THREE HOURS
                                               </>
                                             )}
-                                            {formik.values.update_authtoken_type === '1' && (
+                                            {parseInt(formik.values.update_authTokenType) === 1 && (
                                               <>
-                                                (6) SIX HOURS
+                                                <div>6</div>
+                                                SIX HOURS
                                               </>
                                             )}
                                           </h6>
-                                          {formik.values.update_authtoken_type === '1' && (
+                                          {parseInt(formik.values.update_authTokenType) === 1 && (
                                             <>
                                               ** <strong>Not Recommended</strong>
                                               <small>

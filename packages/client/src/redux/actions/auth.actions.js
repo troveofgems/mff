@@ -10,7 +10,7 @@ import {
 export const loginUser = userCredentials => async dispatch => {
   dispatch({ type: LOGIN_USER_REQUEST });
   let credentials = {
-    email: userCredentials.login_email,
+    currentEmail: userCredentials.login_email,
     password: userCredentials.login_pwd
   }
   try {
@@ -36,11 +36,10 @@ export const loginUser = userCredentials => async dispatch => {
 };
 
 export const registerUser = registrationData => async dispatch => {
-  console.log('To Register User ', registrationData);
   dispatch({ type: REGISTER_USER_REQUEST });
 
   let formData = {
-    email: registrationData.register_email,
+    currentEmail: registrationData.register_email,
     firstName: registrationData.register_firstName,
     lastName: registrationData.register_lastName,
     birthMonth: registrationData.register_birth_month,
@@ -145,3 +144,36 @@ export const getUserProfileById = id => async (dispatch, getState) => {
     });
   }
 };
+
+export const updateUserProfile = updates => async (dispatch, getState) => {
+  dispatch({ type: UPDATE_USER_PROFILE_REQUEST });
+  const
+    { userLogin: { auth } } = getState(),
+    xAuthToken = auth.token || auth;
+
+  if (xAuthToken === undefined) { // Dont allow requests without a token to send a response to the server. 8000
+    throw new Error('Contact The Sys-Admin. Error Code: 8000');
+  }
+
+  try {
+    const config = {
+      'headers': {
+        'Content-Type': 'application/json',
+        'x-auth-token': xAuthToken
+      }
+    };
+
+    const {data: {data}} = await axios.put(`/api/v1/authentorization/authentication/updateUser`, updates, config);
+
+    dispatch({
+      type: UPDATE_USER_PROFILE_SUCCESS,
+      payload: data
+    });
+  } catch(err) {
+    dispatch({
+      type: UPDATE_USER_PROFILE_FAILURE,
+      payload: err
+    });
+  }
+
+}

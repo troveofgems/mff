@@ -1,14 +1,15 @@
 import React, {useState, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { Formik, Form } from "formik";
 
 // Formik Specific Imports
-import {registrationFormSchema} 			from "../schema/formSchematics";
+import {Formik, Form} from "formik";
+import FormikDropdown from "../../../formik/dropdown";
+import FormikTextInput from "../../../formik/textInput";
+import { registrationFormSchema } from "../schema/formSchematics";
 import formikRegisterValidationSchema from "../validation/formik.register.validationSchema";
-import FormikTextInput	from "../../../formik/textInput";
 
-// Constants
+// Constraint Constants
 import {
   EMAIL_MIN_LEN, EMAIL_MAX_LEN,
   FIRST_NAME_MIN_LEN, FIRST_NAME_MAX_LEN,
@@ -16,12 +17,15 @@ import {
   PASSWORD_MIN_LEN, PASSWORD_MAX_LEN
 } from "../validation/formik.validation.constants";
 
-import {
-  registerUser
-} from '../../../redux/actions/auth.actions'
+// Field Data
+import monthList from '../../../data/monthList.json';
+
 import Notification from "../../layout/Notification";
 import Loader from "../../layout/Loader";
-import FormikDropdown from "../../../formik/dropdown";
+
+// Actions and Utils For Component
+import { registerUser } from '../../../redux/actions/auth.actions';
+import { buildDynamicYearList } from '../../../utils/buildDynamicYearList.utils';
 
 const RegistrationForm = () => {
   const
@@ -29,6 +33,7 @@ const RegistrationForm = () => {
     navigate = useNavigate(),
     userRegister = useSelector(state => state.userRegister),
     userLogin = useSelector(state => state.userLogin),
+    [yearList, setYearList] = useState([]),
     [formMessage, setFormMessage] = useState(null),
     [formMessageType, setFormMessageType] = useState(null),
     [showRegistrationForm, setShowRegistrationForm] = useState(true),
@@ -36,11 +41,11 @@ const RegistrationForm = () => {
     { auth } = userLogin;
 
   useEffect(() => { // Request Check
+    let yearList = buildDynamicYearList();
+    setYearList(yearList);
     if (auth !== null) { // Already Logged-In. Redirect To Home
       navigate({ pathname: `/` })
     }
-    buildYearList();
-    console.log(yearList);
   }, []);
 
   useEffect(() => { // Registration Success Message Handler
@@ -67,85 +72,8 @@ const RegistrationForm = () => {
     }
   }, [registrationError]);
 
-  const monthList = [
-    {
-      id: 1,
-      label: "January",
-      value: "jan"
-    },
-    {
-      id: 2,
-      label: "February",
-      value: "feb"
-    },
-    {
-      id: 3,
-      label: "March",
-      value: "mar"
-    },
-    {
-      id: 4,
-      label: "April",
-      value: "apr"
-    },
-    {
-      id: 5,
-      label: "May",
-      value: "may"
-    },
-    {
-      id: 6,
-      label: "June",
-      value: "june"
-    },
-    {
-      id: 7,
-      label: "July",
-      value: "jul"
-    },
-    {
-      id: 8,
-      label: "August",
-      value: "aug"
-    },
-    {
-      id: 9,
-      label: "September",
-      value: "sep"
-    },
-    {
-      id: 10,
-      label: "October",
-      value: "oct"
-    },
-    {
-      id: 11,
-      label: "November",
-      value: "nov"
-    },
-    {
-      id: 12,
-      label: "December",
-      value: "dec"
-    }
-  ];
-  const yearList = [];
-  const buildYearList = beginAtYear => {
-    const limit = beginAtYear || 105;
-    for (let i = 0; i < limit; i += 1) {
-      if (i >= 12) {
-        let year = new Date().getFullYear() - i;
-        yearList.push({
-          id: i,
-          label: `${year}`,
-          value: `${year}`
-        });
-      }
-      }
-  };
-
   return (
-    <div className={"formikFormWrapper"}>
+    <div className={"formikFormWrapper"} style={{minWidth: "1200px"}}>
       {loadingRegistration ? (
         <Loader />
       ) : (
@@ -217,13 +145,31 @@ const RegistrationForm = () => {
 
                             <div className="form-row">
                               <div className="form-item registration-form-item">
-                                <FormikDropdown name={"register_birth_month"} label={"Birth Month"} options={monthList} />
+                                <FormikDropdown
+                                  name={"register_birth_month"} label={"Birth Month"}
+                                  options={monthList}
+                                />
+                                <small className={"text-black"} style={{display: "block", width: "60%", margin: ".5rem auto"}}>
+                                  <i className={"fas fa-info-circle"} />{' '}
+                                  <span>
+                                    Help us get to know you: we'll send you discounts, coupons, and prizes
+                                    at the arrival of your birth month!
+                                  </span>{' '}🎂{' '}🎉
+                                </small>
                               </div>
                             </div>
 
                             <div className="form-row">
                               <div className="form-item registration-form-item">
-                                <FormikDropdown name={"register_birth_year"} label={"Birth Year"} options={yearList} />
+                                <FormikDropdown
+                                  name={"register_birth_year"} label={"Birth Year"}
+                                  options={yearList}
+                                />
+                                <small className={"text-black"} style={{display: "block", width: "60%", margin: ".5rem auto"}}>
+                                  <i className={"fas fa-info-circle"} />{' '}
+                                  Your birth year will not be stored as part of your user account data. This is
+                                  for anonymous statistics only.
+                                </small>
                               </div>
                             </div>
 

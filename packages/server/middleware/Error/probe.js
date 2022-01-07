@@ -1,4 +1,4 @@
-const { sendToConsole } = require('../../utils/dev/printing.utils');
+const { sendToConsole, writeToLog } = require('../../utils/dev/printing.utils');
 
 const // Default Props
   DEFAULT_OBJECT_TO_PROBE = { discoverObject: 'You have failed to provide a printable object to probe. probe.js' },
@@ -14,3 +14,11 @@ module.exports.discoverObject = (
   printSpacing = DEFAULT_PRINT_SPACING,
   setReplacer = DEFAULT_PRINT_REPLACER
 ) => sendToConsole(objectToProbe, prefixMessage, consoleMessageType, setReplacer, printSpacing);
+
+module.exports.logTheError = (
+  objectToProbe= DEFAULT_OBJECT_TO_PROBE,
+  prefixMessage= DEFAULT_MESSAGE_TO_PRINT,
+  printSpacing = DEFAULT_PRINT_SPACING,
+  setReplacer = DEFAULT_PRINT_REPLACER,
+  eid
+) => writeToLog(objectToProbe, prefixMessage, setReplacer, printSpacing, eid);

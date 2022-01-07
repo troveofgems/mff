@@ -17,6 +17,7 @@ const Header = () => {
     dispatch = useDispatch(),
     userLogin = useSelector(state => state.userLogin),
     userLogout = useSelector(state => state.userLogout),
+    usersCart = useSelector(state => state.cart),
     { loading: loadingUserLogin, error: loginUserError, auth: userLoginInfo } = userLogin,
     { loading: loadingUserLogout, error: logoutUserError, tokenFlushSuccess } = userLogout;
 
@@ -49,7 +50,7 @@ const Header = () => {
         </NavLink>
         <NavLink to="/cart" className={"navlinkTag"} key={"anon-cart"}>
           <i className={"fas fa-shopping-cart"} />{' '}
-          Cart
+          Cart ({usersCart.cartItems.length === 1 ? `${usersCart.cartItems.length} Item` : `${usersCart.cartItems.length} Items`})
         </NavLink>
       </>
     ),

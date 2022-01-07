@@ -15,9 +15,9 @@ const FormikRadioGroup = ({label, name, options, idPrefix, currentlySelectedOpti
             {opt.valueLabel}
             <input
               {...field} {...props}
-              checked={currentlySelectedOption === `${index}`}
+              checked={parseInt(currentlySelectedOption) === index}
               id={`${idPrefix}_${opt.valueLabel.toLowerCase()}`}
-              type={"radio"} value={`${index}`}
+              type={"radio"} value={parseInt(index)}
             />
           </label>
         ))}
