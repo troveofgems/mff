@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {Table} from "react-bootstrap";
 import {getAllUsersForAdmin} from "../../../redux/actions/admin.actions";
+import Loader from "../../layout/Loader";
 
 const UserScreen = () => {
   const
     dispatch = useDispatch(),
+    navigate = useNavigate(),
     allUsers = useSelector(state => state.allUsers),
-    {listOfUsers} = allUsers;
+    {listOfUsers, loading} = allUsers;
 
   useEffect(() => {
     dispatch(getAllUsersForAdmin('someToken'));
@@ -27,19 +30,21 @@ const UserScreen = () => {
     }
   };
 
+  const handleEditUser = uid => navigate('/l1ra/users/edit', { state: uid });
+
   return (
     <>
       <h2 className={'text-center my-5'}>Admin User Portal</h2>
       <Row>
-        <Col md={2}>
-          <button type={"button"} className={"text-dark mb-2"}>
-            Create New User
-          </button>
-        </Col>
-        <Col md={6} className={"text-center"}>
-          <input placeholder={"User Search"} className={"w-75"} maxLength={100}/>
+        <Col md={6}>
+          <input placeholder={"User Search"} className={"w-75 mb-2"} maxLength={100}/>
         </Col>
       </Row>
+      {loading ? (
+        <>
+          <Loader />
+        </>
+      ) : (
       <Table striped bordered hover responsive className={'table-sm bg-light'}>
         <thead>
         <tr>
@@ -63,7 +68,7 @@ const UserScreen = () => {
                   {user.isAppAdmin ? null : (
                     <>
                       <div className={"m-2"}>
-                        <button type={"button"} className={"text-dark"}>
+                        <button type={"button"} className={"text-dark"} onClick={() => handleEditUser(user._id)}>
                           <i className="fas fa-edit"/>{' '}
                           Edit User
                         </button>
@@ -88,6 +93,7 @@ const UserScreen = () => {
         )}
         </tbody>
       </Table>
+        )}
     </>
   );
 };

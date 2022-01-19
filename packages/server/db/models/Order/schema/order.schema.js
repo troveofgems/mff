@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const orderSchema = mongoose.Schema({
+const orderReviewSchema = new mongoose.Schema({
   name: {type: String, required: true},
   rating: {type: Number, required: true},
   comment: {type: String, required: true}
@@ -28,6 +28,10 @@ const OrderSchema = new mongoose.Schema({
   ],
   promoCode: {
     type: String
+  },
+  orderRefId: {
+    type: String,
+    required: true
   },
   shippingAddress: {
     address_1: {
@@ -119,21 +123,51 @@ const OrderSchema = new mongoose.Schema({
     required: true,
     default: false
   },
-  paidAt: {
-    type: Date
-  },
-  isDelivered: {
+  hasBeenCancelled: {
     type: Boolean,
     required: true,
     default: false
   },
-  deliveredAt: {
+  paidAt: {
+    type: Date
+  },
+  cancelledAt: {
+    type: Date
+  },
+  cancellationInitiatorId: {
+    type: String
+  },
+  cancelledBy: {
+    type: Number,
+    enum: [0, 1]
+  },
+  markShippedInitiatorId: {
+    type: String
+  },
+  hasBeenShipped: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  shippedOn: {
+    type: Date
+  },
+  hasBeenDelivered: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  deliveredOn: {
     type: Date
   },
   isGuestCheckout: {
     type: Boolean,
     required: true,
     default: true
+  },
+  refundStatus: {
+    type: "String",
+    enum: ["n/a", "pending", "issued"]
   }
 }, {
   timestamps: true

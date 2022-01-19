@@ -34,7 +34,7 @@ const formikRegisterValidationSchema = Yup.object({
       .max(EMAIL_MAX_LEN, `Must be less than ${EMAIL_MAX_LEN} chars`)
       .min(EMAIL_MIN_LEN, `Must be greater than ${EMAIL_MIN_LEN} chars`)
       .trim()
-      .required('* Email Shipping Is Required'),
+      .required('* Email Address Is Required'),
   register_birth_month:
     Yup
       .number()

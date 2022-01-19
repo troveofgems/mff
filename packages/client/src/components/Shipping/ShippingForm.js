@@ -68,7 +68,6 @@ const ShippingForm = () => {
       formikValues.mailing_postalCode = mailing_postalCode;
       formikValues.mailing_country = mailing_country;
     }
-    console.log(formikValues);
     setPrefilledSchema(formikValues);
   };
 

@@ -67,13 +67,13 @@ export const getOrderByIdReducer = (state = {}, action) => {
       return {
         loading: true,
         error: null,
-        orderDetails: null,
+        invoice: null,
         success: null
       };
     case GET_ORDER_BY_ID_SUCCESS:
       return {
         loading: false,
-        orderDetails: action.payload,
+        invoice: action.payload,
         error: null,
         success: true
       }
@@ -81,7 +81,7 @@ export const getOrderByIdReducer = (state = {}, action) => {
       return {
         loading: false,
         error: action.payload,
-        orderDetails: null,
+        invoice: null,
         success: false
       }
     default:

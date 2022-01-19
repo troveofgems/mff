@@ -1,6 +1,6 @@
 const
   {
-    serveSanityCheck, createOrder, getUserOrders, getUserOrderById
+    serveSanityCheck, createOrder, getUserOrders, getUserOrderById, cancelUserOrderById
   } = require('../../../controllers/api/orders/index').orderController.orders,
   {
     protect
@@ -18,7 +18,11 @@ router
   .get(protect, getUserOrders);
 
 router
-  .route(`/myOrders/invoice/:id`)
+  .route(`/myOrders/cancel/:id`)
+  .put(protect, cancelUserOrderById);
+
+router
+  .route('/myOrders/invoice/:id')
   .get(protect, getUserOrderById);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const {asyncHandler} = require("../../../../middleware/Helpers/async-handler.middleware");
+const {v4: uuidv4} = require('uuid');
 const {buildAPIBodyResponse} = require("../../../../utils/dev/controller.utils");
-const ErrorResponse = require('../../../../middleware/Error').errorHandler;
 
 const Order = require('../../../../db/models/Order');
 
@@ -18,8 +18,7 @@ const serveSanityCheck = asyncHandler(async (req, res, next) => {
 // @route POST /api/vX/order
 // @access PUBLIC
 const createOrder = asyncHandler(async (req, res, next) => {
-  const { cartItems, user } = req.body;
-
+  const { cartItems } = req.body;
   if (cartItems === undefined || cartItems.length === 0) {
     if (cartItems === undefined) { // Server Error
       res.status(500);
@@ -39,13 +38,14 @@ const createOrder = asyncHandler(async (req, res, next) => {
     response.success = true;
     response.error = null;
 
-
-    let orderSchema = {...req.body};
+    let
+      orderRefId = uuidv4(),
+      orderSchema = {...req.body, orderRefId};
 
     try {
       let order = new Order(orderSchema);
-      await order.save()
-      response.data = {createdOrder: true};
+      await order.save();
+      response.data = {createdOrder: true, orderRefId};
       return res
         .status(200)
         .json(response);
@@ -60,8 +60,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
 // @access PRIVATE
 const getUserOrders = asyncHandler(async (req, res, next) => {
   let response = buildAPIBodyResponse('/order/myOrders');
-  let orders = await Order.find({ user: req.user._id });
-  response.data = orders;
+  response.data = await Order.find({ user: req.user._id });
   response.success = true;
 
   return res
@@ -85,8 +84,23 @@ const getUserOrderById = asyncHandler(async (req, res, next) => {
     .json(response);
 });
 
+// @desc  Cancel A Logged In User's Order
+// @route GET /api/vX/order/myOrders/cancel/:id
+// @access PRIVATE
+const cancelUserOrderById = asyncHandler(async (req, res, next) => {
+  let response = buildAPIBodyResponse('/order/myOrders/cancel/:id');
+
+  await Order.findByIdAndUpdate(req.params.id, req.body);
+  response.success = true;
+
+  return res
+    .status(201)
+    .json(response);
+});
+
 module.exports.orderController = {
   serveSanityCheck,
+  cancelUserOrderById,
   createOrder,
   getUserOrders,
   getUserOrderById

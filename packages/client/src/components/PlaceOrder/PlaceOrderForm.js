@@ -17,7 +17,7 @@ import Button from "react-bootstrap/Button";
 import {createOrder} from "../../redux/actions/order.actions";
 import {getLoggedInUserProfile} from "../../redux/actions/auth.actions";
 
-const _addDecimals = someFloat => Math.round((Number(someFloat) * 100) / 100).toFixed(2);
+//const _addDecimals = someFloat => Math.round((Number(someFloat) * 100) / 100).toFixed(2);
 
 const PlaceOrderForm = () => {
   useEffect(() => !location.state ? navigate('/cart', {}) : null, []); // If State Is Null, Push To Cart
@@ -30,11 +30,16 @@ const PlaceOrderForm = () => {
     navigate = useNavigate(),
     location = useLocation(),
     userViewProfile = useSelector(state => state.userViewProfile),
-    { user: userProfile } = userViewProfile;
+    userLogin = useSelector(state => state.userLogin),
+    {user: userProfile} = userViewProfile,
+    { auth } = userLogin;
 
   useEffect(() => {
-    dispatch(getLoggedInUserProfile());
+    if (!!auth) {
+      dispatch(getLoggedInUserProfile());
+    }
   }, [dispatch]);
+
   const {cartItems} = useSelector(state => state.cart);
 
   useEffect(() => {
@@ -86,10 +91,12 @@ const PlaceOrderForm = () => {
             paymentMethod: location.state.paymentMethod,
             promoCode: location.state.promoCode,
             isGuestCheckout: !userProfile,
-            user: userProfile._id
+            user: userProfile ? userProfile._id : null
           };
+          console.log('Try To Create Item: ', orderItem);
           await createOrder(orderItem)(dispatch);
           setSubmitting(false);
+          navigate('/orderSuccess');
         }}
         enableReinitialize
       >

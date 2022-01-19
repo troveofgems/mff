@@ -7,9 +7,11 @@ import adminRoutes from "./routes/admin.routes";
 
 const mainRouter = [
   // ADMIN ROUTES
-  adminRoutes.order,
+  adminRoutes.ordersList,
+  adminRoutes.viewInvoice,
   adminRoutes.product,
-  adminRoutes.user,
+  adminRoutes.usersList,
+  adminRoutes.userFormEdit,
   adminRoutes.settings,
   // GENERAL ROUTES
   generalRoutes.home,
@@ -25,6 +27,7 @@ const mainRouter = [
   cartRoutes.shipping,
   cartRoutes.payment,
   cartRoutes.placeOrder,
+  cartRoutes.orderSuccess,
   // PRODUCT ROUTES
   productRoutes.viewProductById,
 ];

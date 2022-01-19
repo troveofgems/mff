@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import {useNavigate} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {NavLink} from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -14,7 +15,10 @@ import {CLEAR_LOGGED_IN_USER} from "../../redux/constants/auth.constants";
 
 const Header = () => {
   const
+    [sessionLength, setSessionLength] = useState("1:00"),
+    [timerStarted, setTimerStarted] = useState(false),
     dispatch = useDispatch(),
+    navigate = useNavigate(),
     userLogin = useSelector(state => state.userLogin),
     userLogout = useSelector(state => state.userLogout),
     usersCart = useSelector(state => state.cart),
@@ -40,6 +44,23 @@ const Header = () => {
 
     return titleText;
   }
+  const queueAutoLogout = () => {
+    setTimeout(() => {
+      dispatch(logoutUser());
+      navigate('/login');
+    }, (1000 * 10));
+  };
+
+  const initiateSessionLife = () => {
+    // We Want To Track Session Life Here.
+    if (userLoginInfo && !timerStarted) {
+      console.log('Begin to track Session Life')
+      setTimerStarted(true);
+      queueAutoLogout();
+    } else {
+      console.log('Not Logged In');
+    }
+  };
 
   const
     guestLinks = (
@@ -81,6 +102,12 @@ const Header = () => {
           <i className={"fas fa-shopping-cart"} />{' '}
           Cart
         </NavLink>
+        <div className={"d-flex flex-row align-items-center text-light"} style={{marginLeft: "auto"}}>
+          <i className="fas fa-clock">
+            <small style={{fontSize: ".5em"}}>{' '}Session Expires In{' '}</small>
+            <small style={{paddingLeft: "5px"}}>{sessionLength}</small>
+          </i>
+        </div>
       </>
     ),
     adminLinks = (
