@@ -1,4 +1,4 @@
-import React, { useState }	from 'react';
+import React, { useState, useEffect }	from 'react';
 import {useSelector} from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
@@ -15,9 +15,11 @@ const Authentication = () => {
     userLogin = useSelector(state => state.userLogin),
     { auth } = userLogin;
 
-  if (auth !== null) { // Already Logged-In. Redirect To Home
-    navigate({ pathname: `/` }); // TODO: Possible need to route to shipping here too...
-  }
+  useEffect(() => {
+    if (auth !== null) { // Already Logged-In. Redirect To Home
+      navigate({ pathname: `/` }); // TODO: Possible need to route to shipping here too...
+    }
+  }, [auth]);
 
   const handleStyleChange = (switchVal) => {
     if (switchVal) {

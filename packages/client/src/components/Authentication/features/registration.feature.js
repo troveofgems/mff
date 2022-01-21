@@ -147,7 +147,7 @@ const RegistrationForm = () => {
                               <div className="form-item registration-form-item">
                                 <FormikDropdown
                                   name={"register_birth_month"} label={"Birth Month"}
-                                  options={monthList}
+                                  options={monthList} key={"birthMonthList"}
                                 />
                                 <small className={"text-black"} style={{display: "block", width: "60%", margin: ".5rem auto"}}>
                                   <i className={"fas fa-info-circle"} />{' '}
@@ -163,7 +163,7 @@ const RegistrationForm = () => {
                               <div className="form-item registration-form-item">
                                 <FormikDropdown
                                   name={"register_birth_year"} label={"Birth Year"}
-                                  options={yearList}
+                                  options={yearList} key={"birthYearList"}
                                 />
                                 <small className={"text-black"} style={{display: "block", width: "60%", margin: ".5rem auto"}}>
                                   <i className={"fas fa-info-circle"} />{' '}
