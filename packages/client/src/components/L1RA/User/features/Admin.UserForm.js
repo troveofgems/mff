@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {useSelector, useDispatch} from "react-redux";
 import {Link, useLocation} from "react-router-dom";
 import {Form, Formik} from "formik";
 import {loginFormSchema} from "../../../Authentication/schema/formSchematics";
@@ -23,28 +24,74 @@ import FormikCheckbox from "../../../../formik/checkbox";
 import FormikRadioGroup from "../../../../formik/radioGroup";
 import Loader from "../../../layout/Loader";
 
+import {adminGetUserProfileById} from "../../../../redux/actions/admin.actions";
+
 const AdminUserForm = () => {
   const
+    [showBanOptions, setShowBanOptions] = useState(false),
     [formValues, setFormValues] = useState({
       id: 'No Data Available',
+      accountLockoutStatus: false,
+      accountVerifiedStatus: false,
+      recentOrders: [],
+      admin_update_first_name: null,
+      admin_update_last_name: null,
+      admin_update_birth_month: null,
+      admin_update_email: null,
+      supadmin_update_password_override: null,
+      admin_override_lockout_status: false,
+      admin_ban_status: {
+        admin_update_ban_length: 0,
+        admin_update_ban_type: "h"
+      },
+      accountLastLoggedInOn: null,
+      accountLastModifiedOn: null,
+      accountCreatedOn: null
     }),
-    location = useLocation();
+    dispatch = useDispatch(),
+    viewUser = useSelector(state => state.viewUser),
+    location = useLocation(),
+    { error, success, user, loading } = viewUser;
+
+  useEffect(() => {
+    if (location.state && location.state.length > 0) {
+      dispatch(adminGetUserProfileById(location.state));
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (!loading && user) {
+      console.log("Prefill form data!", user);
+      setFormValues({
+        ...formValues,
+        id: user._id,
+        accountLockoutStatus: user.accountLockout,
+        accountVerifiedStatus: !user.awaitingEmailVerification,
+        admin_update_firstName: user.firstName,
+        admin_update_lastName: user.lastName,
+        admin_update_birthMonth: user.birthMonth,
+        admin_update_email: user.currentEmail,
+        admin_update_pending_email: user.placeholderEmail,
+        accountLastModifiedOn: user.updatedAt,
+        accountCreatedOn: user.createdAt
+      });
+    }
+  }, [loading, user]);
 
   console.log(location);
-
-  const {id} = formValues;
 
   return (
     <>
       <div style={{minWidth: "1200px"}}>
         <Formik
-          initialValues={loginFormSchema}
+          initialValues={formValues}
           validationSchema={formikLoginValidationSchema}
           onSubmit={async (formData, {setSubmitting}) => {
             setSubmitting(true);
 
             setSubmitting(false);
           }}
+          enableReinitialize
         >
           {formik => (
             <>
@@ -56,33 +103,45 @@ const AdminUserForm = () => {
                 <Form className="form-box form-wrap content-wrapper" style={{minWidth: "1200px"}}>
                   <div className="section-title-wrap blue">
                     <h2 className="section-title medium text-black">
-                      User Id: {id}
+                      User Id: {formik.values.id}
                     </h2>
                     <div className="section-title-separator">{}</div>
                   </div>
                   <Row className={"mb-5"}>
-                    <h3>Healthchecks</h3>
                     <Col md={6}>
+                      <h3>Healthchecks</h3>
                       <div className={"field-container"}>
                         <div className="form-row">
                           <div className="form-item login-form-item">
                             <h4>
                               Account Lockout:{' '}
-                              <em>False</em>
+                              <em>{`${formik.values.accountLockoutStatus}`}</em>
                             </h4>
                           </div>
                         </div>
                         <div className="form-row login-form-item">
                           <h4>
                             Account Verified:{' '}
-                            <em>False</em>
+                            <em>{`${formik.values.accountVerifiedStatus}`}</em>
                           </h4>
                         </div>
                       </div>
                     </Col>
+                    <Col md={6}>
+                      <div className={"field-container"}>
+                        <h3>Recent Orders</h3>
+                        <p>
+                          {formik.values.recentOrders.map(order => (
+                            <>
+                             <span>Some Item, </span>
+                            </>
+                          ))}
+                        </p>
+                      </div>
+                    </Col>
                   </Row>
-                  <h3>Personal Data</h3>
                   <Row>
+                    <h3>Personal Data</h3>
                     <Col md={6}>
                       <div className={"field-container"}>
                         <div className="form-row">
@@ -110,14 +169,24 @@ const AdminUserForm = () => {
                         <div className="form-row">
                           <div className="form-item login-form-item">
                             <FormikTextInput
-                              label='Email Address'
+                              label='Current Email Address'
                               minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
-                              id={'login_email'} name={'login_email'}
-                              type='email' placeholder='jerry@fricknfish.com'
+                              id={'admin_update_email'} name={'admin_update_email'}
+                              type='email' placeholder='michael@fricknfish.com'
                             />
                           </div>
                         </div>
                         <div className="form-row">
+                          <div className="form-item login-form-item">
+                            <FormikTextInput
+                              label='Pending Email Address'
+                              minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
+                              id={'admin_update_pending_email'} name={'admin_update_pending_email'}
+                              type='email' placeholder='michael@fricknfish.com'
+                            />
+                          </div>
+                        </div>
+                       {/* <div className="form-row">
                           <div className="form-item login-form-item">
                             <FormikTextInput
                               label='Password Override'
@@ -126,7 +195,7 @@ const AdminUserForm = () => {
                               type='password' placeholder='********'
                             />
                           </div>
-                        </div>
+                        </div>*/}
                         <div className="form-row login-form-item">
                           <label>Password</label>
                           <div>
@@ -144,7 +213,7 @@ const AdminUserForm = () => {
                         <div className="form-row">
                           <div className="form-item login-form-item">
                             <FormikDropdown
-                              name={"register_birth_month"} label={"Birth Month"}
+                              name={"admin_update_birthMonth"} label={"Birth Month"}
                               options={monthList}
                             />
                           </div>
@@ -169,14 +238,12 @@ const AdminUserForm = () => {
                         </div>
                         <div className="form-row login-form-item">
                           <FormikCheckbox
-                            children={"Set A Ban"
-                            }
+                            children={"Set A Ban"}
                             id={"admin_update_accountBan"} name={"admin_update_accountBan"}
-                            onClick={() => {
-                            }}
+                            onClick={() => setShowBanOptions(!showBanOptions)}
                           />
                           {
-                            true && (
+                            showBanOptions && (
                               <>
                                 <div className="form-item login-form-item">
                                   <FormikTextInput
@@ -213,7 +280,7 @@ const AdminUserForm = () => {
                           <div className="form-item login-form-item">
                             <FormikTextInput
                               label='Account Last Modified On'
-                              id={'update_lastModifiedAccountTS'} name={'update_lastModifiedAccountTS'}
+                              id={'accountLastModifiedOn'} name={'accountLastModifiedOn'}
                               type='text' readOnly disabled
                             />
                           </div>
@@ -221,7 +288,7 @@ const AdminUserForm = () => {
                         <div className="form-row login-form-item">
                           <FormikTextInput
                             label='Account Created On'
-                            id={'update_createdAccountTS'} name={'update_createdAccountTS'}
+                            id={'accountCreatedOn'} name={'accountCreatedOn'}
                             type='text' readOnly disabled
                           />
                         </div>

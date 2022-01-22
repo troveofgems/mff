@@ -2,8 +2,11 @@ const
   {
     serveSanityCheck,
     getAllOrders, reviewInvoice, markOrderShipped, cancelOrder,
-    getAllProducts, getAllUsers
-  } = require('../../../controllers/api/admin/index').adminOrderController.adminOrderList,
+    getAllProducts,
+  } = require('../../../controllers/api/admin/index').adminController.adminOrderList,
+  {
+    getAllUsers, getUserById
+  } = require('../../../controllers/api/admin/index').adminController.adminUserList,
   express = require('express'),
   router = express.Router();
 
@@ -36,5 +39,9 @@ router
 router
   .route('/users')
   .get(getAllUsers);
+
+router
+  .route('/users/:id')
+  .get(getUserById);
 
 module.exports = router;

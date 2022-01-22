@@ -25,7 +25,7 @@ export const loginUser = userCredentials => async dispatch => {
       payload: data
     });
 
-    localStorage.setItem('userInfo', JSON.stringify(data.token));
+    localStorage.setItem('userInfo', JSON.stringify(data.token));// TODO: Fix the issue here with the refreshed token
   } catch(err) {
     localStorage.setItem('userInfo', null);
     dispatch({
@@ -46,7 +46,7 @@ export const registerUser = registrationData => async dispatch => {
     password: registrationData.register_pwd
   };
 
-  console.log('Birth Year For Analytics: ', registrationData.register_birth_year);
+  console.log('Birth Year For Analytics: ', registrationData.register_birth_year); // TODO: Birth Year Analytics
 
   try {
     const
@@ -118,33 +118,6 @@ export const getLoggedInUserProfile = () => async (dispatch, getState) => {
   }
 };
 
-export const getUserProfileById = id => async (dispatch, getState) => {
-  dispatch({ type: VIEW_USER_PROFILE_REQUEST });
-
-  try {
-    const
-      { userLogin: { auth } } = getState(),
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': auth.token
-      },
-      res = await axios.get(`/api/v1/authentorization/authentication/viewProfile/${id}`, config);
-
-    console.log('res is ', res);
-    console.log('config was: ', config);
-
-    dispatch({
-      type: VIEW_USER_PROFILE_SUCCESS,
-      payload: ''
-    });
-  } catch(err) {
-    dispatch({
-      type: VIEW_USER_PROFILE_FAILURE,
-      payload: err.response.data.error.message
-    });
-  }
-};
-
 export const updateUserProfile = updates => async (dispatch, getState) => {
   dispatch({ type: UPDATE_USER_PROFILE_REQUEST });
   const
@@ -176,4 +149,32 @@ export const updateUserProfile = updates => async (dispatch, getState) => {
     });
   }
 
-}
+};
+
+/* No Use For This Call ATM For Regular Users...
+export const getUserProfileById = id => async (dispatch, getState) => {
+  dispatch({ type: VIEW_USER_PROFILE_REQUEST });
+
+  try {
+    const
+      { userLogin: { auth } } = getState(),
+      config = {
+        'Content-Type': 'application/json',
+        'x-auth-token': auth.token
+      },
+      res = await axios.get(`/api/v1/authentorization/authentication/viewProfile/${id}`, config);
+
+    console.log('res is ', res);
+    console.log('config was: ', config);
+
+    dispatch({
+      type: VIEW_USER_PROFILE_SUCCESS,
+      payload: ''
+    });
+  } catch(err) {
+    dispatch({
+      type: VIEW_USER_PROFILE_FAILURE,
+      payload: err.response.data.error.message
+    });
+  }
+};*/
