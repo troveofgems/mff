@@ -5,13 +5,13 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
 
-const SettingsScreen = () => {
+const AnalyticsScreen = () => {
   return (
     <>
-      <h2 className={'text-center my-5'}>Admin Settings</h2>
+      <h2 className={'text-center my-5'}>App Analytics</h2>
 
     </>
   );
 };
 
-export default SettingsScreen;
+export default AnalyticsScreen;

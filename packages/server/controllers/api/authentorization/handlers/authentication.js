@@ -65,21 +65,23 @@ const ubyRegistrationTracking = asyncHandler(async (req, res, next) => {
 
   if (analyticsDB.length === 0) { // This will only ever run once.
     await Analytics.create({abyas: [registrationData]});
+
+    await analyticsDB[0].save();
   } else {
     const records = analyticsDB[0].abyas;
     const filteredRecord = records.filter((record) => Object.keys(record)[0] === Object.keys(registrationData)[0]);
 
      if (filteredRecord.length === 0) {
       analyticsDB[0].abyas.push(registrationData);
+      analyticsDB[0].save();
     } else { // Increment The Count
       let keyName = Object.keys(filteredRecord[0])[0];
       filteredRecord[0][keyName] = filteredRecord[0][keyName] += 1;
+      let newData = [];
+      newData = [...analyticsDB[0].abyas];
+      await Analytics.updateOne({_id: analyticsDB[0]._id}, { abyas: newData }, {upsert: true});
     }
   }
-
-  console.log('About To Attempt To Save: ', analyticsDB[0].abyas);
-  await analyticsDB[0].save();
-  await analyticsDB[0].save();
 
   apiResponse.success = true;
   apiResponse.data = analyticsDB[0].abyas;

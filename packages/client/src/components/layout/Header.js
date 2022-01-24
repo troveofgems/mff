@@ -133,7 +133,7 @@ const Header = () => {
           </LinkContainer>
           <LinkContainer to="/l1ra/settings">
             <NavDropdown.Item>
-              Settings
+              Analytics
             </NavDropdown.Item>
           </LinkContainer>
         </NavDropdown>

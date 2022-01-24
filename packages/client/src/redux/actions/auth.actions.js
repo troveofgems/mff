@@ -46,14 +46,18 @@ export const registerUser = registrationData => async dispatch => {
     password: registrationData.register_pwd
   };
 
-  console.log('Birth Year For Analytics: ', registrationData.register_birth_year); // TODO: Birth Year Analytics
-
   try {
     const
       config = {
         'Content-Type': 'application/json'
       },
       res = await axios.post('/api/v1/authentorization/authentication/register', formData, config);
+
+    console.log('Birth Year For Analytics: ', registrationData.register_birth_year); // TODO: Birth Year Analytics
+    await axios.put('/api/v1/authentorization/authentication/register/anonAnalytics/uby', {
+      [registrationData.register_birth_year]: 1
+    }, config);
+
     let payload = {
       registrationMessage: 'Your account has successfully been created. Please Login To Continue.',
       registrationStatus: res.status
