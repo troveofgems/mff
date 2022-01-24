@@ -36,7 +36,7 @@ const LoginFeature = () => {
 
   useEffect(() => {
     if (typeof authError === 'string') {
-      setGlobalError('Invalid Credentials. Please Try Again...');
+      setGlobalError(authError);
     } else {
       setGlobalError(null);
     }

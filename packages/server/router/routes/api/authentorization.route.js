@@ -2,6 +2,7 @@ const
   {
     authentication: {
       serveSanityCheck: serveAuthenticationCheck, registerUser, loginUser, getAuthenticatedProfile,
+      ubyRegistrationTracking,
       updateUserProfile
     },
     authorization: {
@@ -33,6 +34,10 @@ router
 router
   .route('/authentication/register')
   .post(setUserRoleMiddleware, validate(registerUserValidation), registerUser);
+
+router
+  .route('/authentication/register/anonAnalytics/uby')
+  .put(ubyRegistrationTracking);
 
 router
   .route('/authentication/updateUser')

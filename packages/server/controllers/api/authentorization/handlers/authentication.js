@@ -3,14 +3,15 @@ const ErrorResponse = require('../../../../middleware/Error').errorHandler;
 
 const
   { asyncHandler } = require('../../../../middleware/Helpers/async-handler.middleware'),
-  User = require('../../../../db/models/Users');
+  User = require('../../../../db/models/Users'),
+  Analytics = require('../../../../db/models/Analytics');
 
 const
-  _handleInvalidLoginAttempt = (req, res, next) => (ErrorResponse({
+  _handleInvalidLoginAttempt = (req, res, next, optMsg = undefined) => (ErrorResponse({
     statusCode: 400,
     overrideErrorFromServer: true,
     overrideFrom: 'login',
-    overrideMessage: 'Invalid Credentials'
+    overrideMessage: optMsg || 'Invalid Credentials'
   }, req, res, next));
 
 // @desc  Serve Route Sanity Check
@@ -53,6 +54,41 @@ const registerUser = asyncHandler(async (req, res, next) => {
     .json(apiResponse);
 });
 
+// @desc  Registration Birth Year Anonymous Analytics
+// @route POST /api/vX/authentorization/authentication/register/anonAnalytics/uby
+// @access PUBLIC
+const ubyRegistrationTracking = asyncHandler(async (req, res, next) => {
+  let
+    apiResponse = buildAPIBodyResponse('/authenticate/register/anonAnalytics/uby'),
+    registrationData = req.body,
+    analyticsDB = await Analytics.find(); // Fetch Analytics
+
+  if (analyticsDB.length === 0) { // This will only ever run once.
+    await Analytics.create({abyas: [registrationData]});
+  } else {
+    const records = analyticsDB[0].abyas;
+    const filteredRecord = records.filter((record) => Object.keys(record)[0] === Object.keys(registrationData)[0]);
+
+     if (filteredRecord.length === 0) {
+      analyticsDB[0].abyas.push(registrationData);
+    } else { // Increment The Count
+      let keyName = Object.keys(filteredRecord[0])[0];
+      filteredRecord[0][keyName] = filteredRecord[0][keyName] += 1;
+    }
+  }
+
+  console.log('About To Attempt To Save: ', analyticsDB[0].abyas);
+  await analyticsDB[0].save();
+  await analyticsDB[0].save();
+
+  apiResponse.success = true;
+  apiResponse.data = analyticsDB[0].abyas;
+
+  return res
+    .status(204)
+    .json(apiResponse);
+});
+
 // @desc  Log User Into Account
 // @route POST /api/vX/authentorization/authentication/login
 // @access PUBLIC
@@ -65,9 +101,27 @@ const loginUser = asyncHandler(async (req, res, next) => {
       .select('+password');
 
   if (!user) { return _handleInvalidLoginAttempt(req, res, next); }
+  // TODO: Check for Banned Status Foremost
+  if (user.isBanned) { return _handleInvalidLoginAttempt(req, res, next, 'Your Account Has Been Banned. To Appeal This...'); }
 
   const userSuccessfullyVerified = await user.verifyCredentials(req.body.password);
-  if(!userSuccessfullyVerified) { return _handleInvalidLoginAttempt(req, res, next); }
+  if(!userSuccessfullyVerified) {
+    // TODO: Build Account Lockout Here
+    if (user.loginAttempts === 3 || user.accountLockout) {
+      let optMsg = 'Your Account Has Been Locked. Please Contact Support For Assistance.';
+      return _handleInvalidLoginAttempt(req, res, next, optMsg);
+    } else {
+      if (user.loginAttempts < 3) {
+        user.loginAttempts = user.loginAttempts += 1;
+        user.loginAttempts === 3 ? user.accountLockout = true : false;
+        user.save();
+      }
+      let
+        attemptCountsLeft = 3 - user.loginAttempts,
+        optMsg = `Invalid Credentials. ${attemptCountsLeft} ${attemptCountsLeft === 1 ? 'Try' : 'Tries'} Left.`;
+      return _handleInvalidLoginAttempt(req, res, next, optMsg);
+    }
+  }
 
   apiResponse.success = true;
 
@@ -153,5 +207,6 @@ module.exports.authenticationController = {
   loginUser,
   registerUser,
   serveSanityCheck,
+  ubyRegistrationTracking,
   updateUserProfile
 };

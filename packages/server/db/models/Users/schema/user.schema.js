@@ -42,7 +42,7 @@ const UserSchema = new mongoose.Schema({
   },
   currentEmail: {
     type: String,
-    required: [true, 'An Email Shipping Is Required'],
+    required: [true, 'An Email Address Is Required'],
     unique: true
   },
   placeholderEmail: {
@@ -89,8 +89,22 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: true
+  },
+  accountVerified: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  isBanned: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  banExpiresAt: {
+    type: Date,
+    default: null
   }
-/*,
+/*, TODO: Split The Schemas At Some Point Low Priority - Knowledge Needed.
   accountInfo: {
     type: AccountInfoSchema
   },

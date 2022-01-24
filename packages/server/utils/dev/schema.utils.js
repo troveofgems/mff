@@ -13,7 +13,8 @@ module.exports.encryptPassword = async function(next) {
       return this.password = await bcryptjs.hash(this.password, salt);
     };
 
-  if (this.__v >= 0 && this.password === undefined) {
+  const isRequestToUpdateWithoutPassword = this.__v >= 0 && this.password === undefined;
+  if (isRequestToUpdateWithoutPassword) {
     // This is an update without an update to the password field. Simply Continue.
     return next();
   } else if (this.password) { // This is either registration or the password has been updated.
