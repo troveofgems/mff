@@ -10,7 +10,7 @@ const
 
 router
   .route('/')
-  .get(serveSanityCheck)
+  .get(serveSanityCheck) // TODO: Remove Prior To Prod Deployment
   .post(createOrder);
 
 router

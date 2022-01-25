@@ -21,6 +21,9 @@ serverList.dbServer = openDatabaseConnection(); // Open Connection To DB
 
 mountRouterToApplication(Application); // Mount Router To Application
 
+// TODO: Move code once working...
+Application.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID));
+
 attachCustomErrorHandlingMiddleware(Application); // Enable Custom Error Handling
 
 serverList.expressServer = Application.listen(PORT); // Set the application to listen to the given server port

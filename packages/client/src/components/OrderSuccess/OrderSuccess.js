@@ -5,9 +5,9 @@ import {NavLink} from "react-router-dom";
 const OrderSuccess = () => {
   const
     createOrder = useSelector(state => state.createOrder),
-    {order: {createdOrder, orderRefId}} = createOrder;
-
-  console.log(createdOrder, orderRefId);
+    userLogin = useSelector(state => state.userLogin),
+    {order: {orderRefId}} = createOrder,
+    { auth } = userLogin;
 
   return (
     <>
@@ -31,11 +31,13 @@ const OrderSuccess = () => {
               Please Keep The above Reference Id For Your Records.
             </div>
           </div>
-          <p>Thank you For Supporting the Frickn' Fish Team.</p>
-        <p className={"m-2 pb-4"}>
-          You Can View The Status Of All Of Your Orders{' '}
-          <NavLink className={"text-info"} to={"/myOrders"}>Here</NavLink>.
-        </p>
+          <p className={"m-2 pb-4"}>Thank you For Supporting the Frickn' Fish Team <span style={{fontSize: "1.5rem"}}>😊</span></p>
+        {auth && auth.token && (
+          <p className={"m-2 pb-4"}>
+            You Can View The Status Of All Of Your Orders{' '}
+            <NavLink className={"text-info"} to={"/myOrders"}>Here</NavLink>.
+          </p>
+        )}
       </div>
     </>
   );

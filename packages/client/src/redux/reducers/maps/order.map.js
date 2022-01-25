@@ -1,5 +1,6 @@
 import {
-  createOrderReducer, listUserOrdersReducer, getOrderByIdReducer, cancelOrderByIdReducer
+  createOrderReducer, listUserOrdersReducer, getOrderByIdReducer, cancelOrderByIdReducer,
+  payOrderByIdReducer
 } from '../services/order.reducer';
 
 const orderReducerMap = {

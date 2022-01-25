@@ -53,7 +53,6 @@ export const registerUser = registrationData => async dispatch => {
       },
       res = await axios.post('/api/v1/authentorization/authentication/register', formData, config);
 
-    console.log('Birth Year For Analytics: ', registrationData.register_birth_year); // TODO: Birth Year Analytics
     await axios.put('/api/v1/authentorization/authentication/register/anonAnalytics/uby', {
       [registrationData.register_birth_year]: 1
     }, config);

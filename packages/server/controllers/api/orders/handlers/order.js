@@ -73,10 +73,8 @@ const getUserOrders = asyncHandler(async (req, res, next) => {
 // @access PRIVATE
 const getUserOrderById = asyncHandler(async (req, res, next) => {
   let response = buildAPIBodyResponse('/order/myOrders/invoice/:id');
-  console.log('Check for user id', req.user._id);
-  let order = await Order.findById(req.params.id);
-  console.log(order);
-  response.data = order;
+
+  response.data = await Order.findById(req.params.id);
   response.success = true;
 
   return res

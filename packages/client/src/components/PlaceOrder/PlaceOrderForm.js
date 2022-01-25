@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 // Formik
-import {Form, Formik} from "formik";
+import {Form, Formik, useFormikContext} from "formik";
 import {Link, useNavigate} from 'react-router-dom';
 import {useLocation} from "react-router-dom";
 
@@ -14,8 +14,12 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 
-import {createOrder} from "../../redux/actions/order.actions";
+import {createOrder, payForOrder} from "../../redux/actions/order.actions";
 import {getLoggedInUserProfile} from "../../redux/actions/auth.actions";
+
+import axios from 'axios';
+import {PayPalButton} from "react-paypal-button-v2";
+import Loader from "../layout/Loader";
 
 //const _addDecimals = someFloat => Math.round((Number(someFloat) * 100) / 100).toFixed(2);
 
@@ -23,22 +27,48 @@ const PlaceOrderForm = () => {
   useEffect(() => !location.state ? navigate('/cart', {}) : null, []); // If State Is Null, Push To Cart
 
   const
+    [sdkReady, setSDKReady] = useState(false),
     [shippingCost, setShippingCost] = useState(0.00),
     [taxCost, setTaxCost] = useState(0.00),
     [cartCost, setCartCost] = useState(0.00),
+    [paymentDetails, setPaymentDetails] = useState(null),
     dispatch = useDispatch(),
     navigate = useNavigate(),
     location = useLocation(),
     userViewProfile = useSelector(state => state.userViewProfile),
     userLogin = useSelector(state => state.userLogin),
+    payOrderDetails = useSelector(state => state.payOrderDetails),
+    //{ submitForm } = useFormikContext(),
+    {loading: loadingPay, error: payError, success: paySuccess} = payOrderDetails,
     {user: userProfile} = userViewProfile,
     { auth } = userLogin;
+
+  const formRef = useRef();
 
   useEffect(() => {
     if (!!auth) {
       dispatch(getLoggedInUserProfile());
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    const addPaypalScript = async() => {
+      const {data: clientId} = await axios.get('/api/config/paypal');
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.async = true;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.onLoad = () => {
+        setSDKReady(true);
+      }
+      document.body.appendChild(script);
+    };
+    if (!window.paypal) {
+      addPaypalScript().then(() => {});
+    } else {
+      setSDKReady(true);
+    }
+  }, []);
 
   const {cartItems} = useSelector(state => state.cart);
 
@@ -59,12 +89,23 @@ const PlaceOrderForm = () => {
   console.log(location);
 
   const message_NDA = () => <p>Error: No Data Available</p>;
-
+  const successPaymentHandler = paymentResult => {
+    console.log("Payment Result Was: ", paymentResult);
+    if (paymentResult && paymentResult.status === "COMPLETED") {
+      setPaymentDetails(paymentResult);
+      return formRef.current.submitForm();
+    } else {
+      console.log('Something went wrong with payment');
+    }
+  };
   return (
     <div className={"formikFormWrapper"}>
       <Formik
+        innerRef={formRef}
         initialValues={baseSchema}
         onSubmit={async (formData, {setSubmitting}) => {
+          console.log('Now Submitting The Form After Payment Processing...');
+          console.log('Get Payment Details ', paymentDetails);
           setSubmitting(true);
           let orderItem = {
             taxCost,
@@ -91,7 +132,15 @@ const PlaceOrderForm = () => {
             paymentMethod: location.state.paymentMethod,
             promoCode: location.state.promoCode,
             isGuestCheckout: !userProfile,
-            user: userProfile ? userProfile._id : null
+            user: userProfile ? userProfile._id : null,
+            isPaid: true,
+            paidAt: Date.now(),
+            paymentResult: {
+              id: paymentDetails.id,
+              status: paymentDetails.status,
+              update_time: paymentDetails.update_time,
+              email_address: paymentDetails.email_address
+            }
           };
           console.log('Try To Create Item: ', orderItem);
           await createOrder(orderItem)(dispatch);
@@ -275,9 +324,22 @@ const PlaceOrderForm = () => {
                               </Col>
                             </Row>
                             <div className="form-actions full py-4 pb-4">
+                              <h3 className={"text-center pb-3"}>Ready To Pay & Place Your Order?</h3>
+                              {!location.state.isPaid && (
+                                <div className={"paypalBtnContainer"} style={{display: "flex", justifyContent: "center"}}>
+                                  {loadingPay && <Loader />}
+                                  {!sdkReady ? <Loader /> : (
+                                    <PayPalButton
+                                      amount={(shippingCost + taxCost + cartCost)}
+                                      onSuccess={successPaymentHandler}
+                                      children={"test"}
+                                    />
+                                  )}
+                                </div>
+                              )}
                               <button
                                 type="submit" className="button text-black full login-btn"
-                                disabled={!formik.isValid || formik.isSubmitting}
+                                disabled={!formik.isValid || formik.isSubmitting} hidden={true}
                               >
                                 Pay & Place Order
                               </button>

@@ -1,5 +1,4 @@
 List Options
 ------------
-TODO: Anonymous Birth Year Analytics
 TODO: Comeback and parse this file.
 TODO: Get Admin Token And Pass To API.

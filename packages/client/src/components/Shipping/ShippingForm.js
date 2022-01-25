@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 // Formik
 import {Form, Formik} from "formik";
 import FormikCheckbox from "../../formik/checkbox";
@@ -15,6 +16,7 @@ import ShippingAddressWidget from "./widgets/shipping.address.widget";
 
 // Styles Imports
 import "./style/Shipping.scss";
+import {useSelector} from "react-redux";
 const ShippingForm = () => {
   const
     children = [],
@@ -22,7 +24,9 @@ const ShippingForm = () => {
     [onlyUseShipping, setOnlyUseShipping] = useState(false),
     [rememberMyAddress, setRememberMyAddress] = useState(false),
     [dataFromLocalStorage, setDataFromLocalStorage] = useState(null),
-    [prefilledSchema, setPrefilledSchema] = useState(null);
+    [prefilledSchema, setPrefilledSchema] = useState(null),
+    userLogin = useSelector(state => state.userLogin),
+    { auth } = userLogin;
 
   useEffect(() => {
     //if (rememberMyAddress) {
@@ -32,6 +36,8 @@ const ShippingForm = () => {
       }
     //}
   }, []);
+
+  console.log(auth);
 
   const handleRequestToSaveAddressToLocalStorage = shippingData => {
     localStorage.setItem('ff_shipping_data', JSON.stringify(shippingData));
@@ -97,7 +103,7 @@ const ShippingForm = () => {
         {formik => (
           <Form className='form-box form-wrap text-start content-wrapper' style={{width: '100%'}}>
             <CheckoutBreadcrumb step_1 step_2 sa={1}/>
-            {(
+            {(!auth || typeof auth === 'string') && (
               <>
                 <div className={"text-center"}>
                   <p className={"text-black mb-0 border-top py-1"}>
