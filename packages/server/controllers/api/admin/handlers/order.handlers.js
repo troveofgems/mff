@@ -36,7 +36,7 @@ const getAllOrders = asyncHandler(async (req, res, next) => {
 const reviewInvoice = asyncHandler(async (req, res, next) => {
   let response = buildAPIBodyResponse('/l1rAdmin/orders/invoice/:id');
 
-  response.data = await Order.findById(req.params.id);
+  response.data = await Order.findById(req.params.id).populate('user');
   response.success = true;
 
   return res

@@ -10,10 +10,24 @@ const
   mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+  lastLoggedIn: {
+    type: Date,
+    default: null
+  },
   accountLockout: {
     type: Boolean,
     required: true,
     default: false
+  },
+  authLevel: {
+    type: Number,
+    enum: [
+      10, // App Super User
+      100, // App Admin
+      1000, // App Auditor
+      2000 // App User
+    ],
+    default: 2000
   },
   authTokenType: {
     type: Number,
@@ -75,7 +89,7 @@ const UserSchema = new mongoose.Schema({
     minlength: 8,
     select: false
   },
-  isAppAdmin: {
+  isAppAdmin: { // To Be Deprecated In Favor Of The authLevel Property Once Implemented
     type: Boolean,
     required: true,
     default: false

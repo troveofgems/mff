@@ -10,7 +10,8 @@ import {
   adminGetAllUsersReducer,
   adminGetUserByIdReducer,
   adminUpdateUserByIdReducer,
-  adminDeleteUserByIdReducer
+  adminDeleteUserByIdReducer,
+  adminGetOrdersForUserReducer
 } from '../services/admin.reducer';
 
 const adminReducerMap = {
@@ -22,7 +23,8 @@ const adminReducerMap = {
   allUsers: adminGetAllUsersReducer,
   viewUser: adminGetUserByIdReducer,
   userDeleted: adminDeleteUserByIdReducer,
-  adminUpdatedUser: adminUpdateUserByIdReducer
+  adminUpdatedUser: adminUpdateUserByIdReducer,
+  adminGetUserOrdersList: adminGetOrdersForUserReducer
 };
 
 export default adminReducerMap;

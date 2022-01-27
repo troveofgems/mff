@@ -10,7 +10,6 @@ import LostPage from "./components/404page/404Page";
 import './styles/App.css';
 
 const AppRoutes = () => {
-  const ADMIN_MARKER = "appAdmin";
   const
     [isLoggedIn, setIsLoggedIn] = useState(false),
     [isAdmin, setIsAdmin] = useState(false),
@@ -20,7 +19,7 @@ const AppRoutes = () => {
   useEffect(() => {
     if (!loadingUser && !errorLoadingUser) {
       setIsLoggedIn(true);
-      if (userDetails && userDetails.userRole === ADMIN_MARKER) {
+      if (userDetails && (userDetails.authLevel === 10 || userDetails.authLevel === 100 || userDetails.authLevel === 1000)) {
         setIsAdmin(true);
       }
     }

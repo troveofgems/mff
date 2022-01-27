@@ -3,7 +3,7 @@ import {
   LIST_USER_ORDERS_FAILURE, LIST_USER_ORDERS_REQUEST, LIST_USER_ORDERS_SUCCESS,
   GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS,
   CANCEL_ORDER_BY_ID_FAILURE, CANCEL_ORDER_BY_ID_REQUEST, CANCEL_ORDER_BY_ID_SUCCESS,
-  PAY_ORDER_BY_ID_FAILURE, PAY_ORDER_BY_ID_REQUEST, PAY_ORDER_BY_ID_SUCCESS, PAY_ORDER_BY_ID_RESET
+  LOAD_PAY_ORDER_FAILURE, LOAD_PAY_ORDER_REQUEST, LOAD_PAY_ORDER_SUCCESS
 } from '../../constants/order.constants';
 
 export const createOrderReducer = (state = {}, action) => {
@@ -111,6 +111,28 @@ export const cancelOrderByIdReducer = (state = {}, action) => {
         loading: false,
         error: action.payload,
         cancellationStatus: null,
+        success: false
+      }
+    default:
+      return state;
+  }
+};
+
+export const loadPayForOrderReducer = (state = {}, action) => {
+  switch(action.type) {
+    case LOAD_PAY_ORDER_REQUEST:
+      return {
+        loading: true,
+        success: null
+      };
+    case LOAD_PAY_ORDER_SUCCESS:
+      return {
+        loading: false,
+        success: true
+      }
+    case LOAD_PAY_ORDER_FAILURE:
+      return {
+        loading: false,
         success: false
       }
     default:

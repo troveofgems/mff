@@ -34,6 +34,7 @@ const Invoice = () => {
 
   const coupleDataToSchema = (invoiceSchema, invoice) => {
     const invoiceData = {...invoiceSchema, ...invoice};
+    invoiceData.name = invoice.user.firstName + " " + invoice.user.lastName;
     invoiceData.cartIsEmpty = invoiceData.cartItems.length === 0;
     invoiceData.showShippingStatus = !invoiceData.hasBeenCancelled;
     invoiceData.showRefundStatus = invoiceData.hasBeenCancelled;
@@ -54,6 +55,7 @@ const Invoice = () => {
   useEffect(() => {
     if (adminInvoiceLoadingSuccess) {
       let invoiceData = coupleDataToSchema(invoiceSchema, adminRequestedInvoice);
+      console.log('INVOICE DATA NEEDS TO INCLUDE NAME: ', invoiceData);
       setFormState(invoiceData);
     } else if (adminInvoiceLoadingError) {
       console.log('Failure To Load', adminInvoiceLoadingError);
@@ -73,7 +75,7 @@ const Invoice = () => {
     orderRefId, createdAt, hasBeenCancelled, cancelledAt, cartIsEmpty, cartItems,
     shippingAddress, billingAddress, showAddressLine2_billing, showAddressLine2_shipping,
     paymentMethod, cartCost, shippingCost, taxCost, totalCost, hasBeenShipped, promoCode, showRefundStatus,
-    refundStatus, showShippingStatus
+    refundStatus, showShippingStatus, name, paymentResult
   } = formState;
 
   return (
@@ -119,6 +121,9 @@ const Invoice = () => {
                   {shippingAddress && (
                     <>
                       <p className={"p-0 m-0"}>
+                        {name}
+                      </p>
+                      <p className={"p-0 m-0"}>
                         {shippingAddress.address_1 || "-"}
                         {showAddressLine2_shipping && (
                           <>
@@ -137,10 +142,13 @@ const Invoice = () => {
                     </>
                   )}
                 </div>
-                <h5 className={"p-2 py-1 pb-0 m-0"}>Billing To</h5>
+                <h5 className={"p-2 py-3 pb-0 m-0"}>Billing To</h5>
                 <div className={"p-2 py-1 pb-0 m-0"}>
                   {billingAddress && (
                     <>
+                      <p className={"p-0 m-0"}>
+                        {name}
+                      </p>
                       <p className={"p-0 m-0"}>
                         {billingAddress.address_1 || "-"}
                         {showAddressLine2_billing && (
@@ -154,7 +162,7 @@ const Invoice = () => {
                         {billingAddress.state ? billingAddress.state.toUpperCase() : " -"}
                         {" "}{billingAddress.postalCode || " -"}
                       </p>
-                      <p className={"p-0 m-0"}>
+                      <p className={"p-0 m-0 mb-5"}>
                         {billingAddress.country ? billingAddress.country.toUpperCase() : " -"}
                       </p>
                     </>
@@ -163,6 +171,26 @@ const Invoice = () => {
               </Col>
               <Col md={3}>
                 <h4 className={"p-2 py-1"}>Payment Information</h4>
+                {(
+                  <Row className={"p-2 py-1"}>
+                    <Col md={4}>
+                      <h6>Status</h6>
+                    </Col>
+                    <Col>
+                      {(paymentResult && paymentResult.status)}
+                    </Col>
+                  </Row>
+                )}
+                {(
+                  <Row className={"p-2 py-1"}>
+                    <Col md={4}>
+                      <h6>Paid At</h6>
+                    </Col>
+                    <Col>
+                      {(paymentResult && paymentResult.update_time)}
+                    </Col>
+                  </Row>
+                )}
                 {(
                   <Row className={"p-2 py-1"}>
                     <Col md={4}>

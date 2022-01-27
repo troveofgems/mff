@@ -1,13 +1,14 @@
 import {
   createOrderReducer, listUserOrdersReducer, getOrderByIdReducer, cancelOrderByIdReducer,
-  payOrderByIdReducer
+  loadPayForOrderReducer
 } from '../services/order.reducer';
 
 const orderReducerMap = {
   cancelOrder: cancelOrderByIdReducer,
   createOrder: createOrderReducer,
   listUserOrders: listUserOrdersReducer,
-  getOrderDetails: getOrderByIdReducer
+  getOrderDetails: getOrderByIdReducer,
+  payOrderDetails: loadPayForOrderReducer
 };
 
 export default orderReducerMap;

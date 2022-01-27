@@ -103,26 +103,35 @@ const loginUser = asyncHandler(async (req, res, next) => {
       .select('+password');
 
   if (!user) { return _handleInvalidLoginAttempt(req, res, next); }
-  // TODO: Check for Banned Status Foremost
   if (user.isBanned) { return _handleInvalidLoginAttempt(req, res, next, 'Your Account Has Been Banned. To Appeal This...'); }
 
   const userSuccessfullyVerified = await user.verifyCredentials(req.body.password);
   if(!userSuccessfullyVerified) {
-    // TODO: Build Account Lockout Here
     if (user.loginAttempts === 3 || user.accountLockout) {
+      if (!user.accountLockout) {
+        await User.findByIdAndUpdate({_id: user._id}, {
+          accountLockout: true
+        }, {upsert: true});
+      }
+
       let optMsg = 'Your Account Has Been Locked. Please Contact Support For Assistance.';
       return _handleInvalidLoginAttempt(req, res, next, optMsg);
     } else {
-      if (user.loginAttempts < 3) {
-        user.loginAttempts = user.loginAttempts += 1;
-        user.loginAttempts === 3 ? user.accountLockout = true : false;
-        user.save();
+      if (user.loginAttempts <= 3) {
+        await User.findByIdAndUpdate({_id: user._id}, {
+          loginAttempts: (user.loginAttempts + 1)
+        }, {upsert: true});
       }
       let
         attemptCountsLeft = 3 - user.loginAttempts,
         optMsg = `Invalid Credentials. ${attemptCountsLeft} ${attemptCountsLeft === 1 ? 'Try' : 'Tries'} Left.`;
       return _handleInvalidLoginAttempt(req, res, next, optMsg);
     }
+  } else {
+    await User.findByIdAndUpdate({_id: user._id}, {
+      loginAttempts: 0,
+      lastLoggedIn: Date.now()
+    }, {upsert: true});
   }
 
   apiResponse.success = true;
@@ -133,7 +142,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
     firstName: user.firstName,
     lastName: user.lastName,
     currentEmail: user.currentEmail,
-    userRole: user.isAppAdmin ? "appAdmin" : "base",
+    userRole: user.isAppAdmin ? "appAdmin" : "base", // TODO: Cleanup
+    authLevel: user.authLevel,
     token: apiResponse.userPog
   };
 

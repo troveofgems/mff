@@ -2,7 +2,7 @@ import {
   CANCEL_ORDER_BY_ID_FAILURE, CANCEL_ORDER_BY_ID_REQUEST, CANCEL_ORDER_BY_ID_SUCCESS,
   CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS,
   LIST_USER_ORDERS_FAILURE, LIST_USER_ORDERS_REQUEST, LIST_USER_ORDERS_SUCCESS,
-  GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS,
+  GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS, LOAD_PAY_ORDER_SUCCESS,
 } from '../constants/order.constants';
 import axios from "axios";
 
@@ -101,6 +101,20 @@ export const cancelOrderByIdForUser = (userToken, orderId) => async dispatch => 
     dispatch({
       type: CANCEL_ORDER_BY_ID_FAILURE,
       payload: {...err, cancelled: false}
+    });
+  }
+};
+
+export const loadPayForOrder = () => async dispatch => {
+  try {
+    dispatch({
+      type: GET_ORDER_BY_ID_SUCCESS,
+      payload: true
+    });
+  } catch(err) {
+    dispatch({
+      type: GET_ORDER_BY_ID_FAILURE,
+      payload: false
     });
   }
 };

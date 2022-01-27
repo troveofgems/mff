@@ -1,4 +1,5 @@
 export const invoiceSchema = {
+  name: '',
   billingAddress: {},
   cancelledAt: 'No Data Available',
   cartCost: 0.00,
@@ -19,4 +20,5 @@ export const invoiceSchema = {
   taxCost: 0.00,
   totalCost: 0.00,
   refundStatus: 'No Data Available',
+  paymentResult: null
 };

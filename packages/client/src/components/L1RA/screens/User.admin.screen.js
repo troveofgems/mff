@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {Table} from "react-bootstrap";
-import {getAllUsersForAdmin} from "../../../redux/actions/admin.actions";
+import {getAllUsersForAdmin, adminDeleteUserById} from "../../../redux/actions/admin.actions";
 import Loader from "../../layout/Loader";
 
 const UserScreen = () => {
@@ -13,11 +13,15 @@ const UserScreen = () => {
     dispatch = useDispatch(),
     navigate = useNavigate(),
     allUsers = useSelector(state => state.allUsers),
-    {listOfUsers, loading} = allUsers;
+    userDeleted = useSelector(state => state.userDeleted),
+    userLogin = useSelector(state => state.userLogin),
+    {listOfUsers, loading} = allUsers,
+    {loading: loadingDeleteUser} = userDeleted,
+    { auth: { authLevel: loggedInUsersAuthLevel } } = userLogin;
 
   useEffect(() => {
     dispatch(getAllUsersForAdmin('someToken'));
-  }, [dispatch]);
+  }, [dispatch, loadingDeleteUser]);
 
   const handleDeleteUser = uid => {
     let confirmation =
@@ -27,6 +31,7 @@ const UserScreen = () => {
       );
     if (confirmation === uid) {
       console.log("Proceed With Delete");
+      dispatch(adminDeleteUserById(uid));
     }
   };
 
@@ -51,7 +56,7 @@ const UserScreen = () => {
           <th className={"bg-transparent"}>ID</th>
           <th className={"bg-transparent"}>NAME</th>
           <th className={"bg-transparent"}>EMAIL</th>
-          <th className={"bg-transparent"}>IS ADMIN</th>
+          <th className={"bg-transparent"}>USER TYPE</th>
           <th className={"bg-transparent"}>Actions</th>
         </tr>
         </thead>
@@ -59,13 +64,28 @@ const UserScreen = () => {
         {listOfUsers && listOfUsers.length > 0 ? (
           <>
             {listOfUsers.map(user => (
-              <tr key={user._id}>
-                <td>{user._id}</td>
+              <tr key={user.currentEmail}>
+                <td>
+                  {user.authLevel === 10 || user.authLevel === 100 ? "-" : `${user._id}`}
+                </td>
                 <td>{user.firstName} {user.lastName}</td>
                 <td>{user.currentEmail}</td>
-                <td>{user.isAppAdmin ? <i className="fas fa-check"/> : <i className="fas fa-times" />}</td>
+                <td>
+                  {
+                    <>
+                      {user.authLevel === 10 && "ASU"}
+                      {user.authLevel === 100 && "ADMIN"}
+                      {user.authLevel === 1000 && "AUDITOR"}
+                      {user.authLevel === 2000 && "USER"}
+                    </>
+                  }
+                </td>
+
+
+
                 <td style={{cursor: "pointer"}}>
-                  {user.isAppAdmin ? null : (
+                  {/*Refine This*/}
+                  {loggedInUsersAuthLevel === 10 && user.authLevel !== 10 && (
                     <>
                       <div className={"m-2"}>
                         <button type={"button"} className={"text-dark"} onClick={() => handleEditUser(user._id)}>
@@ -82,14 +102,50 @@ const UserScreen = () => {
                         </button>
                       </div>
                     </>
-                    )}
+                  )}
+                  {loggedInUsersAuthLevel === 100 && user.authLevel !== 10 && user.authLevel !== 100 && (
+                    <>
+                      <div className={"m-2"}>
+                        <button type={"button"} className={"text-dark"} onClick={() => handleEditUser(user._id)}>
+                          <i className="fas fa-edit"/>{' '}
+                          Edit User
+                        </button>
+                      </div>
+                      <div className={"m-2"}>
+                        <button type={"button"} className={"text-dark"}
+                                onClick={() => handleDeleteUser(user._id)}
+                        >
+                          <i className="fas fa-trash-alt" />{' '}
+                          Delete User
+                        </button>
+                      </div>
+                    </>
+                  )}
+                  {loggedInUsersAuthLevel === 1000 && user.authLevel !== 10 && user.authLevel !== 100 && (
+                    <>
+                      <div className={"m-2"}>
+                        <button type={"button"} className={"text-dark"} onClick={() => handleEditUser(user._id)}>
+                          <i className="fas fa-edit"/>{' '}
+                          Edit User
+                        </button>
+                      </div>
+                      <div className={"m-2"}>
+                        <button type={"button"} className={"text-dark"}
+                                onClick={() => alert('Request Denied: You An Auditor.')}
+                        >
+                          <i className="fas fa-trash-alt" />{' '}
+                          Delete User
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </td>
               </tr>
             ))
             }
           </>
         ) : (
-          <h3>No Users To Display</h3>
+          <span>No Users To Display</span>
         )}
         </tbody>
       </Table>

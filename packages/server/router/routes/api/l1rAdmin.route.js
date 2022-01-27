@@ -2,10 +2,10 @@ const
   {
     serveSanityCheck,
     getAllOrders, reviewInvoice, markOrderShipped, cancelOrder,
-    getAllProducts,
+    getAllProducts
   } = require('../../../controllers/api/admin/index').adminController.adminOrderList,
   {
-    getAllUsers, getUserById
+    getAllUsers, getUserById, deleteUserById, getAllOrdersForUserById, updateUserById
   } = require('../../../controllers/api/admin/index').adminController.adminUserList,
   express = require('express'),
   router = express.Router();
@@ -31,10 +31,16 @@ router
   .route('/orders/markShipped/:id')
   .put(markOrderShipped);
 
+router
+  .route('/orders/user/:uid')
+  .get(getAllOrdersForUserById);
+
 // PRODUCTS
 router
   .route('/products')
   .get(getAllProducts);
+
+
 // USERS
 router
   .route('/users')
@@ -42,6 +48,8 @@ router
 
 router
   .route('/users/:id')
-  .get(getUserById);
+  .get(getUserById)
+  .put(updateUserById)
+  .delete(deleteUserById);
 
 module.exports = router;

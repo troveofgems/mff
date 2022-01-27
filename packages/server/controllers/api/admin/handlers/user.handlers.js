@@ -2,6 +2,7 @@
 const {asyncHandler} = require("../../../../middleware/Helpers/async-handler.middleware");
 const {buildAPIBodyResponse} = require("../../../../utils/dev/controller.utils");
 const User = require('../../../../db/models/Users');
+const Order = require("../../../../db/models/Order");
 
 // @desc  Serve Route Sanity Check
 // @route GET /api/vX/authentorization/authentication
@@ -41,8 +42,67 @@ const getUserById = asyncHandler(async (req, res, next) => {
     .json(response);
 });
 
+// @desc  Delete User By Id
+// @route DELETE /api/vX/l1rAdmin/users/:id
+// @access PRIVATE/ADMIN
+const deleteUserById = asyncHandler(async (req, res, next) => {
+  let response = buildAPIBodyResponse('/l1rAdmin/users/delete/:id');
+
+  response.data = await User.findByIdAndDelete(req.params.id);
+  response.success = true;
+
+  return res
+    .status(200)
+    .json(response);
+});
+
+// @desc  Update The User Profile
+// @route PUT /api/vX/l1rAdmin/users/:id
+// @access PRIVATE/ADMIN
+const _encryptPassword = async (pwd, uid) => {
+  let user = await User // Search & Update User Data
+    .findById(uid);
+  user.password = pwd;
+  return user.save();
+}
+const updateUserById = asyncHandler(async (req, res, next) => {
+  let
+    response = buildAPIBodyResponse('/l1rAdmin/l1ra/users/update/:id');
+
+  if(req.body.password) {
+    await _encryptPassword(req.body.password, req.body.update_registrationId);
+    delete req.body.password;
+  }
+
+  response.data = await User // Search & Update User Data
+    .findByIdAndUpdate(req.body.update_registrationId, req.body, {upsert: true});
+  response.success = true;
+
+  return res
+    .status(200)
+    .json(response);
+});
+
+// @desc  Get All Orders Placed By The User
+// @route GET /api/vX/l1rAdmin/orders/user/:id
+// @access PRIVATE/ADMIN
+const getAllOrdersForUserById = asyncHandler(async (req, res, next) => {
+  let response = buildAPIBodyResponse('/l1rAdmin/orders/user/:id');
+  let orders = await Order.find({user: `${req.params.uid}`});
+  console.log("Orders returned from DB: ", orders, req.params.uid);
+  response.data = orders;
+  response.success = true;
+
+  return res
+    .status(200)
+    .json(response);
+});
+
 module.exports.adminUserController = {
   serveSanityCheck,
   getAllUsers,
-  getUserById
+  getUserById,
+  deleteUserById,
+  updateUserById,
+  getAllOrdersForUserById
 };

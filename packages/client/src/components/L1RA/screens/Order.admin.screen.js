@@ -14,11 +14,12 @@ const OrderScreen = () => {
     dispatch = useDispatch(),
     navigate = useNavigate(),
     allOrders = useSelector(state => state.allOrders),
-    // TODO: Get Admin Token And Pass To API.
-    {listOfOrders, loading} = allOrders;
+    userLogin = useSelector(state => state.userLogin),
+    {listOfOrders, loading} = allOrders,
+    { auth } = userLogin;
 
   useEffect(() => {
-    dispatch(getAllOrdersForAdmin('someToken'));
+    dispatch(getAllOrdersForAdmin(auth.token));
   }, [dispatch]);
 
   const handleMarkOrderShipped = async oid => {
@@ -28,7 +29,7 @@ const OrderScreen = () => {
         Copy & Paste The Following Id to continue: ${oid}`
       );
     if (confirmation === oid) {
-      let token = 'sometoken';
+      let token = auth.token; // TODO: Amend This
       console.log("Proceed With Shipping Update");
       await dispatch(adminMarkOrderShipped(token, oid));
       await dispatch(getAllOrdersForAdmin(token));
@@ -41,7 +42,7 @@ const OrderScreen = () => {
         `Are You Sure You Want To Cancel This Order? 
         Copy & Paste The Following Id to continue: ${oid}`
       );
-    let token = 'sometoken';
+    let token = auth.token;
     if (confirmation === oid) {
       await dispatch(adminCancelOrderById(token, oid));
       await dispatch(getAllOrdersForAdmin(token));
@@ -66,7 +67,7 @@ const OrderScreen = () => {
               <th className={"bg-transparent"}>Checkout Type</th>
               <th className={"bg-transparent"}>Order Placed On</th>
               <th className={"bg-transparent"}>Total Order Cost</th>
-              <th className={"bg-transparent"}>Shipped On</th>
+              <th className={"bg-transparent"}>Status</th>
               <th className={"bg-transparent"}>Actions</th>
             </tr>
             </thead>
@@ -99,6 +100,7 @@ const OrderScreen = () => {
                         <div className={"m-2"}>
                           <button type={"button"} className={"text-dark"}
                                   onClick={() => handleMarkOrderShipped(order._id)}
+                                  disabled={auth.authLevel === 1000}
                           >
                             <i className="fas fa-truck"/>{' '}
                             Mark As Shipped
@@ -109,6 +111,7 @@ const OrderScreen = () => {
                         <div className={"m-2"}>
                           <button type={"button"} className={"text-dark"}
                                   onClick={() => handleCancelOrder(order._id)}
+                                  disabled={auth.authLevel === 1000}
                           >
                             <i className="fas fa-ban" />{' '}
                             Cancel Order
@@ -121,7 +124,7 @@ const OrderScreen = () => {
                 }
               </>
             ) : (
-              <h3>No Orders To Display</h3>
+              <span>No Orders To Display</span>
             )}
             </tbody>
           </Table>

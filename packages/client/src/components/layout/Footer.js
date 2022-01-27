@@ -36,7 +36,7 @@ const Footer = () => {
         </Row>
         <Row>
           <Col className={'text-center py-3'}>
-            Copyright &copy; Frickn' Fish {foundingYear} {showYearRange ? ` - ${currentYear}` : false  }
+            Copyright &copy; Frickn' Fish 12/{foundingYear} {showYearRange ? ` - ${currentYear}` : false  }
           </Col>
         </Row>
       </Container>

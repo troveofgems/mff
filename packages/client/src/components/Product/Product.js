@@ -36,8 +36,6 @@ const Product = ({ product }) => {
   );
 };
 
-
-
 Product.propTypes = {
   product: PropTypes.object.isRequired
 };

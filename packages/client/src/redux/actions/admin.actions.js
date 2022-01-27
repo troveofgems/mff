@@ -1,20 +1,37 @@
 import axios from 'axios';
 import {
-  ADMIN_CANCEL_ORDER_BY_ID_FAILURE, ADMIN_CANCEL_ORDER_BY_ID_REQUEST, ADMIN_CANCEL_ORDER_BY_ID_SUCCESS,
-  ADMIN_LIST_ALL_ORDERS_FAILURE, ADMIN_LIST_ALL_ORDERS_REQUEST, ADMIN_LIST_ALL_ORDERS_SUCCESS,
-  ADMIN_LIST_ALL_PRODUCTS_FAILURE, ADMIN_LIST_ALL_PRODUCTS_REQUEST, ADMIN_LIST_ALL_PRODUCTS_SUCCESS,
-  ADMIN_LIST_ALL_USERS_FAILURE, ADMIN_LIST_ALL_USERS_REQUEST, ADMIN_LIST_ALL_USERS_SUCCESS,
-  ADMIN_LIST_USER_DETAILS_FAILURE, ADMIN_LIST_USER_DETAILS_REQUEST, ADMIN_LIST_USER_DETAILS_SUCCESS,
-  ADMIN_UPDATE_USER_DETAILS_FAILURE, ADMIN_UPDATE_USER_DETAILS_REQUEST, ADMIN_UPDATE_USER_DETAILS_SUCCESS,
-  ADMIN_DELETE_USER_BY_ID_FAILURE, ADMIN_DELETE_USER_BY_ID_REQUEST, ADMIN_DELETE_PRODUCT_BY_ID_SUCCESS,
-  ADMIN_MARK_ORDER_SHIPPED_FAILURE, ADMIN_MARK_ORDER_SHIPPED_REQUEST, ADMIN_MARK_ORDER_SHIPPED_SUCCESS,
-  ADMIN_LIST_ORDER_DETAILS_FAILURE, ADMIN_LIST_ORDER_DETAILS_REQUEST, ADMIN_LIST_ORDER_DETAILS_SUCCESS
+  ADMIN_CANCEL_ORDER_BY_ID_FAILURE,
+  ADMIN_CANCEL_ORDER_BY_ID_REQUEST,
+  ADMIN_CANCEL_ORDER_BY_ID_SUCCESS,
+  ADMIN_LIST_ALL_ORDERS_FAILURE,
+  ADMIN_LIST_ALL_ORDERS_REQUEST,
+  ADMIN_LIST_ALL_ORDERS_SUCCESS,
+  ADMIN_LIST_ALL_PRODUCTS_FAILURE,
+  ADMIN_LIST_ALL_PRODUCTS_REQUEST,
+  ADMIN_LIST_ALL_PRODUCTS_SUCCESS,
+  ADMIN_LIST_ALL_USERS_FAILURE,
+  ADMIN_LIST_ALL_USERS_REQUEST,
+  ADMIN_LIST_ALL_USERS_SUCCESS,
+  ADMIN_LIST_USER_DETAILS_FAILURE,
+  ADMIN_LIST_USER_DETAILS_REQUEST,
+  ADMIN_LIST_USER_DETAILS_SUCCESS,
+  ADMIN_UPDATE_USER_DETAILS_FAILURE,
+  ADMIN_UPDATE_USER_DETAILS_REQUEST,
+  ADMIN_UPDATE_USER_DETAILS_SUCCESS,
+  ADMIN_DELETE_USER_BY_ID_FAILURE,
+  ADMIN_DELETE_USER_BY_ID_REQUEST,
+  ADMIN_DELETE_PRODUCT_BY_ID_SUCCESS,
+  ADMIN_MARK_ORDER_SHIPPED_FAILURE,
+  ADMIN_MARK_ORDER_SHIPPED_REQUEST,
+  ADMIN_MARK_ORDER_SHIPPED_SUCCESS,
+  ADMIN_LIST_ORDER_DETAILS_FAILURE,
+  ADMIN_LIST_ORDER_DETAILS_REQUEST,
+  ADMIN_LIST_ORDER_DETAILS_SUCCESS,
+  ADMIN_DELETE_USER_BY_ID_SUCCESS,
+  ADMIN_FETCH_USER_ORDERS_FAILURE,
+  ADMIN_FETCH_USER_ORDERS_REQUEST,
+  ADMIN_FETCH_USER_ORDERS_SUCCESS
 } from '../constants/admin.constants';
-import {
-  UPDATE_USER_PROFILE_FAILURE,
-  UPDATE_USER_PROFILE_REQUEST,
-  UPDATE_USER_PROFILE_SUCCESS
-} from "../constants/auth.constants";
 
 /************************************/
 /************* ORDERS ***************/
@@ -164,7 +181,7 @@ export const getAllUsersForAdmin = token => async dispatch => {
     console.log("Err is: ", err);
     dispatch({
       type: ADMIN_LIST_ALL_USERS_FAILURE,
-      payload: err.response.data.error.message
+      payload: err
     });
   }
 };
@@ -209,7 +226,7 @@ export const adminUpdateUserProfileById = updates => async (dispatch, getState) 
       }
     };
 
-    const {data: {data}} = await axios.put(`/api/v1/authentorization/authentication/updateUser`, updates, config);
+    const {data: {data}} = await axios.put(`/api/v1/l1rAdmin/users/${updates.update_registrationId}`, updates, config);
 
     dispatch({
       type: ADMIN_UPDATE_USER_DETAILS_SUCCESS,
@@ -222,4 +239,71 @@ export const adminUpdateUserProfileById = updates => async (dispatch, getState) 
     });
   }
 
+};
+export const adminDeleteUserById = uid => async (dispatch, getState) => {
+  dispatch({ type: ADMIN_DELETE_USER_BY_ID_REQUEST });
+  const
+    { userLogin: { auth } } = getState(),
+    xAuthToken = auth.token || auth;
+
+  if (xAuthToken === undefined) { // Dont allow requests without a token to send a response to the server. 8000
+    throw new Error('Contact The Sys-Admin. Error Code: 8000');
+  }
+
+  try {
+    const config = {
+      'headers': {
+        'Content-Type': 'application/json',
+        'x-auth-token': xAuthToken
+      }
+    };
+
+    await axios.delete(`/api/v1/l1rAdmin/users/${uid}`, config);
+
+    dispatch({
+      type: ADMIN_DELETE_USER_BY_ID_SUCCESS,
+      payload: null,
+      success: true
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_DELETE_USER_BY_ID_FAILURE,
+      payload: err,
+      success: false
+    });
+  }
+};
+export const adminGetUserOrdersById = uid => async (dispatch, getState) => {
+  console.log('UID IS: ', uid);
+  dispatch({ type: ADMIN_FETCH_USER_ORDERS_REQUEST });
+  const
+    { userLogin: { auth } } = getState(),
+    xAuthToken = auth.token || auth;
+
+  if (xAuthToken === undefined) { // Dont allow requests without a token to send a response to the server. 8000
+    throw new Error('Contact The Sys-Admin. Error Code: 8000');
+  }
+
+  try {
+    const config = {
+      'headers': {
+        'Content-Type': 'application/json',
+        'x-auth-token': xAuthToken
+      }
+    };
+
+    const {data: {data}} = await axios.get(`/api/v1/l1rAdmin/orders/user/${uid}`, config);
+
+    dispatch({
+      type: ADMIN_FETCH_USER_ORDERS_SUCCESS,
+      payload: data,
+      success: true
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_FETCH_USER_ORDERS_FAILURE,
+      payload: err,
+      success: false
+    });
+  }
 };

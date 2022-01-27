@@ -7,7 +7,8 @@ import {
   ADMIN_LIST_ALL_USERS_FAILURE, ADMIN_LIST_ALL_USERS_REQUEST, ADMIN_LIST_ALL_USERS_SUCCESS,
   ADMIN_LIST_USER_DETAILS_FAILURE, ADMIN_LIST_USER_DETAILS_REQUEST, ADMIN_LIST_USER_DETAILS_SUCCESS,
   ADMIN_DELETE_USER_BY_ID_FAILURE, ADMIN_DELETE_USER_BY_ID_REQUEST, ADMIN_DELETE_USER_BY_ID_SUCCESS,
-  ADMIN_UPDATE_USER_DETAILS_FAILURE, ADMIN_UPDATE_USER_DETAILS_REQUEST, ADMIN_UPDATE_USER_DETAILS_SUCCESS
+  ADMIN_UPDATE_USER_DETAILS_FAILURE, ADMIN_UPDATE_USER_DETAILS_REQUEST, ADMIN_UPDATE_USER_DETAILS_SUCCESS,
+  ADMIN_FETCH_USER_ORDERS_FAILURE, ADMIN_FETCH_USER_ORDERS_REQUEST, ADMIN_FETCH_USER_ORDERS_SUCCESS
 } from "../../constants/admin.constants";
 
 export const adminGetAllOrdersReducer = (state = {}, action) => {
@@ -282,6 +283,41 @@ export const adminUpdateUserByIdReducer = (state = {}, action) => {
       return {
         ...state,
         user: null,
+        loading: false,
+        error: action.payload
+      };
+    /*    case CLEAR_:
+          return {
+            ...state,
+            loading: false,
+            error: null,
+            listOfOrders: null
+          };*/
+    default:
+      return state;
+  }
+};
+
+export const adminGetOrdersForUserReducer = (state = {}, action) => {
+  switch(action.type) {
+    case ADMIN_FETCH_USER_ORDERS_REQUEST:
+      return {
+        ...state,
+        error: null,
+        userOrders: null,
+        loading: true
+      };
+    case ADMIN_FETCH_USER_ORDERS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        userOrders: action.payload
+      };
+    case ADMIN_FETCH_USER_ORDERS_FAILURE:
+      return {
+        ...state,
+        userOrders: null,
         loading: false,
         error: action.payload
       };

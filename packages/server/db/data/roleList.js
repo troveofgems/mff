@@ -1,4 +1,6 @@
 module.exports.roleList = [
-  'publisher',
-  'user'
+  10,
+  100,
+  1000,
+  2000
 ];

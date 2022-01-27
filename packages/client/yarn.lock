@@ -1889,6 +1889,11 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+"@types/react@^15.0.38":
+  version "15.7.6"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.7.6.tgz#b5d8c75fa8c7fae0205dfa4c17a173d2d55af930"
+  integrity sha512-4yVZxPR5+1T1uH1urxsyKqZNTbu9jMIbO8L8BXqUZEMIhilhO3CRwapLxHJp8DGDm7G4tuIyNf9mL6l2LwhL3w==
+
 "@types/resolve@0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-0.0.8.tgz#f26074d238e02659e323ce1a13d041eee280e194"
@@ -6845,6 +6850,11 @@ jest@26.6.0:
     import-local "^3.0.2"
     jest-cli "^26.6.0"
 
+jquery@^3.1.1:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
+  integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -9288,6 +9298,15 @@ react-fast-compare@^2.0.1:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
+
+react-flot@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-flot/-/react-flot-1.3.0.tgz#43d2de36f6394599d2fefb7e8d6b03d4c5620e7a"
+  integrity sha1-Q9LeNvY5RZnS/vt+jWsD1MViDno=
+  dependencies:
+    "@types/react" "^15.0.38"
+    deep-equal "^1.0.1"
+    jquery "^3.1.1"
 
 react-is@^16.3.2, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"

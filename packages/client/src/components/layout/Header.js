@@ -131,7 +131,7 @@ const Header = () => {
               Users
             </NavDropdown.Item>
           </LinkContainer>
-          <LinkContainer to="/l1ra/settings">
+          <LinkContainer to="/l1ra/analytics">
             <NavDropdown.Item>
               Analytics
             </NavDropdown.Item>
@@ -157,13 +157,12 @@ const Header = () => {
               navbarScroll
             >
               {!userLoginInfo && guestLinks}
-              {userLoginInfo && (userLoginInfo.userRole === 'appAdmin') && (
+              {userLoginInfo && (userLoginInfo.authLevel === 10 || userLoginInfo.authLevel === 100 || userLoginInfo.authLevel === 1000) && (
                 <>
                   {adminLinks}
                   {authenticatedLinks}
                 </>
               )}
-              {userLoginInfo && (userLoginInfo.userRole === 'base') && authenticatedLinks}
               {userLoginInfo && typeof userLoginInfo === 'string' && (
                 <LinkContainer to="/">
                   <Nav.Item onClick={handleLogout} key={"user-logout"} className={"text-white"}>

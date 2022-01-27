@@ -3,6 +3,7 @@ const
   jwt = require('jsonwebtoken');
 
 module.exports.encryptPassword = async function(next) {
+  console.log('Inside Encrypt Password', this);
   const
     encryptThePassword = async () => {
       const

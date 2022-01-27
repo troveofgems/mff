@@ -20,6 +20,7 @@ import {getLoggedInUserProfile} from "../../redux/actions/auth.actions";
 import axios from 'axios';
 import {PayPalButton} from "react-paypal-button-v2";
 import Loader from "../layout/Loader";
+import {LOAD_PAY_ORDER_REQUEST, LOAD_PAY_ORDER_SUCCESS} from "../../redux/constants/order.constants";
 
 //const _addDecimals = someFloat => Math.round((Number(someFloat) * 100) / 100).toFixed(2);
 
@@ -38,8 +39,7 @@ const PlaceOrderForm = () => {
     userViewProfile = useSelector(state => state.userViewProfile),
     userLogin = useSelector(state => state.userLogin),
     payOrderDetails = useSelector(state => state.payOrderDetails),
-    //{ submitForm } = useFormikContext(),
-    {loading: loadingPay, error: payError, success: paySuccess} = payOrderDetails,
+    {loading: loadingPay, success: paySuccess} = payOrderDetails,
     {user: userProfile} = userViewProfile,
     { auth } = userLogin;
 
@@ -52,6 +52,7 @@ const PlaceOrderForm = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch({type: LOAD_PAY_ORDER_REQUEST});
     const addPaypalScript = async() => {
       const {data: clientId} = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
@@ -66,9 +67,11 @@ const PlaceOrderForm = () => {
     if (!window.paypal) {
       addPaypalScript().then(() => {});
     } else {
+      dispatch({type: LOAD_PAY_ORDER_SUCCESS});
       setSDKReady(true);
     }
   }, []);
+
 
   const {cartItems} = useSelector(state => state.cart);
 
@@ -325,18 +328,14 @@ const PlaceOrderForm = () => {
                             </Row>
                             <div className="form-actions full py-4 pb-4">
                               <h3 className={"text-center pb-3"}>Ready To Pay & Place Your Order?</h3>
-                              {!location.state.isPaid && (
                                 <div className={"paypalBtnContainer"} style={{display: "flex", justifyContent: "center"}}>
-                                  {loadingPay && <Loader />}
-                                  {!sdkReady ? <Loader /> : (
+                                  {sdkReady && (
                                     <PayPalButton
                                       amount={(shippingCost + taxCost + cartCost)}
                                       onSuccess={successPaymentHandler}
-                                      children={"test"}
                                     />
                                   )}
                                 </div>
-                              )}
                               <button
                                 type="submit" className="button text-black full login-btn"
                                 disabled={!formik.isValid || formik.isSubmitting} hidden={true}
