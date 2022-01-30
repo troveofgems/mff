@@ -145,7 +145,11 @@ const UserScreen = () => {
             }
           </>
         ) : (
-          <span>No Users To Display</span>
+          <tr>
+            <td>
+              No Users To Display
+            </td>
+          </tr>
         )}
         </tbody>
       </Table>

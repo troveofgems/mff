@@ -100,7 +100,11 @@ const UserOrderScreen = () => {
                 }
               </>
             ) : (
-              <h3 className={"text-center"}>You Have No Orders To Display</h3>
+              <tr>
+                <td>
+                  No Orders To Display
+                </td>
+              </tr>
             )}
             </tbody>
           </Table>

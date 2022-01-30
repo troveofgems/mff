@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {useNavigate} from "react-router-dom";
 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -12,6 +13,7 @@ import Image from "react-bootstrap/Image";
 const ProductScreen = () => {
   const
     dispatch = useDispatch(),
+    navigate = useNavigate(),
     allProducts = useSelector(state => state.allProducts),
     {listOfProducts} = allProducts;
 
@@ -30,12 +32,17 @@ const ProductScreen = () => {
     }
   };
 
+  const handleRequestToCreateANewProduct = () => navigate("/l1ra/products/product", {state: {pid: null}});
+  const handleRequestToEditAProduct = pid => navigate("/l1ra/products/product", {state: {pid}});
+
   return (
     <>
       <h2 className={'text-center my-5'}>Admin Product Portal</h2>
       <Row>
         <Col md={2}>
-          <button type={"button"} className={"text-dark mb-2"}>
+          <button type={"button"} className={"text-dark mb-2"}
+            onClick={() => handleRequestToCreateANewProduct()}
+          >
             Create New Product
           </button>
         </Col>
@@ -67,7 +74,9 @@ const ProductScreen = () => {
                 <td>{product.publishedToShop ? "Published" : "Not Published"}</td>
                 <td style={{cursor: "pointer"}}>
                   <div className={"m-2"}>
-                    <button type={"button"} className={"text-dark"}>
+                    <button type={"button"} className={"text-dark"}
+                            onClick={() => handleRequestToEditAProduct(product._id)}
+                    >
                       <i className="fas fa-edit"/>{' '}
                       Edit Product
                     </button>
@@ -86,7 +95,11 @@ const ProductScreen = () => {
             }
           </>
         ) : (
-          <h3>No Products To Display</h3>
+          <tr>
+            <td>
+              No Products To Display
+            </td>
+          </tr>
         )}
         </tbody>
       </Table>

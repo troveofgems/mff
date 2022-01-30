@@ -6,9 +6,10 @@ const FormikRadioGroup = ({label, name, options, idPrefix, currentlySelectedOpti
   return (
     <>
       <h6 id={name}>{label}</h6>
-      <div role={"group"} aria-labelledby={name} style={rg_btn_style}>
+      <div role={"group"} aria-labelledby={name}>
         {options.map((opt, index) => (
           <label
+            style={{padding: "5px"}}
             htmlFor={`${idPrefix}_${opt.valueLabel.toLowerCase()}`}
             key={`key-${idPrefix}_${opt.valueLabel.toLowerCase()}`}
           >
@@ -17,6 +18,7 @@ const FormikRadioGroup = ({label, name, options, idPrefix, currentlySelectedOpti
               {...field} {...props}
               checked={parseInt(currentlySelectedOption) === index}
               id={`${idPrefix}_${opt.valueLabel.toLowerCase()}`}
+              className={"m-1"}
               type={"radio"} value={parseInt(index)}
             />
           </label>
@@ -24,12 +26,6 @@ const FormikRadioGroup = ({label, name, options, idPrefix, currentlySelectedOpti
       </div>
     </>
   );
-};
-
-const rg_btn_style = {
-  display: 'flex',
-  justifyContent: 'space-around',
-  width: '50%'
 };
 
 export default FormikRadioGroup;

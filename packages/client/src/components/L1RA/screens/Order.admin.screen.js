@@ -124,7 +124,11 @@ const OrderScreen = () => {
                 }
               </>
             ) : (
-              <span>No Orders To Display</span>
+              <tr>
+                <td>
+                  No Orders To Display
+                </td>
+              </tr>
             )}
             </tbody>
           </Table>

@@ -12,6 +12,7 @@ import ProductAdminScreen from "../../components/L1RA/screens/Product.admin.scre
 import UserAdminScreen from "../../components/L1RA/screens/User.admin.screen";
 import AdminUserForm from "../../components/L1RA/User/features/Admin.UserForm";
 import AnalyticsAdminScreen from "../../components/L1RA/screens/Analytics.admin.screen";
+import ShopProduct from "../../components/ShopProduct/ShopProduct";
 
 const setL1RARoutes = (isLoggedIn, isAdmin) => (
   <Route path={"/l1ra"} element={<AppContainer/>}>
@@ -26,6 +27,7 @@ const setL1RARoutes = (isLoggedIn, isAdmin) => (
     <Route exact path="/l1ra/products" element={<PrivateRoute isLoggedIn={isLoggedIn}/>}>
       <Route exact path="/l1ra/products" element={<AdminRoute isAppAdmin={isAdmin}/>}>
         <Route index element={<ProductAdminScreen />}/>
+        <Route path={"product"} element={<ShopProduct />} />
       </Route>
     </Route>
     <Route exact path="/l1ra/users" element={<PrivateRoute isLoggedIn={isLoggedIn}/>}>
