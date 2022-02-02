@@ -30,7 +30,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     token,
     xAuthToken = req.headers['x-auth-token'];
 
-  console.log(req.headers);
+  console.log("X-Auth-Token Is: ", req.headers['x-auth-token']);
 
   if (xAuthToken) {
     token = xAuthToken;
@@ -42,8 +42,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
   }*/
 
   if (!token) { // We have no token. Don't continue. No Detailed Message Needed.
-    return handleInvalidRequest();
+    return console.log('NO Token Exists', req)//handleInvalidRequest();
   }
+
+  console.log('Just Before Try');
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_TOKEN_KEY);

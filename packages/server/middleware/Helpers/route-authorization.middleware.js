@@ -1,13 +1,13 @@
-const ErrorResponse = require('../Error');
+const {errorHandler} = require('../Error');
 
 // Define Authorizations
-exports.authorize = (...roles) => {
+exports.authorize = () => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return ErrorResponse({
-        message: 'Request Denied - Role does not provide the necessary privileges.',
+    if (req.user.authLevel >= 2000) {
+      return next(errorHandler({
+        message: 'Forbidden - You Are Not Authorized.',
         statusCode: 403
-      }, req, res, next);
+      }, req, res, next));
     }
   }
 }

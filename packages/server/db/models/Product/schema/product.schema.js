@@ -22,9 +22,8 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  brand: {
-    type: String,
-    required: true
+  brand: { // To Deprecate This
+    type: String
   },
   category: {
     type: String,
@@ -60,6 +59,40 @@ const ProductSchema = new mongoose.Schema({
     required: true,
     default: true
   },
+  stockType: {
+    type: Number,
+    enum: [0, 1, 2],
+    required: true,
+    default: 0
+  },
+  stockCount: {
+    type: Number,
+    default: 0
+  },
+  hueOptionsAvailable: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  sizeOptionsAvailable: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  promoCodesAvailable: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  hueOptionList: [{type: mongoose.Schema.Types.Mixed}],
+  promoCodeList: [{type: String}],
+  productRefId: {
+    type: String
+  },
+  sizeOptionList: {
+    regularSizeList: { type: mongoose.Schema.Types.Mixed },
+    adjustableSizeList: { type: mongoose.Schema.Types.Mixed }
+  }
 }, {
   timestamps: true
 });

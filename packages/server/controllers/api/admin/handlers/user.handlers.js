@@ -1,11 +1,17 @@
-// TODO: Comeback and parse this file.
 const {asyncHandler} = require("../../../../middleware/Helpers/async-handler.middleware");
 const {buildAPIBodyResponse} = require("../../../../utils/dev/controller.utils");
 const User = require('../../../../db/models/Users');
 const Order = require("../../../../db/models/Order");
 
+const _encryptPassword = async (pwd, uid) => { // TODO: Extricate This Fxn To The Appropriate Helper File
+  let user = await User // Search & Update User Data
+    .findById(uid);
+  user.password = pwd;
+  return user.save();
+};
+
 // @desc  Serve Route Sanity Check
-// @route GET /api/vX/authentorization/authentication
+// @route GET /api/vX/l1rAdmin
 // @access PRIVATE/ADMIN
 const serveSanityCheck = asyncHandler(async (req, res, next) => {
   let response = buildAPIBodyResponse('/l1rAdmin');
@@ -46,7 +52,7 @@ const getUserById = asyncHandler(async (req, res, next) => {
 // @route DELETE /api/vX/l1rAdmin/users/:id
 // @access PRIVATE/ADMIN
 const deleteUserById = asyncHandler(async (req, res, next) => {
-  let response = buildAPIBodyResponse('/l1rAdmin/users/delete/:id');
+  let response = buildAPIBodyResponse('/l1rAdmin/users/:id');
 
   response.data = await User.findByIdAndDelete(req.params.id);
   response.success = true;
@@ -59,12 +65,6 @@ const deleteUserById = asyncHandler(async (req, res, next) => {
 // @desc  Update The User Profile
 // @route PUT /api/vX/l1rAdmin/users/:id
 // @access PRIVATE/ADMIN
-const _encryptPassword = async (pwd, uid) => {
-  let user = await User // Search & Update User Data
-    .findById(uid);
-  user.password = pwd;
-  return user.save();
-}
 const updateUserById = asyncHandler(async (req, res, next) => {
   let
     response = buildAPIBodyResponse('/l1rAdmin/l1ra/users/update/:id');
@@ -83,14 +83,13 @@ const updateUserById = asyncHandler(async (req, res, next) => {
     .json(response);
 });
 
-// @desc  Get All Orders Placed By The User
+// @desc  Get All Orders Placed By The User - Supplemental Helper
 // @route GET /api/vX/l1rAdmin/orders/user/:id
 // @access PRIVATE/ADMIN
 const getAllOrdersForUserById = asyncHandler(async (req, res, next) => {
   let response = buildAPIBodyResponse('/l1rAdmin/orders/user/:id');
-  let orders = await Order.find({user: `${req.params.uid}`});
-  console.log("Orders returned from DB: ", orders, req.params.uid);
-  response.data = orders;
+
+  response.data = await Order.find({user: `${req.params.uid}`});
   response.success = true;
 
   return res

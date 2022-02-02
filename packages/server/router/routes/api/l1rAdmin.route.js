@@ -1,12 +1,17 @@
 const
   {
     serveSanityCheck,
-    getAllOrders, reviewInvoice, markOrderShipped, cancelOrder,
-    getAllProducts
+    getAllOrders, reviewInvoice, markOrderShipped, cancelOrder
   } = require('../../../controllers/api/admin/index').adminController.adminOrderList,
   {
     getAllUsers, getUserById, deleteUserById, getAllOrdersForUserById, updateUserById
   } = require('../../../controllers/api/admin/index').adminController.adminUserList,
+  {
+    getAllProducts, getProductById, createProduct, deleteProductById, updateProductById
+  } = require('../../../controllers/api/admin/index').adminController.adminProductList,
+  {
+    protect
+  } = require('../../../middleware/Helpers/route-authentication.middleware'),
   express = require('express'),
   router = express.Router();
 
@@ -17,29 +22,35 @@ router
 // ORDERS
 router
   .route('/orders')
-  .get(getAllOrders);
+  .get(protect, getAllOrders);
 
 router
   .route('/orders/cancel/:id')
-  .put(cancelOrder);
+  .put(protect, cancelOrder);
 
 router
   .route('/orders/invoice/:id')
-  .get(reviewInvoice);
+  .get(protect, reviewInvoice);
 
 router
   .route('/orders/markShipped/:id')
-  .put(markOrderShipped);
+  .put(protect, markOrderShipped);
 
 router
   .route('/orders/user/:uid')
-  .get(getAllOrdersForUserById);
+  .get(protect, getAllOrdersForUserById);
 
 // PRODUCTS
 router
   .route('/products')
-  .get(getAllProducts);
+  .get(protect, getAllProducts)
+  .post(protect, createProduct);
 
+router
+  .route('/products/:id')
+  .get(getProductById)
+  .put(updateProductById)
+  .delete(deleteProductById);
 
 // USERS
 router
@@ -49,7 +60,7 @@ router
 router
   .route('/users/:id')
   .get(getUserById)
-  .put(updateUserById)
+  .put(protect, updateUserById)
   .delete(deleteUserById);
 
 module.exports = router;

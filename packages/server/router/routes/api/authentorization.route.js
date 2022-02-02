@@ -4,17 +4,11 @@ const
       serveSanityCheck: serveAuthenticationCheck, registerUser, loginUser, getAuthenticatedProfile,
       ubyRegistrationTracking,
       updateUserProfile
-    },
-    authorization: {
-      serveSanityCheck: serveAuthorizationCheck
     }
   } = require('../../../controllers/api/authentorization').authentorizationController,
   express = require('express'),
   { validate } = require('express-validation'),
   router = express.Router(),
-  {
-    setUserRoleMiddleware
-  } = require('../../../middleware/Helpers/setUserRole.middleware'),
   {
     protect
   } = require('../../../middleware/Helpers/route-authentication.middleware'),
@@ -33,7 +27,7 @@ router
 
 router
   .route('/authentication/register')
-  .post(setUserRoleMiddleware, validate(registerUserValidation), registerUser);
+  .post(validate(registerUserValidation), registerUser);
 
 router
   .route('/authentication/register/anonAnalytics/uby')
@@ -46,10 +40,5 @@ router
 router
   .route('/authentication/authenticatedProfile')
   .get(protect, getAuthenticatedProfile);
-
-/************ Authorization Routes ****************/
-router
-  .route('/authorization')
-  .get(serveAuthorizationCheck);
 
 module.exports = router;

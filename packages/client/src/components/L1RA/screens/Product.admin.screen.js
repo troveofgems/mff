@@ -5,21 +5,25 @@ import {useNavigate} from "react-router-dom";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {Table} from "react-bootstrap";
-import {PASSWORD_MAX_LEN, PASSWORD_MIN_LEN} from "../../Authentication/validation/formik.validation.constants";
-import FormikTextInput from "../../../formik/textInput";
+
 import {getAllProductsForAdmin} from "../../../redux/actions/admin.actions";
 import Image from "react-bootstrap/Image";
+import {adminDeleteProduct} from "../../../redux/actions/admin.actions";
 
 const ProductScreen = () => {
   const
     dispatch = useDispatch(),
     navigate = useNavigate(),
     allProducts = useSelector(state => state.allProducts),
+    userLogin = useSelector(state => state.userLogin),
+    deleteProduct = useSelector(state => state.deleteProduct),
+    {auth: {token}} = userLogin,
+    {loading: loadingProductDelete, success: productDeleteSuccess} = deleteProduct,
     {listOfProducts} = allProducts;
 
   useEffect(() => {
-    dispatch(getAllProductsForAdmin('someToken'));
-  }, [dispatch]);
+    dispatch(getAllProductsForAdmin());
+  }, [dispatch, loadingProductDelete]);
 
   const handleDeleteProduct = pid => {
     let confirmation =
@@ -28,12 +32,14 @@ const ProductScreen = () => {
         Copy & Paste The Following Id to continue: ${pid}`
       );
     if (confirmation === pid) {
-      console.log("Proceed With Delete");
+      console.log("Proceed With Delete", token, pid);
+      dispatch(adminDeleteProduct(token, pid));
     }
   };
-
   const handleRequestToCreateANewProduct = () => navigate("/l1ra/products/product", {state: {pid: null}});
   const handleRequestToEditAProduct = pid => navigate("/l1ra/products/product", {state: {pid}});
+
+  console.log(deleteProduct);
 
   return (
     <>

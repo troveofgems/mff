@@ -6,6 +6,10 @@ import {
   adminReviewInvoiceReducer,
   // Product Reducers
   adminGetAllProductsReducer,
+  adminGetProductByIdReducer,
+  adminCreateProductReducer,
+  adminUpdateProductReducer,
+  adminDeleteProductReducer,
   // User Reducers
   adminGetAllUsersReducer,
   adminGetUserByIdReducer,
@@ -19,7 +23,13 @@ const adminReducerMap = {
   viewInvoice: adminReviewInvoiceReducer,
   updateOrderToShipped: adminMarkOrderShippedReducer,
   updateOrderToCancelled: adminCancelOrderReducer,
+
   allProducts: adminGetAllProductsReducer,
+  viewProduct: adminGetProductByIdReducer,
+  createProduct: adminCreateProductReducer,
+  updateProduct: adminUpdateProductReducer,
+  deleteProduct: adminDeleteProductReducer,
+
   allUsers: adminGetAllUsersReducer,
   viewUser: adminGetUserByIdReducer,
   userDeleted: adminDeleteUserByIdReducer,

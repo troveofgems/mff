@@ -37,7 +37,6 @@ const _verifyOldPassword = async (email, oldPassword) => {
 // @route POST /api/vX/authentorization/authentication/register
 // @access PUBLIC
 const registerUser = asyncHandler(async (req, res, next) => {
-  console.log('To Register: ', req.body);
   let
     apiResponse = buildAPIBodyResponse('/authenticate/registerUser'),
     registrationData = req.body,

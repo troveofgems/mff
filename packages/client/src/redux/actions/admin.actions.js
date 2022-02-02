@@ -30,20 +30,39 @@ import {
   ADMIN_DELETE_USER_BY_ID_SUCCESS,
   ADMIN_FETCH_USER_ORDERS_FAILURE,
   ADMIN_FETCH_USER_ORDERS_REQUEST,
-  ADMIN_FETCH_USER_ORDERS_SUCCESS
+  ADMIN_FETCH_USER_ORDERS_SUCCESS,
+  ADMIN_CREATE_PRODUCT_REQUEST,
+  ADMIN_CREATE_PRODUCT_SUCCESS,
+  ADMIN_CREATE_PRODUCT_FAILURE,
+  ADMIN_DELETE_PRODUCT_BY_ID_REQUEST,
+  ADMIN_UPDATE_PRODUCT_SUCCESS,
+  ADMIN_UPDATE_PRODUCT_REQUEST,
+  ADMIN_UPDATE_PRODUCT_FAILURE,
+  ADMIN_LIST_PRODUCT_DETAILS_SUCCESS,
+  ADMIN_LIST_PRODUCT_DETAILS_FAILURE
 } from '../constants/admin.constants';
+
+const _generateRequestConfiguration = ({ tokenIsRequired = false, token }) => {
+  let configuration = {
+    'headers': {
+      'Content-Type': 'application/json',
+    }
+  }
+  if(tokenIsRequired) {
+    configuration.headers['x-auth-token'] = token;
+  }
+  return configuration;
+};
 
 /************************************/
 /************* ORDERS ***************/
 /************************************/
 export const getAllOrdersForAdmin = token => async dispatch => {
   dispatch({ type: ADMIN_LIST_ALL_ORDERS_REQUEST });
+
   try {
     const
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
       { data: {data} } = await axios.get('/api/v1/l1rAdmin/orders', config);
 
     dispatch({
@@ -62,10 +81,7 @@ export const reviewInvoice = (token, orderId) => async dispatch => {
   dispatch({ type: ADMIN_LIST_ORDER_DETAILS_REQUEST });
   try {
     const
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
       { data: {data} } = await axios.get(`/api/v1/l1rAdmin/orders/invoice/${orderId}`, config);
 
     dispatch({
@@ -84,10 +100,7 @@ export const adminCancelOrderById = (token, orderId) => async dispatch => {
 
   try {
     const
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
       updates = {
         hasBeenCancelled: true,
         cancelledAt: new Date(),
@@ -111,10 +124,7 @@ export const adminMarkOrderShipped = (token, orderId) => async dispatch => {
 
   try {
     const
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
       updates = {
         hasBeenShipped: true,
         shippedOn: new Date()
@@ -136,16 +146,17 @@ export const adminMarkOrderShipped = (token, orderId) => async dispatch => {
 /**********************************/
 /************* PRODUCTS ***********/
 /**********************************/
-export const getAllProductsForAdmin = token => async dispatch => {
+export const getAllProductsForAdmin = () => async (dispatch, getState) => {
   dispatch({ type: ADMIN_LIST_ALL_PRODUCTS_REQUEST });
+  const { userLogin: { auth } } = getState();
+
+  if (!auth || !auth.token) { // Dont allow requests without a token to send a response to the server. 8000
+    throw new Error('Contact The Sys-Admin. Error Code: 8000');
+  }
 
   try {
-    const
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
-      { data: {data} } = await axios.get('/api/v1/l1rAdmin/products', config);
+    const config = _generateRequestConfiguration({tokenIsRequired: true, token: auth.token}),
+      {data: {data}} = await axios.get('/api/v1/l1rAdmin/products', config);
 
     dispatch({
       type: ADMIN_LIST_ALL_PRODUCTS_SUCCESS,
@@ -154,7 +165,88 @@ export const getAllProductsForAdmin = token => async dispatch => {
   } catch(err) {
     dispatch({
       type: ADMIN_LIST_ALL_PRODUCTS_FAILURE,
-      payload: err.response.data.error.message
+      payload: err
+    });
+  }
+};
+export const adminGetProductById = (token, pid) => async dispatch => {
+  dispatch({ type: ADMIN_LIST_PRODUCT_DETAILS_SUCCESS });
+
+  try {
+    const
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
+      { data: {data} } = await axios.get(`/api/v1/l1rAdmin/products/${pid}`, config);
+
+    console.log('Data from API call is: ', data);
+    dispatch({
+      type: ADMIN_LIST_PRODUCT_DETAILS_SUCCESS,
+      payload: data
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_LIST_PRODUCT_DETAILS_FAILURE,
+      payload: err
+    });
+  }
+};
+export const adminCreateProduct = (token, productData) => async dispatch => {
+  dispatch({ type: ADMIN_CREATE_PRODUCT_REQUEST });
+
+  try {
+    const
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
+      { data: {data} } = await axios.post('/api/v1/l1rAdmin/products', productData, config);
+
+    dispatch({
+      type: ADMIN_CREATE_PRODUCT_SUCCESS,
+      payload: data
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_CREATE_PRODUCT_FAILURE,
+      payload: err
+    });
+  }
+};
+export const adminUpdateProduct = (token, pid, updates) => async dispatch => {
+  dispatch({ type: ADMIN_UPDATE_PRODUCT_REQUEST });
+
+  console.log('To Make an Update with: ', token)
+  console.log('On: ', pid);
+  console.log('Pushing: ', updates);
+
+  try {
+    const
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
+      { data: {data} } = await axios.put(`/api/v1/l1rAdmin/products/${pid}`, updates, config);
+
+    dispatch({
+      type: ADMIN_UPDATE_PRODUCT_SUCCESS,
+      payload: data
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_UPDATE_PRODUCT_FAILURE,
+      payload: err
+    });
+  }
+};
+export const adminDeleteProduct = (token, pid) => async dispatch => {
+  dispatch({ type: ADMIN_DELETE_PRODUCT_BY_ID_REQUEST });
+
+  try {
+    const
+      config = _generateRequestConfiguration({tokenIsRequired: true, token});
+      await axios.delete(`/api/v1/l1rAdmin/products/${pid}`, config);
+
+    dispatch({
+      type: ADMIN_DELETE_PRODUCT_BY_ID_SUCCESS,
+      payload: null
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_DELETE_USER_BY_ID_FAILURE,
+      payload: err
     });
   }
 };
@@ -167,10 +259,7 @@ export const getAllUsersForAdmin = token => async dispatch => {
 
   try {
     const
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
       { data: {data} } = await axios.get('/api/v1/l1rAdmin/users', config);
 
     dispatch({
@@ -191,10 +280,7 @@ export const adminGetUserProfileById = id => async (dispatch, getState) => {
   try {
     const
       { userLogin: { auth } } = getState(),
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': auth.token
-      },
+      config = _generateRequestConfiguration({tokenIsRequired: true, token: auth.token}),
       { data: {data} } = await axios.get(`/api/v1/l1rAdmin/users/${id}`, config);
 
     dispatch({
@@ -219,12 +305,7 @@ export const adminUpdateUserProfileById = updates => async (dispatch, getState) 
   }
 
   try {
-    const config = {
-      'headers': {
-        'Content-Type': 'application/json',
-        'x-auth-token': xAuthToken
-      }
-    };
+    const config = _generateRequestConfiguration({tokenIsRequired: true, token: xAuthToken});
 
     const {data: {data}} = await axios.put(`/api/v1/l1rAdmin/users/${updates.update_registrationId}`, updates, config);
 
@@ -251,12 +332,7 @@ export const adminDeleteUserById = uid => async (dispatch, getState) => {
   }
 
   try {
-    const config = {
-      'headers': {
-        'Content-Type': 'application/json',
-        'x-auth-token': xAuthToken
-      }
-    };
+    const config = _generateRequestConfiguration({tokenIsRequired: true, token: xAuthToken});
 
     await axios.delete(`/api/v1/l1rAdmin/users/${uid}`, config);
 
@@ -285,12 +361,7 @@ export const adminGetUserOrdersById = uid => async (dispatch, getState) => {
   }
 
   try {
-    const config = {
-      'headers': {
-        'Content-Type': 'application/json',
-        'x-auth-token': xAuthToken
-      }
-    };
+    const config = _generateRequestConfiguration({tokenIsRequired: true, token: xAuthToken});
 
     const {data: {data}} = await axios.get(`/api/v1/l1rAdmin/orders/user/${uid}`, config);
 
