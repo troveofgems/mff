@@ -1,0 +1,38 @@
+.title {
+    font-size: 1.4rem;
+    font-weight: 300;
+}
+
+.bar-group .name-label {
+    text-anchor: end;
+    font-weight: 300;
+    font-size: 1em;
+    fill: #333;
+}
+
+.bar-group .value-label {
+    text-anchor: end;
+    fill: #fff;
+    font-weight: 900;
+    font-size: 0.7rem;
+}
+
+.chart-container .bar-group {
+    transition: opacity 0.3s;
+}
+
+.chart-container:hover .bar-group {
+    opacity: 0.3;
+}
+
+.chart-container .bar-group:hover {
+    opacity: 1;
+}
+
+.chart-container .bar-group:hover .name-label {
+    font-weight: 400;
+}
+
+.chart-container .bar-group:hover .value-label {
+    font-size: 0.8rem;
+}
