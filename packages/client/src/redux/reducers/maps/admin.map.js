@@ -3,6 +3,8 @@ import {
   adminCancelOrderReducer,
   adminGetAllOrdersReducer,
   adminMarkOrderShippedReducer,
+  adminMarkOrderDeliveredReducer,
+  adminMarkOrderRefundedReducer,
   adminReviewInvoiceReducer,
   // Product Reducers
   adminGetAllProductsReducer,
@@ -23,6 +25,8 @@ const adminReducerMap = {
   viewInvoice: adminReviewInvoiceReducer,
   updateOrderToShipped: adminMarkOrderShippedReducer,
   updateOrderToCancelled: adminCancelOrderReducer,
+  updateOrderToRefunded: adminMarkOrderRefundedReducer,
+  updateOrderToDelivered: adminMarkOrderDeliveredReducer,
 
   allProducts: adminGetAllProductsReducer,
   viewProduct: adminGetProductByIdReducer,

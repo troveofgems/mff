@@ -12,18 +12,27 @@ import Card from 'react-bootstrap/Card';
 import Notification from "../layout/Notification";
 import { addToCart, removeFromCart } from "../../redux/actions/cart.actions";
 
+import {translateSizeOptionLabel} from "../../utils/dev.utils";
+
 const CartScreen = () => {
   const
     {id: productId} = useParams(),
     dispatch = useDispatch(),
     location = useLocation(),
     navigate = useNavigate(),
-    reqQty = location.search ? Number(location.search.split("=")[1]) : 1,
+    reqQty = location.search ? Number(location.search.split("=")[1]) : 1, // This line needs to be re-written.
     { cartItems } = useSelector(state => state.cart);
 
   useEffect(() => {
     if(productId) {
-      dispatch(addToCart(productId, reqQty));
+      let
+        queryStr = location.search.split("?")[1],
+        passedOptions = queryStr.split("&"),
+        requestedQuantity = passedOptions[0].split("=")[1],
+        requestedSize = passedOptions[1] ? passedOptions[1].split("=")[1] : null,
+        requestedPaletteHue = passedOptions[2] ? passedOptions[2].split("=")[1] : null;
+
+      dispatch(addToCart(productId, requestedQuantity, requestedSize, requestedPaletteHue));
     }
   }, [dispatch, productId, reqQty]);
 
@@ -34,10 +43,9 @@ const CartScreen = () => {
     <Row>
       <h3>My Cart</h3>
       <Col md={8}>
-        <h4>Cart Items</h4>
         {cartItems.length === 0 ? (
           <Notification>
-            <div>Your cart is empty.{' '}</div>
+            <div>Your cart is empty{' '}😭</div>
             <Link to={"/"}>Go Back</Link>
           </Notification>
         ) : (
@@ -48,16 +56,30 @@ const CartScreen = () => {
                   <Col md={2}>
                     <Image src={`/img/${item.image}`} alt={item.name} fluid rounded />
                   </Col>
-                  <Col md={3}>
+                  <Col md={2}>
                     <Link to={`/product/${item.product}`}>{item.name}</Link>
                   </Col>
-                  <Col md={2}>
-                    ${item.price.toFixed(2)}
+                  <Col md={1}>
+                    {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(item.price)}
                   </Col>
-                  <Col md={2}>
-                    Quantity: {item.quantityRequested}
+                  <Col md={6}>
+                    <Row className={"text-center"}>
+                      <Col md={4}>
+                        Qty: {item.quantityRequested}
+                      </Col>
+                      {item.sizeRequested && (
+                        <Col md={4}>
+                          {translateSizeOptionLabel(item.sizeRequested)}
+                        </Col>
+                      )}
+                      {item.hueRequested && (
+                        <Col md={4}>
+                         {decodeURI(item.hueRequested)}
+                        </Col>
+                      )}
+                    </Row>
                   </Col>
-                  <Col md={2}>
+                  <Col md={1}>
                     <Button
                       type={"button"}
                       onClick={() => removeFromCartHandler(item.product)}>
@@ -74,11 +96,11 @@ const CartScreen = () => {
         <Card>
           <ListGroup variant={"flush"}>
             <ListGroup.Item>
-              <h3>Subtotal ({cartItems.reduce((acc, item) => acc + item.quantityRequested, 0)}) Items</h3>
+              <h3>Subtotal ({cartItems.reduce((acc, item) => acc + parseInt(item.quantityRequested), 0)}) Items</h3>
             </ListGroup.Item>
             <ListGroup.Item>
               <p>
-                ${cartItems.reduce((acc, item) => acc + (item.quantityRequested * item.price), 0).toFixed(2)}
+                {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(cartItems.reduce((acc, item) => acc + (item.quantityRequested * item.price), 0))}
               </p>
             </ListGroup.Item>
             <ListGroup.Item>

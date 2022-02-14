@@ -1,7 +1,8 @@
 const
   {
     serveSanityCheck,
-    getAllOrders, reviewInvoice, markOrderShipped, cancelOrder
+    getAllOrders, reviewInvoice, cancelOrder,
+    markOrderShipped, markOrderRefunded, markOrderDelivered
   } = require('../../../controllers/api/admin/index').adminController.adminOrderList,
   {
     getAllUsers, getUserById, deleteUserById, getAllOrdersForUserById, updateUserById
@@ -31,6 +32,14 @@ router
 router
   .route('/orders/invoice/:id')
   .get(protect, reviewInvoice);
+
+router
+  .route('/orders/markDelivered/:id')
+  .put(protect, markOrderDelivered);
+
+router
+  .route('/orders/markRefunded/:id')
+  .put(protect, markOrderRefunded);
 
 router
   .route('/orders/markShipped/:id')

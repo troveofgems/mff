@@ -10,7 +10,7 @@ module.exports.readHandler = asyncHandler(async (req, res, next) => {
   let body = buildAPIBodyResponse('GET /product');
 
   // Mutate the body prior to sending back
-  const productList = await Product.find();
+  const productList = await Product.find({publishedToShop: true});
 
   body.success = true;
   body.data = productList;

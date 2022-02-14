@@ -89,11 +89,6 @@ const UserSchema = new mongoose.Schema({
     minlength: 8,
     select: false
   },
-  isAppAdmin: { // To Be Deprecated In Favor Of The authLevel Property Once Implemented
-    type: Boolean,
-    required: true,
-    default: false
-  },
   rememberMyAddress: {
     type: Boolean,
     required: true,

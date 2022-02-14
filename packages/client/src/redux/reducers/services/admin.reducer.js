@@ -38,7 +38,14 @@ import {
   ADMIN_UPDATE_PRODUCT_SUCCESS,
   ADMIN_UPDATE_PRODUCT_FAILURE,
   ADMIN_LIST_PRODUCT_DETAILS_REQUEST,
-  ADMIN_LIST_PRODUCT_DETAILS_SUCCESS, ADMIN_LIST_PRODUCT_DETAILS_FAILURE
+  ADMIN_LIST_PRODUCT_DETAILS_SUCCESS,
+  ADMIN_LIST_PRODUCT_DETAILS_FAILURE,
+  ADMIN_MARK_ORDER_DELIVERED_REQUEST,
+  ADMIN_MARK_ORDER_DELIVERED_SUCCESS,
+  ADMIN_MARK_ORDER_DELIVERED_FAILURE,
+  ADMIN_MARK_ORDER_REFUNDED_FAILURE,
+  ADMIN_MARK_ORDER_REFUNDED_REQUEST,
+  ADMIN_MARK_ORDER_REFUNDED_SUCCESS
 } from "../../constants/admin.constants";
 
 export const adminGetAllOrdersReducer = (state = {}, action) => {
@@ -193,7 +200,81 @@ export const adminCancelOrderReducer = (state = {}, action) => {
   }
 };
 
+export const adminMarkOrderDeliveredReducer = (state = {}, action) => {
+  switch(action.type) {
+    case ADMIN_MARK_ORDER_DELIVERED_REQUEST:
+      return {
+        ...state,
+        error: null,
+        order: null,
+        loading: true,
+        success: null
+      };
+    case ADMIN_MARK_ORDER_DELIVERED_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        order: null,
+        success: true
+      };
+    case ADMIN_MARK_ORDER_DELIVERED_FAILURE:
+      return {
+        ...state,
+        order: null,
+        loading: false,
+        error: action.payload,
+        success: false
+      };
+    /*    case CLEAR_:
+          return {
+            ...state,
+            loading: false,
+            error: null,
+            order: null
+          };*/
+    default:
+      return state;
+  }
+};
 
+export const adminMarkOrderRefundedReducer = (state = {}, action) => {
+  switch(action.type) {
+    case ADMIN_MARK_ORDER_REFUNDED_REQUEST:
+      return {
+        ...state,
+        error: null,
+        order: null,
+        loading: true,
+        success: null
+      };
+    case ADMIN_MARK_ORDER_REFUNDED_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        order: null,
+        success: true
+      };
+    case ADMIN_MARK_ORDER_REFUNDED_FAILURE:
+      return {
+        ...state,
+        order: null,
+        loading: false,
+        error: action.payload,
+        success: false
+      };
+    /*    case CLEAR_:
+          return {
+            ...state,
+            loading: false,
+            error: null,
+            order: null
+          };*/
+    default:
+      return state;
+  }
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -35,7 +35,7 @@ const AnalyticsScreen = () => {
               data-bs-target="#v-pills-testChart" type="button" role="tab"
               aria-controls="v-pills-testChart" aria-selected="false"
             >
-              Test Chart
+              Order Count For Current Week
             </button>
           </div>
           <div className="tab-content" id="v-pills-tabContent">
@@ -48,12 +48,19 @@ const AnalyticsScreen = () => {
             <div className="tab-pane fade" id="v-pills-demographicsChart" role="tabpanel"
                  aria-labelledby="v-pills-demographicsChart-tab">
               <div className={"content-wrapper"} style={{width: '100%'}}>
+                <div className="alert alert-danger" role="alert">
+                  Data is not currently live - DKG
+                </div>
                 <Demographics />
               </div>
             </div>
             <div className="tab-pane fade" id="v-pills-testChart" role="tabpanel"
                  aria-labelledby="v-pills-testChart-tab">
               <div className={"content-wrapper"} style={{width: '100%'}}>
+                <div className="alert alert-danger" role="alert">
+                  Data is not currently live - DKG
+                  Data is not currently live - DKG
+                </div>
                 <TestChart />
               </div>
             </div>

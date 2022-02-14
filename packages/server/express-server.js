@@ -12,6 +12,7 @@ const
   { mountRouterToApplication } = require("./router"),
   { attachCustomErrorHandlingMiddleware } = require('./middleware'),
   { attachCleanupProcessListeners } = require('./utils/dev/processListeners.utils');
+
 const uploadProductImageRoute = require("./router/routes/api/upload.product-image.route");
 
 const Application = createSemiSecureApplication();

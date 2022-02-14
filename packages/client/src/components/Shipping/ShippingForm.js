@@ -17,9 +17,15 @@ import ShippingAddressWidget from "./widgets/shipping.address.widget";
 // Styles Imports
 import "./style/Shipping.scss";
 import {useSelector} from "react-redux";
+import {
+  EMAIL_MAX_LEN,
+  EMAIL_MIN_LEN,
+  FIRST_NAME_MAX_LEN,
+  FIRST_NAME_MIN_LEN
+} from "../L1RA/User/validation/formik.validation.constants";
+import FormikTextInput from "../../formik/textInput";
 const ShippingForm = () => {
   const
-    children = [],
     navigate = useNavigate(),
     [onlyUseShipping, setOnlyUseShipping] = useState(false),
     [rememberMyAddress, setRememberMyAddress] = useState(false),
@@ -29,15 +35,11 @@ const ShippingForm = () => {
     { auth } = userLogin;
 
   useEffect(() => {
-    //if (rememberMyAddress) {
     let addressData = localStorage.getItem('ff_shipping_data');
       if (addressData) {
-        setDataFromLocalStorage(addressData)
+        setDataFromLocalStorage(addressData);
       }
-    //}
   }, []);
-
-  console.log(auth);
 
   const handleRequestToSaveAddressToLocalStorage = shippingData => {
     localStorage.setItem('ff_shipping_data', JSON.stringify(shippingData));
@@ -113,6 +115,15 @@ const ShippingForm = () => {
                   <p className={"text-black border-bottom pb-1"}>
                     If you are new, create an account in just a few minutes!
                   </p>
+                  <div className={"w-50 m-auto"}>
+                    <FormikTextInput
+                      label='Guest Email'
+                      type='text' id={`guest_email`} className={"mb-2 shippingInput"}
+                      name={`guest_email`} required={(!auth || typeof auth === 'string')}
+                      minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
+                      placeholder={'mff@fricknfish.net'}
+                    />
+                  </div>
                 </div>
               </>
             )}
@@ -149,7 +160,6 @@ const ShippingForm = () => {
                               <Col md={6} sm={12}>
                                 <BillingAddressWidget formikValues={formik.values} onlyUseShipping={onlyUseShipping}/>
                               </Col>
-                              {children}
                               <div className="form-actions full py-4 pb-4">
                                 <button
                                   type="submit" className="button text-black full login-btn"

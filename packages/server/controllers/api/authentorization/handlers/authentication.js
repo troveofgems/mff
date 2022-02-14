@@ -1,5 +1,6 @@
 const { buildAPIBodyResponse } = require("../../../../utils/dev/controller.utils");
 const ErrorResponse = require('../../../../middleware/Error').errorHandler;
+const { sendEmail } = require('../../../../lib/email/sendEmail.routine');
 
 const
   { asyncHandler } = require('../../../../middleware/Helpers/async-handler.middleware'),
@@ -41,6 +42,9 @@ const registerUser = asyncHandler(async (req, res, next) => {
     apiResponse = buildAPIBodyResponse('/authenticate/registerUser'),
     registrationData = req.body,
     user = await User.create(registrationData); // Create The User
+
+  // Send Verification Email
+  sendEmail("register", registrationData).then(() => {});
 
   apiResponse.success = true;
   apiResponse.data = user;
@@ -111,6 +115,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
         await User.findByIdAndUpdate({_id: user._id}, {
           accountLockout: true
         }, {upsert: true});
+        // Send Verification Email
+        sendEmail("lockout", user).then(() => {});
       }
 
       let optMsg = 'Your Account Has Been Locked. Please Contact Support For Assistance.';
@@ -141,7 +147,6 @@ const loginUser = asyncHandler(async (req, res, next) => {
     firstName: user.firstName,
     lastName: user.lastName,
     currentEmail: user.currentEmail,
-    userRole: user.isAppAdmin ? "appAdmin" : "base", // TODO: Cleanup
     authLevel: user.authLevel,
     token: apiResponse.userPog
   };
@@ -207,6 +212,9 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
 
   apiResponse.success = true;
   apiResponse.data = {...updatedUser._doc};
+
+  // Send Notification Email
+  sendEmail("accountUpdate", updatedUser).then(() => {});
 
   return res
     .status(200)

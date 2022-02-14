@@ -14,8 +14,6 @@ module.exports.registerUserValidation = {
       .required(),
     password: Joi.string()
       .regex(/[a-zA-Z0-9]{8,32}/)
-      .required(),
-    isAppAdmin: Joi.bool()
       .required()
   })
 };

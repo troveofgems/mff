@@ -1,5 +1,6 @@
 export const invoiceSchema = {
-  name: '',
+  shipToName: '',
+  billToName: '',
   billingAddress: {},
   cancelledAt: 'No Data Available',
   cartCost: 0.00,

@@ -34,9 +34,12 @@ const Invoice = () => {
 
   const coupleDataToSchema = (invoiceSchema, invoice) => {
     const invoiceData = {...invoiceSchema, ...invoice};
-    invoiceData.name = invoice.user.firstName + " " + invoice.user.lastName;
+    console.log('!~~~~~~~~~~~~~~~~~~~~', invoiceData);
+    invoiceData.shipToName = invoiceData.shippingAddress.ship_to_first_name + " " + invoiceData.shippingAddress.ship_to_last_name;
+    invoiceData.billToName = invoiceData.billingAddress.bill_to_first_name + " " + invoiceData.billingAddress.bill_to_last_name;
     invoiceData.cartIsEmpty = invoiceData.cartItems.length === 0;
     invoiceData.showShippingStatus = !invoiceData.hasBeenCancelled;
+    invoiceData.showDeliveryStatus = invoiceData.hasBeenShipped;
     invoiceData.showRefundStatus = invoiceData.hasBeenCancelled;
     return invoiceData;
   };
@@ -55,7 +58,6 @@ const Invoice = () => {
   useEffect(() => {
     if (adminInvoiceLoadingSuccess) {
       let invoiceData = coupleDataToSchema(invoiceSchema, adminRequestedInvoice);
-      console.log('INVOICE DATA NEEDS TO INCLUDE NAME: ', invoiceData);
       setFormState(invoiceData);
     } else if (adminInvoiceLoadingError) {
       console.log('Failure To Load', adminInvoiceLoadingError);
@@ -75,7 +77,8 @@ const Invoice = () => {
     orderRefId, createdAt, hasBeenCancelled, cancelledAt, cartIsEmpty, cartItems,
     shippingAddress, billingAddress, showAddressLine2_billing, showAddressLine2_shipping,
     paymentMethod, cartCost, shippingCost, taxCost, totalCost, hasBeenShipped, promoCode, showRefundStatus,
-    refundStatus, showShippingStatus, name, paymentResult
+    refundStatus, showShippingStatus, name, paymentResult, shipToName, billToName, shippedOn, hasBeenDelivered,
+    showDeliveryStatus, deliveredOn, hasBeenRefunded, refundedOn
   } = formState;
 
   return (
@@ -106,7 +109,10 @@ const Invoice = () => {
                       {cartItems.map(cartItem => (
                         <>
                           <div className={"p-2 py-1"}>
-                            {cartItem.quantityRequested}x {cartItem.name}
+                            {cartItem.quantityRequested}x{' '}
+                            {cartItem.sizeRequested ? cartItem.sizeRequested : null}{' '}
+                            {cartItem.hueRequested ? cartItem.hueRequested : null}{' '}
+                            {cartItem.name}
                           </div>
                         </>
                       ))}
@@ -121,7 +127,7 @@ const Invoice = () => {
                   {shippingAddress && (
                     <>
                       <p className={"p-0 m-0"}>
-                        {name}
+                        {shipToName}
                       </p>
                       <p className={"p-0 m-0"}>
                         {shippingAddress.address_1 || "-"}
@@ -147,7 +153,7 @@ const Invoice = () => {
                   {billingAddress && (
                     <>
                       <p className={"p-0 m-0"}>
-                        {name}
+                        {billToName}
                       </p>
                       <p className={"p-0 m-0"}>
                         {billingAddress.address_1 || "-"}
@@ -260,7 +266,7 @@ const Invoice = () => {
                   <>
                     <Row className={"p-2 py-1"}>
                       <Col md={4}>
-                        <h6>Shipping:</h6>
+                        <h6>Shipping Status:</h6>
                       </Col>
                       <Col>
                         {hasBeenCancelled ? (
@@ -271,27 +277,154 @@ const Invoice = () => {
                           <>
                             {showShippingStatus ? (
                               <>
-                                {(!hasBeenShipped) && (
+                                {!hasBeenShipped ? (
                                   <>
                                     <p>Waiting To Be Shipped</p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <p>Package Shipped</p>
                                   </>
                                 )}
                               </>
                             ) : (
-                              <p>NDA</p>
+                              <p>No Data Available</p>
                             )}
                           </>
                         )}
                       </Col>
                     </Row>
+                    {!hasBeenCancelled && hasBeenShipped && (
+                      <Row className={"p-2 py-1"}>
+                        <Col md={4}>
+                          <h6>Shipped:</h6>
+                        </Col>
+                        <Col>
+                          {hasBeenCancelled ? (
+                            <>
+                              <p>This Order Has Been Cancelled</p>
+                            </>
+                          ) : (
+                            <>
+                              {showShippingStatus ? (
+                                <>
+                                  {!hasBeenShipped ? (
+                                    <>
+                                      <p>No Data</p>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <p>{shippedOn}</p>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <p>No Data Available</p>
+                              )}
+                            </>
+                          )}
+                        </Col>
+                      </Row>
+                    )}
+                    {!hasBeenCancelled && hasBeenShipped && showDeliveryStatus && (
+                      <Row className={"p-2 py-1"}>
+                        <Col md={4}>
+                          <h6>Delivery Status:</h6>
+                        </Col>
+                        <Col>
+                          {hasBeenCancelled ? (
+                            <>
+                              <p>This Order Has Been Cancelled</p>
+                            </>
+                          ) : (
+                            <>
+                              {showDeliveryStatus ? (
+                                <>
+                                  {!hasBeenDelivered ? (
+                                    <>
+                                      <p>Out For Delivery</p>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <p>COMPLETED</p>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <p>No Data Available</p>
+                              )}
+                            </>
+                          )}
+                        </Col>
+                      </Row>
+                    )}
+                    {!hasBeenCancelled && hasBeenShipped && showDeliveryStatus && (
+                      <Row className={"p-2 py-1"}>
+                        <Col md={4}>
+                          <h6>Delivery:</h6>
+                        </Col>
+                        <Col>
+                          {hasBeenCancelled ? (
+                            <>
+                              <p>This Order Has Been Cancelled</p>
+                            </>
+                          ) : (
+                            <>
+                              {showDeliveryStatus ? (
+                                <>
+                                  {!hasBeenDelivered ? (
+                                    <>
+                                      <p>Out For Delivery</p>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <p>{deliveredOn}</p>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <p>No Data Available</p>
+                              )}
+                            </>
+                          )}
+                        </Col>
+                      </Row>
+                    )}
+
                     {showRefundStatus && (
                       <>
                         <Row className={"p-2 py-1"}>
                           <Col md={4}>
-                            <h6>Refund:</h6>
+                            <h6>Refund Status:</h6>
                           </Col>
                           <Col>
-                            {hasBeenCancelled ? (
+                            {hasBeenCancelled && !hasBeenRefunded ? (
+                              <>
+                                <p>Pending</p>
+                              </>
+                            ) : (
+                              <>
+                                {hasBeenRefunded && (
+                                  <>
+                                    <p>COMPLETE</p>
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </Col>
+                        </Row>
+                      </>
+                    )}
+
+
+                    {showRefundStatus && (
+                      <>
+                        <Row className={"p-2 py-1"}>
+                          <Col md={4}>
+                            <h6>Refunded On:</h6>
+                          </Col>
+                          <Col>
+                            {hasBeenCancelled && !hasBeenRefunded ? (
                               <>
                                 <p>Pending</p>
                               </>
@@ -299,7 +432,7 @@ const Invoice = () => {
                               <>
                                 {(!hasBeenShipped) && (
                                   <>
-                                    <p>Processing</p>
+                                    <p>{refundedOn}</p>
                                   </>
                                 )}
                               </>

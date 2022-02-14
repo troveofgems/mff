@@ -1,6 +1,7 @@
 const {asyncHandler} = require("../../../../middleware/Helpers/async-handler.middleware");
 const {v4: uuidv4} = require('uuid');
 const {buildAPIBodyResponse} = require("../../../../utils/dev/controller.utils");
+const {sendEmail} = require('../../../../lib/email/sendEmail.routine');
 
 const Order = require('../../../../db/models/Order');
 
@@ -46,6 +47,10 @@ const createOrder = asyncHandler(async (req, res, next) => {
       let order = new Order(orderSchema);
       await order.save();
       response.data = {createdOrder: true, orderRefId};
+
+      // Send Order Placed Email Here
+      sendEmail("orderPlaced", order).then(() => {});
+
       return res
         .status(200)
         .json(response);
@@ -90,6 +95,11 @@ const cancelUserOrderById = asyncHandler(async (req, res, next) => {
 
   await Order.findByIdAndUpdate(req.params.id, req.body);
   response.success = true;
+
+  let orderDetails = await Order.findById(req.params.id).populate('user');
+
+  // Send Order Cancelled Email Here
+  sendEmail("orderCancelled", orderDetails).then(() => {});
 
   return res
     .status(201)

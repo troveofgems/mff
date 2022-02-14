@@ -39,7 +39,13 @@ import {
   ADMIN_UPDATE_PRODUCT_REQUEST,
   ADMIN_UPDATE_PRODUCT_FAILURE,
   ADMIN_LIST_PRODUCT_DETAILS_SUCCESS,
-  ADMIN_LIST_PRODUCT_DETAILS_FAILURE
+  ADMIN_LIST_PRODUCT_DETAILS_FAILURE,
+  ADMIN_MARK_ORDER_DELIVERED_REQUEST,
+  ADMIN_MARK_ORDER_DELIVERED_SUCCESS,
+  ADMIN_MARK_ORDER_DELIVERED_FAILURE,
+  ADMIN_MARK_ORDER_REFUNDED_REQUEST,
+  ADMIN_MARK_ORDER_REFUNDED_SUCCESS,
+  ADMIN_MARK_ORDER_REFUNDED_FAILURE
 } from '../constants/admin.constants';
 
 const _generateRequestConfiguration = ({ tokenIsRequired = false, token }) => {
@@ -138,6 +144,55 @@ export const adminMarkOrderShipped = (token, orderId) => async dispatch => {
   } catch(err) {
     dispatch({
       type: ADMIN_MARK_ORDER_SHIPPED_FAILURE,
+      payload: err
+    });
+  }
+};
+
+export const adminMarkOrderDelivered = (token, orderId) => async dispatch => {
+  dispatch({ type: ADMIN_MARK_ORDER_DELIVERED_REQUEST });
+
+  try {
+    const
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
+      updates = {
+        hasBeenDelivered: true,
+        deliveredOn: new Date()
+      },
+      { data: {data} } = await axios.put(`/api/v1/l1rAdmin/orders/markDelivered/${orderId}`, updates, config);
+
+    dispatch({
+      type: ADMIN_MARK_ORDER_DELIVERED_SUCCESS,
+      payload: data
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_MARK_ORDER_DELIVERED_FAILURE,
+      payload: err
+    });
+  }
+};
+
+export const adminMarkOrderRefunded = (token, orderId) => async dispatch => {
+  dispatch({ type: ADMIN_MARK_ORDER_REFUNDED_REQUEST });
+
+  try {
+    const
+      config = _generateRequestConfiguration({tokenIsRequired: true, token}),
+      updates = {
+        hasBeenRefunded: true,
+        refundedOn: new Date(),
+        refundStatus: "issued"
+      },
+      { data: {data} } = await axios.put(`/api/v1/l1rAdmin/orders/markRefunded/${orderId}`, updates, config);
+
+    dispatch({
+      type: ADMIN_MARK_ORDER_REFUNDED_SUCCESS,
+      payload: data
+    });
+  } catch(err) {
+    dispatch({
+      type: ADMIN_MARK_ORDER_REFUNDED_FAILURE,
       payload: err
     });
   }

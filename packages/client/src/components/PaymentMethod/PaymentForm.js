@@ -9,16 +9,40 @@ import Row from "react-bootstrap/Row";
 
 import CheckoutBreadcrumb from "../Checkout/Checkout.breadcrumb";
 import FormikTextInput from "../../formik/textInput";
+import axios from "axios";
 
 const PaymentMethodForm = () => {
+  const _addPaypalScript = async() => {
+    const {data: clientId} = await axios.get('/api/config/paypal');
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+    script.onLoad = function() {
+      setSDKReady(true);
+    }
+    document.body.appendChild(script);
+  };
   const
+    [sdkReady, setSDKReady] = useState(false),
     [promoCodeAccepted, setPromoCodeAccepted] = useState(false),
     [promoCodeDenied, setPromoCodeDenied] = useState(false),
     navigate = useNavigate(),
     location = useLocation();
-  useEffect(() => {}, []);
-  console.log(location);
-  let baseSchema = {};
+
+  useEffect(async () => {
+    await _addPaypalScript();
+  }, []);
+
+  useEffect(async () => {
+    if (!sdkReady) {
+      setSDKReady(true);
+    }
+  }, [sdkReady]);
+
+  let baseSchema = {
+    promoCode: ''
+  };
 
   const handleRequestToAcceptPromoCode = promoCode => {
     if (promoCode === "PC-TwilightZone@2000Meters") {
@@ -37,7 +61,6 @@ const PaymentMethodForm = () => {
         //validationSchema={formikRegisterValidationSchema}
         onSubmit={async (formData, {setSubmitting}) => {
           setSubmitting(true);
-          console.log('Working with: ', formData);
           navigate('/placeOrder', { state: {...location.state, paymentMethod: 0, promoCode: promoCodeAccepted ? formData.promoCode : null} });
           setSubmitting(false);
         }}

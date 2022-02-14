@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 // Formik
-import {Form, Formik, useFormikContext} from "formik";
+import {Form, Formik} from "formik";
 import {Link, useNavigate} from 'react-router-dom';
 import {useLocation} from "react-router-dom";
 
@@ -12,21 +12,17 @@ import CheckoutBreadcrumb from "../Checkout/Checkout.breadcrumb";
 import Notification from "../layout/Notification";
 import ListGroup from "react-bootstrap/ListGroup";
 import Image from "react-bootstrap/Image";
-import Button from "react-bootstrap/Button";
 
-import {createOrder, payForOrder} from "../../redux/actions/order.actions";
+import {createOrder} from "../../redux/actions/order.actions";
 import {getLoggedInUserProfile} from "../../redux/actions/auth.actions";
 
-import axios from 'axios';
 import {PayPalButton} from "react-paypal-button-v2";
 import Loader from "../layout/Loader";
-import {LOAD_PAY_ORDER_REQUEST, LOAD_PAY_ORDER_SUCCESS} from "../../redux/constants/order.constants";
+import {LOAD_PAY_ORDER_SUCCESS} from "../../redux/constants/order.constants";
 
 //const _addDecimals = someFloat => Math.round((Number(someFloat) * 100) / 100).toFixed(2);
 
 const PlaceOrderForm = () => {
-  useEffect(() => !location.state ? navigate('/cart', {}) : null, []); // If State Is Null, Push To Cart
-
   const
     [sdkReady, setSDKReady] = useState(false),
     [shippingCost, setShippingCost] = useState(0.00),
@@ -36,44 +32,28 @@ const PlaceOrderForm = () => {
     dispatch = useDispatch(),
     navigate = useNavigate(),
     location = useLocation(),
+    formRef = useRef(),
     userViewProfile = useSelector(state => state.userViewProfile),
     userLogin = useSelector(state => state.userLogin),
     payOrderDetails = useSelector(state => state.payOrderDetails),
-    {loading: loadingPay, success: paySuccess} = payOrderDetails,
+    {cartItems} = useSelector(state => state.cart),
+    {loading: loadingPay, success: loadingPaySuccess} = payOrderDetails,
     {user: userProfile} = userViewProfile,
     { auth } = userLogin;
 
-  const formRef = useRef();
-
+  useEffect(() => !location.state ? navigate('/cart', {}) : null, []); // If State Is Null, Push To Cart
   useEffect(() => {
-    if (!!auth) {
-      dispatch(getLoggedInUserProfile());
-    }
+    if (!!auth) {dispatch(getLoggedInUserProfile());}
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch({type: LOAD_PAY_ORDER_REQUEST});
-    const addPaypalScript = async() => {
-      const {data: clientId} = await axios.get('/api/config/paypal');
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.async = true;
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
-      script.onLoad = () => {
-        setSDKReady(true);
-      }
-      document.body.appendChild(script);
-    };
-    if (!window.paypal) {
-      addPaypalScript().then(() => {});
-    } else {
+  useEffect(async () => {
+    if (window.paypal) {
       dispatch({type: LOAD_PAY_ORDER_SUCCESS});
       setSDKReady(true);
+    } else if (!window.paypal) {
+      console.log('Paypal SDK was not loaded...');
     }
   }, []);
-
-
-  const {cartItems} = useSelector(state => state.cart);
 
   useEffect(() => {
     let
@@ -89,16 +69,14 @@ const PlaceOrderForm = () => {
     setShippingCost(tempShippingCost);
   }, []);
   let baseSchema = {};
-  console.log(location);
 
   const message_NDA = () => <p>Error: No Data Available</p>;
   const successPaymentHandler = paymentResult => {
-    console.log("Payment Result Was: ", paymentResult);
     if (paymentResult && paymentResult.status === "COMPLETED") {
       setPaymentDetails(paymentResult);
       return formRef.current.submitForm();
     } else {
-      console.log('Something went wrong with payment');
+      console.error('Something went wrong with payment');
     }
   };
   return (
@@ -107,16 +85,17 @@ const PlaceOrderForm = () => {
         innerRef={formRef}
         initialValues={baseSchema}
         onSubmit={async (formData, {setSubmitting}) => {
-          console.log('Now Submitting The Form After Payment Processing...');
-          console.log('Get Payment Details ', paymentDetails);
           setSubmitting(true);
           let orderItem = {
+            guestEmail: location.state.address.guest_email ? location.state.address.guest_email : null,
             taxCost,
             shippingCost,
             cartCost,
             cartItems,
             totalCost: parseFloat((shippingCost + taxCost + cartCost).toFixed(2)),
             shippingAddress: {
+              ship_to_first_name: location.state.address.mailing_ship_to_first_name,
+              ship_to_last_name: location.state.address.mailing_ship_to_last_name,
               address_1: location.state.address.mailing_address_line_1,
               address_2: location.state.address.mailing_address_line_2,
               city: location.state.address.mailing_city,
@@ -125,6 +104,8 @@ const PlaceOrderForm = () => {
               country: location.state.address.mailing_country,
             },
             billingAddress: {
+              bill_to_first_name: location.state.address.billing_bill_to_first_name,
+              bill_to_last_name: location.state.address.billing_bill_to_last_name,
               address_1: location.state.address.billing_address_line_1,
               address_2: location.state.address.billing_address_line_2,
               city: location.state.address.billing_city,
@@ -134,7 +115,7 @@ const PlaceOrderForm = () => {
             },
             paymentMethod: location.state.paymentMethod,
             promoCode: location.state.promoCode,
-            isGuestCheckout: !userProfile,
+            isGuestCheckout: (userProfile && !userProfile._id),
             user: userProfile ? userProfile._id : null,
             isPaid: true,
             paidAt: Date.now(),
@@ -145,7 +126,6 @@ const PlaceOrderForm = () => {
               email_address: paymentDetails.email_address
             }
           };
-          console.log('Try To Create Item: ', orderItem);
           await createOrder(orderItem)(dispatch);
           setSubmitting(false);
           navigate('/orderSuccess');
@@ -172,7 +152,11 @@ const PlaceOrderForm = () => {
                                 {(!location || !location.state || !location.state.address) ? message_NDA() : (
                                   <>
                                     <p>
-                                      Shipping Address:{' '}
+                                      Shipping To:{' '}
+                                    </p>
+                                    <p>
+                                      {location.state.address.mailing_ship_to_first_name}{' '}
+                                      {location.state.address.mailing_ship_to_last_name},{' '}
                                       {location.state.address.mailing_address_line_1},{' '}
                                       {(location.state.address.mailing_address_line_2.length) > 0 && (
                                         <>
@@ -189,18 +173,22 @@ const PlaceOrderForm = () => {
                                         location.state.address.mailing_address_line_1 ? false : (
                                           <>
                                           <p>
-                                            Billing Address:{' '}
-                                            {location.state.address.billing_address_line_1},{' '}
-                                            {(location.state.address.billing_address_line_2.length) > 0 && (
-                                              <>
-                                                {location.state.address.billing_address_line_2},{' '}
-                                              </>
-                                            )}
-                                            {location.state.address.billing_city},{' '}
-                                            {location.state.address.billing_state.toUpperCase()},{' '}
-                                            {location.state.address.billing_postalCode}{' '}
-                                            {location.state.address.billing_country.toUpperCase()}
+                                            Billing To:{' '}
                                           </p>
+                                            <p>
+                                              {location.state.address.billing_bill_to_first_name}{' '}
+                                              {location.state.address.billing_bill_to_last_name},{' '}
+                                              {location.state.address.billing_address_line_1},{' '}
+                                              {(location.state.address.billing_address_line_2.length) > 0 && (
+                                                <>
+                                                  {location.state.address.billing_address_line_2},{' '}
+                                                </>
+                                              )}
+                                              {location.state.address.billing_city},{' '}
+                                              {location.state.address.billing_state.toUpperCase()},{' '}
+                                              {location.state.address.billing_postalCode}{' '}
+                                              {location.state.address.billing_country.toUpperCase()}
+                                            </p>
                                           </>
                                         )}
                                   </>
@@ -228,7 +216,7 @@ const PlaceOrderForm = () => {
                               </Col>
                               <Col md={6} sm={12}>
                                 <h4 className={"mt-3"}>
-                                  Order
+                                  Cart
                                 </h4>
                                 {cartItems && cartItems.length === 0 ? (
                                   <Notification>
@@ -250,18 +238,20 @@ const PlaceOrderForm = () => {
                                             ${item.price.toFixed(2)}
                                           </Col>
                                           <Col md={2}>
-                                            {/*TODO: Change Field To Dropdown To Auto Update Qtys*/}
                                             Qty: {item.quantityRequested}
                                           </Col>
+                                          {item.sizeRequested && (
+                                            <Col>
+                                              {item.sizeRequested}
+                                            </Col>
+                                          )}
+                                          {item.hueRequested && (
+                                            <Col>
+                                              {item.hueRequested}
+                                            </Col>
+                                          )}
                                           <Col md={2}>
                                             ${(item.quantityRequested * item.price).toFixed(2)}
-                                          </Col>
-                                          <Col md={2}>
-                                            <Button
-                                              type={"button"}
-                                              onClick={() => {alert('TODO: Implement Remove From Cart Here')}/*removeFromCartHandler(item.product)*/}>
-                                              <i className={"fas fa-trash"}>{}</i>
-                                            </Button>
                                           </Col>
                                         </Row>
                                       </ListGroup.Item>

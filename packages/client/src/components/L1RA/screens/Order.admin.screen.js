@@ -7,7 +7,10 @@ import Loader from "../../layout/Loader";
 import Col from 'react-bootstrap/Col';
 import {Table} from "react-bootstrap";
 
-import {getAllOrdersForAdmin, adminCancelOrderById, adminMarkOrderShipped} from "../../../redux/actions/admin.actions";
+import {
+  getAllOrdersForAdmin, adminCancelOrderById,
+  adminMarkOrderShipped, adminMarkOrderDelivered, adminMarkOrderRefunded
+} from "../../../redux/actions/admin.actions";
 
 const OrderScreen = () => {
   const
@@ -49,6 +52,32 @@ const OrderScreen = () => {
     }
   };
 
+  const handleMarkOrderDelivered = async oid => {
+    let confirmation =
+      prompt(
+        `Are You Sure You Want To Mark This Order As Delivered? 
+        Copy & Paste The Following Id to continue: ${oid}`
+      );
+    let token = auth.token;
+    if (confirmation === oid) {
+      await dispatch(adminMarkOrderDelivered(token, oid));
+      await dispatch(getAllOrdersForAdmin(token));
+    }
+  };
+
+  const handleMarkOrderRefunded = async oid => {
+    let confirmation =
+      prompt(
+        `Are You Sure You Want To Mark This Order Refunded? 
+        Copy & Paste The Following Id to continue: ${oid}`
+      );
+    let token = auth.token;
+    if (confirmation === oid) {
+      await dispatch(adminMarkOrderRefunded(token, oid));
+      await dispatch(getAllOrdersForAdmin(token));
+    }
+  };
+
   return (
     <>
       <h2 className={'text-center my-5'}>Admin Order Portal</h2>
@@ -81,9 +110,21 @@ const OrderScreen = () => {
                     <td>{order.createdAt}</td>
                     <td>{order.totalCost}</td>
                     <td>
-                      {order.hasBeenCancelled ? ("Cancelled") : (
+                      {order.hasBeenCancelled ? (
                         <>
-                          {!order.hasBeenShipped ? 'Waiting To Be Shipped' : 'Shipped'}
+                          {!order.hasBeenRefunded ? (<p>Cancelled - Awaiting Refund</p>) : (<p>Cancelled - Refund Complete</p>)}
+                        </>
+                      ) : (
+                        <>
+                          <p>
+                            {
+                              !order.hasBeenShipped ? 'Waiting To Be Shipped' : (
+                                (order.hasBeenShipped && !order.hasBeenDelivered) ? 'Out For Delivery' : (
+                                  order.hasBeenDelivered ? "Delivered" : null
+                                )
+                              )
+                            }
+                          </p>
                         </>
                       )}
                     </td>
@@ -115,6 +156,28 @@ const OrderScreen = () => {
                           >
                             <i className="fas fa-ban" />{' '}
                             Cancel Order
+                          </button>
+                        </div>
+                      )}
+                      {order.hasBeenShipped && !order.hasBeenDelivered && (
+                        <div className={"m-2"}>
+                          <button type={"button"} className={"text-dark"}
+                                  onClick={() => handleMarkOrderDelivered(order._id)}
+                                  disabled={auth.authLevel === 1000}
+                          >
+                            <i className="fas fa-box" />{' '}
+                            Mark Delivered
+                          </button>
+                        </div>
+                      )}
+                      {order.hasBeenCancelled && !order.hasBeenRefunded && (
+                        <div className={"m-2"}>
+                          <button type={"button"} className={"text-dark"}
+                                  onClick={() => handleMarkOrderRefunded(order._id)}
+                                  disabled={auth.authLevel === 1000}
+                          >
+                            <i className="fas fa-money-bill-1" />{' '}
+                            Mark Refunded
                           </button>
                         </div>
                       )}

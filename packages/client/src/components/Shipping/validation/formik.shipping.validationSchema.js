@@ -6,6 +6,10 @@ import { // App Constant Values
   ADDRESS_CITY_MAX_LEN, ADDRESS_CITY_MIN_LEN,
   ADDRESS_POSTAL_CODE_MAX_LEN, ADDRESS_POSTAL_CODE_MIN_LEN
 } from './formik.validation.constants';
+import {
+  FIRST_NAME_MAX_LEN, FIRST_NAME_MIN_LEN,
+  LAST_NAME_MAX_LEN, LAST_NAME_MIN_LEN
+} from "../../L1RA/User/validation/formik.validation.constants";
 
 const _setFieldSchema = (
   isBillingField,
@@ -37,6 +41,18 @@ const _setFieldSchemaForDropdown = () => {
 
 const buildValidationSchema = (billingAddressIsRequired) => {
   let addressSchematics = {
+    mailing_ship_to_first_name:
+      _setFieldSchema(
+        false,
+        null,
+        FIRST_NAME_MAX_LEN, FIRST_NAME_MIN_LEN
+      ),
+    mailing_ship_to_last_name:
+      _setFieldSchema(
+        false,
+        null,
+        LAST_NAME_MAX_LEN, LAST_NAME_MIN_LEN
+      ),
     mailing_address_line_1:
       _setFieldSchema(
       false,
@@ -65,6 +81,18 @@ const buildValidationSchema = (billingAddressIsRequired) => {
     ),
     mailing_country:
       _setFieldSchemaForDropdown(),
+    billing_bill_to_first_name:
+      _setFieldSchema(
+        true,
+        billingAddressIsRequired,
+        FIRST_NAME_MAX_LEN, FIRST_NAME_MIN_LEN
+      ),
+    billing_bill_to_last_name:
+      _setFieldSchema(
+        true,
+        billingAddressIsRequired,
+        LAST_NAME_MAX_LEN, LAST_NAME_MIN_LEN
+      ),
     billing_address_line_1:
       _setFieldSchema(
       true,
@@ -94,7 +122,7 @@ const buildValidationSchema = (billingAddressIsRequired) => {
     billing_country:
       _setFieldSchemaForDropdown()
   }
-  return Yup.object(addressSchematics)
+  return Yup.object(addressSchematics);
 };
 
 export default buildValidationSchema;

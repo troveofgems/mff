@@ -2,6 +2,7 @@ const {asyncHandler} = require("../../../../middleware/Helpers/async-handler.mid
 const {buildAPIBodyResponse} = require("../../../../utils/dev/controller.utils");
 const User = require('../../../../db/models/Users');
 const Order = require("../../../../db/models/Order");
+const {sendEmail} = require("../../../../lib/email/sendEmail.routine");
 
 const _encryptPassword = async (pwd, uid) => { // TODO: Extricate This Fxn To The Appropriate Helper File
   let user = await User // Search & Update User Data
@@ -76,7 +77,21 @@ const updateUserById = asyncHandler(async (req, res, next) => {
 
   response.data = await User // Search & Update User Data
     .findByIdAndUpdate(req.body.update_registrationId, req.body, {upsert: true});
+
   response.success = true;
+
+  let userUpdated = await User // Search & Update User Data
+    .findById(req.body.update_registrationId);
+
+  userUpdated.adminUpdate = true;
+
+  if (req.body.authLevel) {
+    // Send Promoted Role Email Here
+    sendEmail("rolePromotion", userUpdated).then(() => {});
+  } else {
+    // Send Admin Updated Account Info Email Here
+    sendEmail("accountUpdate", userUpdated).then(() => {});
+  }
 
   return res
     .status(200)

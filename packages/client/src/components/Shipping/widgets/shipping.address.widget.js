@@ -15,6 +15,13 @@ import FormikTextInput from "../../../formik/textInput";
 // Custom Data Imports
 import usTerritories from '../../../data/usTerritories.json';
 import AddressBreadCrumb from "../features/address.breadcrumb";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import {
+  FIRST_NAME_MAX_LEN,
+  FIRST_NAME_MIN_LEN, LAST_NAME_MAX_LEN,
+  LAST_NAME_MIN_LEN
+} from "../../L1RA/User/validation/formik.validation.constants";
 
 const ShippingAddressWidget = ({formikValues, onlyUseShipping}) => {
   const addressType = 'mailing'; // TODO: Optimize Pattern
@@ -33,6 +40,26 @@ const ShippingAddressWidget = ({formikValues, onlyUseShipping}) => {
         <div>
           <div className="form-row">
             <div className="form-item registration-form-item">
+              <Row className={"pb-2"}>
+                <Col md={6}>
+                  <FormikTextInput
+                    label='First Name'
+                    type='text' id={`${addressType}_ship_to_first_name`} className={"mb-2 shippingInput"}
+                    name={`${addressType}_ship_to_first_name`}
+                    minLength={FIRST_NAME_MIN_LEN} maxLength={FIRST_NAME_MAX_LEN}
+                    placeholder={'Michael'}
+                  />
+                </Col>
+                <Col md={6}>
+                  <FormikTextInput
+                    label='Last Name'
+                    type='text' id={`${addressType}_bill_to_last_name`} className={"mb-2 shippingInput"}
+                    minLength={LAST_NAME_MIN_LEN} maxLength={LAST_NAME_MAX_LEN}
+                    name={`${addressType}_ship_to_last_name`}
+                    placeholder={'Fish'}
+                  />
+                </Col>
+              </Row>
               <div className={"addressWidget"}>
                 <FormikTextInput
                   label='Address Line 1'

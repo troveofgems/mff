@@ -26,12 +26,13 @@ import { // Needs To Be Implemented
   PRODUCT_HUE_HEX_MIN, PRODUCT_HUE_HEX_MAX, PRODUCT_PROMO_CODE_LIST_MIN, PRODUCT_PROMO_CODE_LIST_MAX
 } from "./validation/formik.validation.constants";
 
+import {translateSizeOptionLabel} from "../../utils/dev.utils";
+
 const ShopProduct = () => {
   const
     dispatch = useDispatch(),
     navigate = useNavigate(),
     userLogin = useSelector(state => state.userLogin),
-    updateProduct = useSelector(state => state.updateProduct),
     viewProduct = useSelector(state => state.viewProduct),
     {loading: loadingProduct, success: loadingProductSuccess, error: loadingProductError, product } = viewProduct,
     { auth: { authLevel = 2000, token = null } } = userLogin,
@@ -104,34 +105,7 @@ const ShopProduct = () => {
     let newList = [...paletteOptions, hueToAdd];
     return setPaletteOptions(newList);
   };
-  const translateSizeOptionLabel = option => {
-    switch (option) {
-      case "xsm":
-        return "X-Small";
-      case "sm":
-        return "Small";
-      case "md":
-        return "Medium";
-      case "lg":
-        return "Large";
-      case "xlg":
-        return "X-Large";
-      case "xxlg":
-        return "2x X-Large";
-      case "xsmsm":
-        return "X-Small - Small";
-      case "smmd":
-        return "Small - Medium";
-      case "mdlg":
-        return "Medium - Large";
-      case "lgxl":
-        return "Large - X-Large";
-      case "xlgxxlg":
-        return "Extra Large - 2x X-Large";
-      default:
-        return "Unknown Value";
-    }
-  };
+
   const processChanges = (formData, palette, authLevel) => {
     let updates = { // Base Object
       name: formData.product_name,

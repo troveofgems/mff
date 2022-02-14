@@ -1,6 +1,7 @@
 const {asyncHandler} = require("../../../../middleware/Helpers/async-handler.middleware");
 const {buildAPIBodyResponse} = require("../../../../utils/dev/controller.utils");
 const Order = require('../../../../db/models/Order');
+const {sendEmail} = require("../../../../lib/email/sendEmail.routine");
 
 // @desc  Serve Route Sanity Check
 // @route GET /api/vX/authentorization/authentication
@@ -47,8 +48,48 @@ const reviewInvoice = asyncHandler(async (req, res) => {
 const markOrderShipped = asyncHandler(async (req, res) => {
   let response = buildAPIBodyResponse('/l1rAdmin/orders/markShipped/:id');
 
-  response.data = await Order.findByIdAndUpdate(req.params.id, req.body);
+  let order = await Order.findByIdAndUpdate(req.params.id, req.body);
+  response.data = order;
   response.success = true;
+
+  // Send Order Cancelled Email Here
+  sendEmail("orderShipped", order).then(() => {});
+
+  return res
+    .status(204)
+    .json(response);
+});
+
+// @desc  Marks An Order Delivered
+// @route PUT /api/vX/l1rAdmin/orders/markDelivered/:id
+// @access PRIVATE/ADMIN
+const markOrderDelivered = asyncHandler(async (req, res) => {
+  let response = buildAPIBodyResponse('/l1rAdmin/orders/markDelivered/:id');
+
+  let order = await Order.findByIdAndUpdate(req.params.id, req.body);
+  response.data = order;
+  response.success = true;
+
+  // Send Order Delivered Email Here
+  sendEmail("orderDelivered", order).then(() => {});
+
+  return res
+    .status(204)
+    .json(response);
+});
+
+// @desc  Marks An Order Refunded
+// @route PUT /api/vX/l1rAdmin/orders/markRefunded/:id
+// @access PRIVATE/ADMIN
+const markOrderRefunded = asyncHandler(async (req, res) => {
+  let response = buildAPIBodyResponse('/l1rAdmin/orders/markRefunded/:id');
+
+  let order = await Order.findByIdAndUpdate(req.params.id, req.body);
+  response.data = order;
+  response.success = true;
+
+  // Send Order Delivered Email Here
+  sendEmail("orderRefunded", order).then(() => {});
 
   return res
     .status(204)
@@ -61,9 +102,12 @@ const markOrderShipped = asyncHandler(async (req, res) => {
 const cancelOrder = asyncHandler(async (req, res) => {
   let response = buildAPIBodyResponse('/l1rAdmin/orders/cancel/:id');
 
-  let order = await Order.findByIdAndUpdate(req.params.id, req.body);
-  response.data = order;
+  await Order.findByIdAndUpdate(req.params.id, req.body);
   response.success = true;
+
+  // Send Order Cancelled Email Here
+  let orderDetails = await Order.findById(req.params.id).populate('user');
+  sendEmail("orderCancelled", orderDetails).then(() => {});
 
   return res
     .status(204)
@@ -75,5 +119,7 @@ module.exports.adminOrderController = {
   getAllOrders,
   reviewInvoice,
   markOrderShipped,
+  markOrderDelivered,
+  markOrderRefunded,
   cancelOrder
 };

@@ -45,8 +45,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
     return console.log('NO Token Exists', req)//handleInvalidRequest();
   }
 
-  console.log('Just Before Try');
-
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_TOKEN_KEY);
     req.user = await User.findById(decodedToken.id);

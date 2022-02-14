@@ -163,6 +163,11 @@ const Header = () => {
                   {authenticatedLinks}
                 </>
               )}
+              {userLoginInfo && (userLoginInfo.authLevel === 2000) && (
+                <>
+                  {authenticatedLinks}
+                </>
+              )}
               {userLoginInfo && typeof userLoginInfo === 'string' && (
                 <LinkContainer to="/">
                   <Nav.Item onClick={handleLogout} key={"user-logout"} className={"text-white"}>
