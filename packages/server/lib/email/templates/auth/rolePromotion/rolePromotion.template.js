@@ -64,13 +64,21 @@ Hello, and a very warm welcome ${user.firstName}.
 You have been granted the special role of Auditor by the application manager.
 </p>
 <p>
-I sincerely hope you enjoy your visit to my MERN Stack driven Web Application: Frickn' Fish.
+I sincerely hope you enjoy your visit to my MERN-stack driven web application: Frickn' Fish.
 </p>
 <p>
 As an Auditor, you have been granted read-only site admin privileges so that you can review any
 number of rich features offered by the Web Application - and more importantly help you decide if I'm the 
-Software Developer that you want to bring onto your team. 
+Software Developer or Architect that you want to bring onto your team. 
 </p>
+<p>
+Would you like to push some test orders through the system? No worries: Just use the following Paypal Credentials
+and stick to the default selections at checkout.
+</p>
+<ol>
+  <li>Paypal Username: sb-7epv4712465498@personal.example.com</li>
+  <li>Paypal Password: 1&@skQ4u</li>
+</ol>
 <p>
 Please let me know if you have any questions, concerns, or find any bugs. I'm always happy to have a discussion
 and or demonstration about any of the features that you've seen on this site.
