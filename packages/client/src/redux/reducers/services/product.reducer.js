@@ -1,6 +1,13 @@
 import {
-  PRODUCT_LIST_FAILURE, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS,
-  PRODUCT_DETAILS_FAILURE, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS
+  PRODUCT_LIST_FAILURE,
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_DETAILS_FAILURE,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  GET_TOP_PRODUCTS_REQUEST,
+  GET_TOP_PRODUCTS_SUCCESS,
+  GET_TOP_PRODUCTS_FAILURE
 } from '../../constants/product.constants';
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -40,6 +47,34 @@ export const productDetailsReducer = (state = { product: { reviews: [] } }, acti
     case PRODUCT_DETAILS_FAILURE:
       return {
         loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const topProductsReducer = (state = { productList: [] }, action) => {
+  switch(action.type) {
+    case GET_TOP_PRODUCTS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        productList: null,
+        error: null,
+        success: null
+      };
+    case GET_TOP_PRODUCTS_SUCCESS:
+      return {
+        loading: false,
+        error: false,
+        success: true,
+        productList: action.payload
+      };
+    case GET_TOP_PRODUCTS_FAILURE:
+      return {
+        loading: false,
+        productList: [],
         error: action.payload,
       };
     default:

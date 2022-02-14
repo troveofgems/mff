@@ -1,11 +1,13 @@
 import {
   productListReducer,
-  productDetailsReducer
+  productDetailsReducer,
+  topProductsReducer
 } from '../services/product.reducer';
 
 const productReducerMap = {
   productList: productListReducer,
-  productDetails: productDetailsReducer
+  productDetails: productDetailsReducer,
+  topProducts: topProductsReducer
 };
 
 export default productReducerMap;

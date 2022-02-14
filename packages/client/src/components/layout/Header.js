@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Route} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {NavLink} from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -12,6 +12,8 @@ import LinkContainer from "react-router-bootstrap/LinkContainer";
 
 import { logoutUser } from '../../redux/actions/auth.actions';
 import {CLEAR_LOGGED_IN_USER} from "../../redux/constants/auth.constants";
+
+import SearchBox from "./SearchBox";
 
 const Header = () => {
   const
@@ -153,7 +155,7 @@ const Header = () => {
           <Navbar.Collapse id="navbarScroll">
             <Nav
               className="ml-auto my-2 my-lg-0 w-100"
-              style={{ maxHeight: '100px' }}
+              style={{ maxHeight: '100px'}}
               navbarScroll
             >
               {!userLoginInfo && guestLinks}
@@ -169,6 +171,7 @@ const Header = () => {
                 </>
               )}
               {userLoginInfo && typeof userLoginInfo === 'string' && (
+                /*At The End Of This, Force this to auto logout and redirect to home...*/
                 <LinkContainer to="/">
                   <Nav.Item onClick={handleLogout} key={"user-logout"} className={"text-white"}>
                     <i className={"fas fa-sign-out-alt"} />{' '}
@@ -178,6 +181,9 @@ const Header = () => {
               )}
             </Nav>
           </Navbar.Collapse>
+          <div className={"text-end w-50"}>
+            <SearchBox />
+          </div>
         </Container>
       </Navbar>
     </header>

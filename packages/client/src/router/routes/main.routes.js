@@ -22,6 +22,7 @@ const setMainRoutes = isLoggedIn => (
   <Route path={"/"} element={<AppContainer />}>
     {/*General User Routes*/}
     <Route index element={<HomeScreen />} />
+    <Route path="/" element={<HomeScreen />} />
     <Route path="login" element={<AuthScreen />} />
     <Route path="forgotPassword" element={<ForgotPasswordFeature />} />
     {/*Cart Related Routes*/}
