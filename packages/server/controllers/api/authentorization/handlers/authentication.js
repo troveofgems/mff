@@ -1,6 +1,7 @@
 const { buildAPIBodyResponse } = require("../../../../utils/dev/controller.utils");
 const ErrorResponse = require('../../../../middleware/Error').errorHandler;
 const { sendEmail } = require('../../../../lib/email/sendEmail.routine');
+const crypto = require('crypto');
 
 const
   { asyncHandler } = require('../../../../middleware/Helpers/async-handler.middleware'),
@@ -221,10 +222,88 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
     .json(apiResponse);
 });
 
+// @desc    Forgot Password
+// @route   POST /api/vX/authentorization/authentication/forgotpwd
+// @access  PUBLIC
+const requestToResetPassword = asyncHandler(async (req, res, next) => {
+  let
+    apiResponse = buildAPIBodyResponse('/authentication/forgotPassword');
+
+  const user = await User.findOne({currentEmail: req.body.login_email});
+
+  if (!user) {
+    console.log('No User Was Found...');
+  }
+
+  // Get Reset Token
+  const resetToken = await user.getResetPasswordToken();
+
+  await user.save({validateBeforeSave: false});
+
+  let dtp = {
+    firstName: user.firstName,
+    resetUrl: `${req.protocol}://${req.get('host')}/api/v1/authentorization/authentication/resetpwd/${resetToken}`,
+    feresetUrl: `http://localhost:3000/resetPassword/${resetToken}`,
+    currentEmail: user.currentEmail
+  };
+
+  sendEmail("passwordReset", dtp).then(() => {});
+
+  apiResponse.success = true;
+  apiResponse.user = user;
+  apiResponse.data = resetToken;
+
+  return res
+    .status(200)
+    .json(apiResponse);
+});
+
+// @desc    Reset Password
+// @route   PUT /api/vX/authentorization/authentication/resetpwd/:token
+// @access  PUBLIC
+const resetPasswordWithToken = asyncHandler(async (req, res, next) => {
+  let
+    apiResponse = buildAPIBodyResponse('/authentication/resetpwd/:token');
+
+  console.log('Inside resetPasswordWithToken', req.params);
+
+  // Get Hashed token
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.resetToken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    console.log('User Not Found By Token/Expire Combo');
+    return next();
+  }
+
+  // Set New Password
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  apiResponse.success = true;
+  apiResponse.data = user;
+
+  return res
+    .status(200)
+    .json(apiResponse);
+});
+
 module.exports.authenticationController = {
   getAuthenticatedProfile,
   loginUser,
   registerUser,
+  requestToResetPassword,
+  resetPasswordWithToken,
   serveSanityCheck,
   ubyRegistrationTracking,
   updateUserProfile

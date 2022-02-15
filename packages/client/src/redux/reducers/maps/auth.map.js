@@ -3,10 +3,14 @@ import {
   userLogoutReducer,
   userRegisterReducer,
   userUpdateProfileReducer,
-  userViewProfileReducer
+  userViewProfileReducer,
+  userRequestPasswordResetReducer,
+  userResetPasswordReducer
 } from '../services/auth.reducer';
 
 const authReducerMap = {
+  userRequestToResetPassword: userRequestPasswordResetReducer,
+  userResetPasswordDetails: userResetPasswordReducer,
   userLogin: userLoginReducer,
   userLogout: userLogoutReducer,
   userRegister: userRegisterReducer,

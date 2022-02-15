@@ -4,7 +4,9 @@ import {
   LOGIN_USER_FAILURE, LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS,
   LOGOUT_USER_FAILURE, LOGOUT_USER_REQUEST, LOGOUT_USER_SUCCESS,
   UPDATE_USER_PROFILE_FAILURE, UPDATE_USER_PROFILE_REQUEST, UPDATE_USER_PROFILE_SUCCESS,
-  VIEW_USER_PROFILE_FAILURE, VIEW_USER_PROFILE_REQUEST, VIEW_USER_PROFILE_SUCCESS
+  VIEW_USER_PROFILE_FAILURE, VIEW_USER_PROFILE_REQUEST, VIEW_USER_PROFILE_SUCCESS,
+  USER_RESET_PWD_REQUEST_FAILURE, USER_RESET_PWD_REQUEST_REQUEST, USER_RESET_PWD_REQUEST_SUCCESS,
+  USER_RESET_PWD_FAILURE, USER_RESET_PWD_REQUEST, USER_RESET_PWD_SUCCESS
 } from '../constants/auth.constants';
 
 export const loginUser = userCredentials => async dispatch => {
@@ -34,7 +36,6 @@ export const loginUser = userCredentials => async dispatch => {
     });
   }
 };
-
 export const registerUser = registrationData => async dispatch => {
   dispatch({ type: REGISTER_USER_REQUEST });
 
@@ -72,7 +73,6 @@ export const registerUser = registrationData => async dispatch => {
     });
   }
 };
-
 export const logoutUser = () => async dispatch => {
   dispatch({ type: LOGOUT_USER_REQUEST });
   try {
@@ -88,7 +88,6 @@ export const logoutUser = () => async dispatch => {
     });
   }
 };
-
 export const getLoggedInUserProfile = () => async (dispatch, getState) => {
   dispatch({ type: VIEW_USER_PROFILE_REQUEST });
   const
@@ -120,7 +119,6 @@ export const getLoggedInUserProfile = () => async (dispatch, getState) => {
     });
   }
 };
-
 export const updateUserProfile = updates => async (dispatch, getState) => {
   dispatch({ type: UPDATE_USER_PROFILE_REQUEST });
   const
@@ -154,30 +152,47 @@ export const updateUserProfile = updates => async (dispatch, getState) => {
 
 };
 
-/* No Use For This Call ATM For Regular Users...
-export const getUserProfileById = id => async (dispatch, getState) => {
-  dispatch({ type: VIEW_USER_PROFILE_REQUEST });
-
+export const sendEmailToResetPassword = accountData => async dispatch => {
+  dispatch({ type: USER_RESET_PWD_REQUEST_REQUEST });
   try {
-    const
-      { userLogin: { auth } } = getState(),
-      config = {
-        'Content-Type': 'application/json',
-        'x-auth-token': auth.token
-      },
-      res = await axios.get(`/api/v1/authentorization/authentication/viewProfile/${id}`, config);
+    const config = {
+      'headers': {
+        'Content-Type': 'application/json'
+      }
+    };
 
-    console.log('res is ', res);
-    console.log('config was: ', config);
+    await axios.post(`/api/v1/authentorization/authentication/forgotpwd`, accountData, config);
 
     dispatch({
-      type: VIEW_USER_PROFILE_SUCCESS,
-      payload: ''
+      type: USER_RESET_PWD_REQUEST_SUCCESS,
     });
   } catch(err) {
     dispatch({
-      type: VIEW_USER_PROFILE_FAILURE,
-      payload: err.response.data.error.message
+      type: USER_RESET_PWD_REQUEST_FAILURE,
+      payload: err
     });
   }
-};*/
+
+};
+export const sendUpdateToUserAccountPwd = (token, update) => async dispatch => {
+  dispatch({ type: USER_RESET_PWD_REQUEST });
+  console.log('About to call reset password!!');
+  try {
+    const config = {
+      'headers': {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    await axios.put(`/api/v1/authentorization/authentication/resetpwd/${token}`, update, config);
+
+    dispatch({
+      type: USER_RESET_PWD_SUCCESS,
+    });
+  } catch(err) {
+    dispatch({
+      type: USER_RESET_PWD_FAILURE,
+      payload: err
+    });
+  }
+};

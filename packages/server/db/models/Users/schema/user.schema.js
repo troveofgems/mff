@@ -5,6 +5,7 @@ const
   {
     encryptPassword,
     getSignedJwt,
+    getResetPasswordToken,
     verifyCredentials
   } = require('../../../../utils/dev/schema.utils'),
   mongoose = require('mongoose');
@@ -112,6 +113,12 @@ const UserSchema = new mongoose.Schema({
   banExpiresAt: {
     type: Date,
     default: null
+  },
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpire: {
+    type: Date
   }
 /*, TODO: Split The Schemas At Some Point Low Priority - Knowledge Needed.
   accountInfo: {
@@ -130,5 +137,6 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre('save', encryptPassword);
 UserSchema.methods.getSignedJwt = getSignedJwt;
 UserSchema.methods.verifyCredentials = verifyCredentials;
+UserSchema.methods.getResetPasswordToken = getResetPasswordToken;
 
 module.exports = UserSchema;

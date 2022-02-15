@@ -2,7 +2,7 @@ const
   {
     authentication: {
       serveSanityCheck: serveAuthenticationCheck, registerUser, loginUser, getAuthenticatedProfile,
-      ubyRegistrationTracking,
+      ubyRegistrationTracking, requestToResetPassword, resetPasswordWithToken,
       updateUserProfile
     }
   } = require('../../../controllers/api/authentorization').authentorizationController,
@@ -20,6 +20,14 @@ const
 router
   .route('/authentication')
   .get(serveAuthenticationCheck)
+
+router
+  .route('/authentication/forgotpwd')
+  .post(requestToResetPassword);
+
+router
+  .route('/authentication/resetpwd/:resetToken')
+  .put(resetPasswordWithToken);
 
 router
   .route('/authentication/login')

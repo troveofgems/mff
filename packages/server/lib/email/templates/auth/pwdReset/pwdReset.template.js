@@ -1,5 +1,5 @@
 const {buildHTMLBodyEmail} = require("../../../helpers/email.html.wrapper");
-module.exports.setPasswordResetEmailTemplate = ({firstName}) => {
+module.exports.setPasswordResetEmailTemplate = (user, adminInit = false) => {
   const
     subject = "We have received your request to reset your password";
 
@@ -7,15 +7,17 @@ module.exports.setPasswordResetEmailTemplate = ({firstName}) => {
   // Text Body
   // *********************************/
   let textBody = `
-  Dear ${firstName},
+  Mayday! Mayday! ${user.firstName},
   
-  Frickn' Fish staff received a request to reset your account password. If you did not initiate this request,
-  please reach out immediately. Otherwise,
+  We received your S.O.S. to reset your account password. If you did not initiate this request, please reach out immediately. 
+  Request initiated via: ${adminInit ? "MFF Site Administrator" : "Web Page"}
   
-  Here are the instructions to reset your password:
-  1. Please visit this link to reset your password. Link: #someDomain
+  Please follow these instructions to reset your password:
+  1. Please visit this link to reset your password. Link: ${user.feresetUrl}
   
   Please don't hesitate to reach out to our support team if you need any help!
+  
+  Note: The link in this email will expire in 10 minutes.
   
   All The Best,
   The Frickn' Fish Team
@@ -30,20 +32,21 @@ module.exports.setPasswordResetEmailTemplate = ({firstName}) => {
     ${subject}
 </h2>
 <div style="font-size: 1.25rem; width: 80%; margin: 0 auto; letter-spacing: 0.10em">
-    <p>Dear ${firstName}</p>
+    <p>Mayday! Mayday! ${user.firstName},</p>
     <p style="line-height: 150%">
-        Frickn' Fish staff received a request to reset your account password. If you did not initiate this request,
-        please reach out immediately. Otherwise,
+        We received your S.O.S. to reset your account password. If you did not initiate this request, please reach out immediately.
     </p>
+    <p>Request initiated via: ${adminInit ? "MFF Site Administrator" : "Web Page"}</p>
     <p style="line-height: 150%">
-        Here are the instructions to reset your password:
+        Please follow these instructions to reset your password:
     </p>
     <ol>
         <li>
-            Please visit this <a href="#someDomain">link</a> to reset your password.
+            Please visit <a href=${user.feresetUrl} target="_blank" rel="noreferrer noopener">this</a> link to reset your password.
         </li>
     </ol>
     <p>Please don't hesitate to reach out to our support team if you need any help!</p>
+    <p>Note: The link in this email will expire in 10 minutes.</p>
 </div>
 <div style="font-size: 1.25rem; width: 80%; margin: 0 auto; letter-spacing: 0.10em">
     <p style="margin: 0; padding: 0;">All The Best,</p>

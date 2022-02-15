@@ -1,18 +1,17 @@
 import React 		from 'react';
 import * as Yup from 'yup';
 // App Constant Values
-import {MAX_EMAIL_LEN} from "../../../validation/constants/max.len";
-import {MIN_EMAIL_LEN} from "../../../validation/constants/min.len";
+import {EMAIL_MAX_LEN, EMAIL_MIN_LEN} from "./formik.validation.constants";
 
 const formikForgotPasswordValidationSchema = Yup.object({
-  forgot_email:
+  forgotPassword_email:
     Yup
       .string()
-      .email('Invalid Email Shipping Format')
-      .max(MAX_EMAIL_LEN, `Must be less than ${MAX_EMAIL_LEN} chars`)
-      .min(MIN_EMAIL_LEN, `Must be greater than ${MIN_EMAIL_LEN} chars`)
+      .email('Invalid Email Address Format')
+      .max(EMAIL_MAX_LEN, `Must be less than ${EMAIL_MAX_LEN} chars`)
+      .min(EMAIL_MIN_LEN, `Must be greater than ${EMAIL_MIN_LEN} chars`)
       .trim()
-      .required('* Email Shipping Is Required')
+      .required('* Email Address Is Required')
 });
 
 export default formikForgotPasswordValidationSchema;

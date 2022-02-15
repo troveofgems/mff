@@ -17,6 +17,8 @@ import OrderSuccess from "../../components/OrderSuccess/OrderSuccess";
 import Invoice from "../../components/Invoice/Invoice";
 import UserOrderScreen from "../../components/UserOrders/Order.user.screen";
 import ForgotPasswordFeature from "../../components/Authentication/features/forgotPassword.feature";
+import ExternalResetPassword from "../../components/ExternalResetPassword/ExternalResetPassword";
+import ERPwdSuccess from "../../components/ERPwdSuccess/ERPwdSuccess";
 
 const setMainRoutes = isLoggedIn => (
   <Route path={"/"} element={<AppContainer />}>
@@ -25,6 +27,8 @@ const setMainRoutes = isLoggedIn => (
     <Route path="/" element={<HomeScreen />} />
     <Route path="login" element={<AuthScreen />} />
     <Route path="forgotPassword" element={<ForgotPasswordFeature />} />
+    <Route path="resetPassword/:token" element={<ExternalResetPassword />} />
+    <Route path="resetPasswordSuccess" element={<ERPwdSuccess />} />
     {/*Cart Related Routes*/}
     <Route path="cart" element={<CartScreen />}>
       <Route path={":id"} element={<CartScreen />} />

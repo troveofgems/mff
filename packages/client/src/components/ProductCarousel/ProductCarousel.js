@@ -21,7 +21,6 @@ const ProductCarousel = () => {
   } = topProducts;
 
   useEffect(() => {
-    console.log('Top Three Products? ', topProductsList);
     if (topProductsList.length === 0) {
       dispatch(getTopProducts());
     }

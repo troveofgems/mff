@@ -4,9 +4,10 @@ import {
   LOGOUT_USER_FAILURE, LOGOUT_USER_REQUEST, LOGOUT_USER_SUCCESS,
   REGISTER_USER_FAILURE, REGISTER_USER_REQUEST, REGISTER_USER_SUCCESS,
   UPDATE_USER_PROFILE_FAILURE, UPDATE_USER_PROFILE_REQUEST, UPDATE_USER_PROFILE_SUCCESS,
-  VIEW_USER_PROFILE_FAILURE, VIEW_USER_PROFILE_REQUEST, VIEW_USER_PROFILE_SUCCESS
+  VIEW_USER_PROFILE_FAILURE, VIEW_USER_PROFILE_REQUEST, VIEW_USER_PROFILE_SUCCESS,
+  USER_RESET_PWD_REQUEST_FAILURE, USER_RESET_PWD_REQUEST_REQUEST, USER_RESET_PWD_REQUEST_SUCCESS,
+  USER_RESET_PWD_FAILURE, USER_RESET_PWD_REQUEST, USER_RESET_PWD_SUCCESS
 } from "../../constants/auth.constants";
-
 
 export const userLoginReducer = (state = {}, action) => {
   switch(action.type) {
@@ -42,7 +43,6 @@ export const userLoginReducer = (state = {}, action) => {
       return state;
   }
 };
-
 export const userRegisterReducer = (state = { registrationDetails: {registrationMessage: null, registrationStatus: null}, loading: false, error: null}, action) => {
   switch(action.type) {
     case REGISTER_USER_REQUEST:
@@ -70,7 +70,6 @@ export const userRegisterReducer = (state = { registrationDetails: {registration
       return state;
   }
 };
-
 export const userLogoutReducer = (state = {}, action) => {
   switch(action.type) {
     case LOGOUT_USER_REQUEST:
@@ -97,7 +96,6 @@ export const userLogoutReducer = (state = {}, action) => {
       return state;
   }
 };
-
 export const userUpdateProfileReducer = (state = { user: {} }, action) => {
   switch(action.type) {
     case UPDATE_USER_PROFILE_REQUEST:
@@ -128,7 +126,6 @@ export const userUpdateProfileReducer = (state = { user: {} }, action) => {
       return state;
   }
 };
-
 export const userViewProfileReducer = (state = { user: {} }, action) => {
   switch(action.type) {
     case VIEW_USER_PROFILE_REQUEST:
@@ -152,6 +149,58 @@ export const userViewProfileReducer = (state = { user: {} }, action) => {
         ...state,
         loading: false,
         user: null,
+        error: action.payload
+      };
+    default:
+      return state;
+  }
+};
+export const userRequestPasswordResetReducer = (state = {}, action) => {
+  switch(action.type) {
+    case USER_RESET_PWD_REQUEST_REQUEST:
+      return {
+        ...state,
+        error: null,
+        loading: true,
+        success: false
+      };
+    case USER_RESET_PWD_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        success: true
+      };
+    case USER_RESET_PWD_REQUEST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      };
+    default:
+      return state;
+  }
+};
+export const userResetPasswordReducer = (state = {}, action) => {
+  switch(action.type) {
+    case USER_RESET_PWD_REQUEST:
+      return {
+        ...state,
+        error: null,
+        loading: true,
+        success: false
+      };
+    case USER_RESET_PWD_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        success: true
+      };
+    case USER_RESET_PWD_FAILURE:
+      return {
+        ...state,
+        loading: false,
         error: action.payload
       };
     default:

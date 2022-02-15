@@ -1,0 +1,27 @@
+/* No Use For This Call ATM For Regular Users...
+export const getUserProfileById = id => async (dispatch, getState) => {
+  dispatch({ type: VIEW_USER_PROFILE_REQUEST });
+
+  try {
+    const
+      { userLogin: { auth } } = getState(),
+      config = {
+        'Content-Type': 'application/json',
+        'x-auth-token': auth.token
+      },
+      res = await axios.get(`/api/v1/authentorization/authentication/viewProfile/${id}`, config);
+
+    console.log('res is ', res);
+    console.log('config was: ', config);
+
+    dispatch({
+      type: VIEW_USER_PROFILE_SUCCESS,
+      payload: ''
+    });
+  } catch(err) {
+    dispatch({
+      type: VIEW_USER_PROFILE_FAILURE,
+      payload: err.response.data.error.message
+    });
+  }
+};*/
