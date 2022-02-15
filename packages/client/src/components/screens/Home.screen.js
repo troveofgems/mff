@@ -42,9 +42,11 @@ const HomeScreen = () => {
         </Notification>
       ) : (
         <Row>
-          <div className={"text-center"}>
-            <ProductCarousel />
-          </div>
+          {location === null || (location && (!location.state || !location.state.search)) && (
+            <div className={"text-center"}>
+              <ProductCarousel />
+            </div>
+          )}
           <h2 className={'text-center my-5'}>Latest Products</h2>
           {products.map((product, index) => (
             <Col sm={12} md={6} lg={4} key={`${index}_${product.name}`}>
