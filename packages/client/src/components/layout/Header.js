@@ -104,12 +104,12 @@ const Header = () => {
           <i className={"fas fa-shopping-cart"} />{' '}
           Cart
         </NavLink>
-        <div className={"d-flex flex-row align-items-center text-light"} style={{marginLeft: "auto"}}>
+        {/*<div className={"d-flex flex-row align-items-center text-light"} style={{marginLeft: "auto"}}>
           <i className="fas fa-clock">
             <small style={{fontSize: ".5em"}}>{' '}Session Expires In{' '}</small>
             <small style={{paddingLeft: "5px"}}>{sessionLength}</small>
           </i>
-        </div>
+        </div>*/}
       </>
     ),
     adminLinks = (

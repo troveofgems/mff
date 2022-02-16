@@ -1,5 +1,7 @@
 import axios from 'axios';
 import {
+  CREATE_PRODUCT_REVIEW_FAILURE, CREATE_PRODUCT_REVIEW_REQUEST, CREATE_PRODUCT_REVIEW_SUCCESS,
+  CREATE_PRODUCT_REVIEW_RESET,
   PRODUCT_LIST_FAILURE, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS,
   PRODUCT_DETAILS_FAILURE, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS,
   GET_TOP_PRODUCTS_FAILURE, GET_TOP_PRODUCTS_REQUEST, GET_TOP_PRODUCTS_SUCCESS
@@ -23,7 +25,6 @@ export const listProducts = (keyword = "") => async dispatch => {
     });
   }
 };
-
 export const listProductDetails = id => async dispatch => {
   dispatch({type: PRODUCT_DETAILS_REQUEST});
   try {
@@ -39,7 +40,6 @@ export const listProductDetails = id => async dispatch => {
     });
   }
 };
-
 export const getTopProducts = () => async dispatch => {
   dispatch({type: GET_TOP_PRODUCTS_REQUEST});
   try {
@@ -51,6 +51,29 @@ export const getTopProducts = () => async dispatch => {
   } catch (err) {
     dispatch({
       type: GET_TOP_PRODUCTS_FAILURE,
+      payload: err
+    });
+  }
+};
+export const createProductReview = (productId, reviewToAdd, token) => async (dispatch, getState) => {
+  dispatch({type: CREATE_PRODUCT_REVIEW_REQUEST});
+  try {
+    const
+      config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        }
+      };
+
+    await axios.put(`/api/v1/product/${productId}/leaveReview`, reviewToAdd, config);
+    dispatch({
+      type: CREATE_PRODUCT_REVIEW_SUCCESS
+    });
+  } catch (err) {
+    console.log('Error from BE', err.message);
+    dispatch({
+      type: CREATE_PRODUCT_REVIEW_FAILURE,
       payload: err
     });
   }

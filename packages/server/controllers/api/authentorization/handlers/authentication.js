@@ -7,6 +7,7 @@ const
   { asyncHandler } = require('../../../../middleware/Helpers/async-handler.middleware'),
   User = require('../../../../db/models/Users'),
   Analytics = require('../../../../db/models/Analytics');
+const Product = require("../../../../db/models/Product");
 
 const
   _handleInvalidLoginAttempt = (req, res, next, optMsg = undefined) => (ErrorResponse({
@@ -298,8 +299,67 @@ const resetPasswordWithToken = asyncHandler(async (req, res, next) => {
     .json(apiResponse);
 });
 
+// @desc  Allow Authenticated MFF User To Leave Product Review (If They Purchased The Product)
+// @route PUT /api/vX/products/:pid/leaveReview
+// @access PRIVATE
+const createProductReview = asyncHandler(async (req, res) => {
+  let response = buildAPIBodyResponse('/products/:id/leaveReview');
+
+  let
+    productToReview = await Product.findById(req.params.id),
+    reviewToAdd = req.body;
+  if (productToReview) {
+    const alreadyReviewed = productToReview.reviews.find(review => review.user.toString() === req.user._id.toString());
+    if (alreadyReviewed) {
+      console.log('Inside Already Reviewed change details of the particular review', req.user._id.toString());
+      let
+        unrelatedReviews = productToReview.reviews.filter(review => review.user.toString() !== req.user._id.toString()),
+        reviewInQuestion = productToReview.reviews.filter(review => review.user.toString() === req.user._id.toString());
+
+      console.log('Unrelated reviews: ', unrelatedReviews);
+      console.log('Have The particular review: ', reviewInQuestion);
+
+      reviewInQuestion[0].comment = reviewToAdd.comment;
+      reviewInQuestion[0].rating = reviewToAdd.rating;
+
+      productToReview.reviews = [...unrelatedReviews, reviewInQuestion[0]];
+      productToReview.rating = productToReview.reviews.reduce((acc, item) => item.rating + acc, 0) / (productToReview.reviews.length === 0 ? 1 : productToReview.reviews.length);
+
+      console.log("Prior To Saving: ", productToReview.reviews, reviewInQuestion);
+
+      await productToReview.save();
+
+      response.data = productToReview;
+      response.success = true;
+
+      return res
+        .status(201)
+        .json(response);
+    }
+
+    reviewToAdd.user = req.user._id;
+    reviewToAdd.firstName = req.user.firstName;
+
+    console.log('About To Add: ', reviewToAdd);
+
+    productToReview.reviews.push(reviewToAdd);
+    productToReview.reviewCount = productToReview.reviews.length;
+    productToReview.rating = productToReview.reviews.reduce((acc, item) => item.rating + acc, 0) / (productToReview.reviews.length === 0 ? 1 : productToReview.reviews.length);
+
+    await productToReview.save();
+
+    response.data = productToReview;
+    response.success = true;
+
+    return res
+      .status(201)
+      .json(response);
+  }
+});
+
 module.exports.authenticationController = {
   getAuthenticatedProfile,
+  createProductReview,
   loginUser,
   registerUser,
   requestToResetPassword,

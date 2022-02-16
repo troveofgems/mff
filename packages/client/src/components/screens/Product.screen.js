@@ -8,34 +8,54 @@ import Image from 'react-bootstrap/Image';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 import Loader from '../layout/Loader';
 import Notification from "../layout/Notification";
 import Rating from "../Rating/Rating";
 
-import { listProductDetails } from '../../redux/actions/product.actions';
+import { listProductDetails, createProductReview } from '../../redux/actions/product.actions';
 import {translateSizeOptionLabel} from "../../utils/dev.utils";
+import {CREATE_PRODUCT_REVIEW_RESET} from "../../redux/constants/product.constants";
 
 import "./test.css";
 const ProductScreen = () => {
   const
     [sizeSelection, setSizeSelection] = useState(null),
     [paletteSelection, setPaletteSelection] = useState(null),
-    [quantity, setQuantity] = useState(1);
+    [quantity, setQuantity] = useState(1),
+    [rating, setRating] = useState(0),
+    [comment, setComment] = useState(""),
+    [pvc, setPVC] = useState(""),
+    [showProductReviewForm, setShowProductReviewForm] = useState(false);
 
   const
     navigate = useNavigate(),
     dispatch = useDispatch(),
     { id: routeId } = useParams(),
+    productReviewDetails = useSelector(state => state.productReviewDetails),
     {
       loading: productDetailLoading,
       error: productDetailError,
       product
-    } = useSelector(state => state.productDetails);
+    } = useSelector(state => state.productDetails),
+    {
+      loading: loadingProductReviewDetails,
+      error: loadingProductReviewDetailsError,
+      success: loadingProductReviewDetailsSuccess
+    } = productReviewDetails,
+    { auth } = useSelector(state => state.userLogin);
 
   useEffect(() => {
     dispatch(listProductDetails(routeId));
-  }, [dispatch, routeId]);
+    if (loadingProductReviewDetailsSuccess) {
+      setRating(0);
+      setPVC("");
+      setComment("");
+      setShowProductReviewForm(false);
+      dispatch({ type: CREATE_PRODUCT_REVIEW_RESET });
+    }
+  }, [dispatch, routeId, loadingProductReviewDetailsSuccess, productReviewDetails]);
 
   useEffect(() => {
     if (product.hueOptionsAvailable && paletteSelection === null) {
@@ -49,7 +69,6 @@ const ProductScreen = () => {
   }, [product]);
 
   const addToCartHandler = () => {
-    console.log("This Needs To Change Pronto!!!", product);
     let basePath = `/cart/${routeId}?quantity=${quantity || 1}`; // Base Path
 
     if (sizeSelection || product.sizeOptionsAvailable) {
@@ -89,6 +108,50 @@ const ProductScreen = () => {
     ele.classList.add("selected_hue");
   }
 
+  const handleRequestToCreateReview = evt => {
+    console.log('Handle Request To Create A Review', rating, comment, product._id);
+    evt.preventDefault();
+    let productReview = { rating, comment };
+    let token = auth && auth.token ? auth.token : "";
+    dispatch(createProductReview(product._id, productReview, token));
+    dispatch({type: CREATE_PRODUCT_REVIEW_RESET});
+    setShowProductReviewForm(false);
+  };
+
+  const handleRequestToShowReviewForm = (evt, reviewData) => {
+    evt.preventDefault();
+    setShowProductReviewForm(true);
+    setComment(reviewData.comment);
+    setRating(reviewData.rating);
+    //let productReview = { rating, comment };
+    //dispatch(createProductReview(product._id, productReview, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMGE4M2I3OGYyNjE3OWEzYTFhYTUyMyIsImlhdCI6MTY0NTA0MTY2MSwiZXhwIjoxNjQ1MDYzMjYxfQ.Ctl1uv2miBI8BJ3ZjAkFRYk-b-iDktFDfDUPRy3ub1Q"));
+  };
+
+  const userOwnsReview = review => {
+    let defaultEvaluation = false;
+
+    if (auth && review) {
+      defaultEvaluation = auth.firstName === review.firstName;
+    }
+
+    console.log('Determine who owns the review', auth);
+
+    return defaultEvaluation;
+  }
+
+  const userHasNotReviewedProduct = () => {
+    let
+      defaultEvaluation = false,
+      {token = null} = auth;
+
+    if (token) {
+      setShowProductReviewForm(true);
+    }
+    console.log('Either Guest Or User Reviewed Product...', auth);
+    return defaultEvaluation;
+  }
+
+
   return (
     <>
       <NavLink to={'/'} className={"btn-goBack"} role={"button"}>Go Back</NavLink>
@@ -99,7 +162,8 @@ const ProductScreen = () => {
           {productDetailError}
         </Notification>
       ) : (
-        <Row className={"pb-5"}>
+        <>
+        <Row>
           <Col md={3}>
             <ListGroup variant={"flush"}>
               <ListGroup.Item>
@@ -238,6 +302,63 @@ const ProductScreen = () => {
             )}
           </Col>
         </Row>
+        <Row className={"p-5"}>
+          <h3>{showProductReviewForm ? "Leave A Review" : "Reviews"}</h3>
+          {loadingProductReviewDetailsError && <Notification variant={"danger"}>{loadingProductReviewDetailsError.message}</Notification> }
+          <Col className={"p-3"} >
+            {product.reviews.length === 0 && (<Notification children={"No Reviews Available"}/>)}
+            <ListGroup variant={"flush"} className={"mb-3"}>
+              {product.reviews.map(review => (
+                <ListGroup.Item key={review._id}>
+                  <div>
+                    <strong className={"me-3"}>{review.firstName}</strong>
+                    {!showProductReviewForm && userOwnsReview(review) && (
+                      <i className={"fa-solid fa-square-pen"} onClick={evt => handleRequestToShowReviewForm(evt, review)}>{' '}Edit My Review</i>
+                    )}
+                  </div>
+                  <Rating productRatingInfo={{ productRating: review.rating }} />
+                  <p>{review.createdAt.substring(0, 10)}</p>
+                  <p>{review.comment}</p>
+                </ListGroup.Item>
+              ))}
+              {showProductReviewForm && (
+                <ListGroup className={"pt-3"}>
+                  <Form onSubmit={handleRequestToCreateReview}>
+                    <Form.Group controlId={"rating"} className={"p-3 pb-2 pt-2"} style={{width: "25%"}}>
+                      <Form.Label>Rating</Form.Label>
+                      <Form.Control as={'select'} value={rating} onChange={(evt) => setRating(parseInt(evt.target.value))}>
+                        <option value={""}>Select...</option>
+                        <option value={"1"}>Poor - 1 Star</option>
+                        <option value={"2"}>Fair - 2 Stars</option>
+                        <option value={"3"}>Good - 3 Stars</option>
+                        <option value={"4"}>Very Good - 4 Stars</option>
+                        <option value={"5"}>Excellent - 5 Stars</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId={"purchaseVerificationCode"} className={"p-3 pb-0 pt-2"}>
+                      <Form.Label>Purchase Verification Code</Form.Label>
+                      <Form.Control
+                        value={pvc} placeholder={"5G2587746V628342D"}
+                        onChange={evt => setPVC(evt.target.value)}
+                      />
+                    </Form.Group>
+                    <Form.Group controlId={"comment"} className={"p-3 pb-4 pt-2"}>
+                      <Form.Label>Comment</Form.Label>
+                      <Form.Control
+                        as={'textarea'} row={3} value={comment} placeholder={"Review Product Here..."}
+                        onChange={evt => setComment(evt.target.value)}
+                      >
+
+                      </Form.Control>
+                    </Form.Group>
+                    <Button type={"submit"} variant={"success"} className={"m-3 mb-4 mt-2"}>Create Review</Button>
+                  </Form>
+                </ListGroup>
+              )}
+            </ListGroup>
+          </Col>
+        </Row>
+        </>
       )}
     </>
   );
