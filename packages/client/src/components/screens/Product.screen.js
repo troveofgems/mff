@@ -321,7 +321,7 @@ const ProductScreen = () => {
                   <p>{review.comment}</p>
                 </ListGroup.Item>
               ))}
-              {showProductReviewForm && (
+              {showProductReviewForm && (auth && (auth.authLevel === 2000 || auth.authLevel === 1000)) && (
                 <ListGroup className={"pt-3"}>
                   <Form onSubmit={handleRequestToCreateReview}>
                     <Form.Group controlId={"rating"} className={"p-3 pb-2 pt-2"} style={{width: "25%"}}>

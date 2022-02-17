@@ -8,10 +8,12 @@ const
   express = require('express'),
   router = express.Router();
 const {protect} = require("../../../middleware/Helpers/route-authentication.middleware");
+const {apiAdvancedResultsFilter} = require("../../../middleware/Helpers/api-advanced-results-filter.middleware");
+const Product = require('../../../db/models/Product');
 
 router
   .route('/')
-  .get(getAllProducts);
+  .get(apiAdvancedResultsFilter(Product, null, false), getAllProducts);
 
 router
   .route('/top')

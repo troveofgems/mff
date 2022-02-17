@@ -19,11 +19,14 @@ module.exports.readHandler = asyncHandler(async (req, res, next) => {
     };
   }
 
+  console.log("TEST AFTER ADV RESULTS", res.advancedResults);
+
   const productList = await Product.find(filter);
 
   body.success = true;
   body.data = productList;
   body.dataCount = productList.length;
+  body.advancedResults = res.advancedResults;
 
   return res
     .status(200)

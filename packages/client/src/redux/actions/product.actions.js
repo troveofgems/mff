@@ -14,9 +14,15 @@ export const listProducts = (keyword = "") => async dispatch => {
 
   try {
     const { data } = await axios.get(`/api/v1/product?keyword=${keyword}`);
+
+    console.log("Need To Pass:", data);
+
     dispatch({
       type: PRODUCT_LIST_SUCCESS,
-      payload: data.data
+      payload: {
+        originalData: data.data,
+        newData: data.advancedResults
+      }
     });
   } catch (err) {
     dispatch({
