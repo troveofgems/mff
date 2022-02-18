@@ -73,7 +73,7 @@ const RegistrationForm = () => {
   }, [registrationError]);
 
   return (
-    <div className={"formikFormWrapper"} style={{minWidth: "1200px"}}>
+    <>
       {loadingRegistration ? (
         <Loader />
       ) : (
@@ -217,7 +217,7 @@ const RegistrationForm = () => {
           </Form>
         </Formik>
       )}
-    </div>
+    </>
   );
 };
 

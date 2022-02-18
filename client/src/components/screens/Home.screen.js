@@ -75,11 +75,6 @@ const HomeScreen = () => {
             </div>
           <h2 className={'text-center my-5'}>Latest Products</h2>
           {advResults && printProducts()}
-          {/*{products.map((product, index) => (
-            <Col sm={12} md={6} lg={4} key={`${product.name}__${index}`}>
-              <Product product={product} key={index}/>
-            </Col>
-          ))}*/}
         </Row>
         <Paginate
           className={"pb-5"}
