@@ -1,11 +1,8 @@
 const
-  { // Environment variables are managed by dotenv as a preloaded file. More Info @ ./config/env/README.md
-    USE_DEFAULT_PORT,
-    SERVE_DEFAULT_PORT, SERVE_CUSTOM_PORT
-  } = process.env,
-  PORT = (USE_DEFAULT_PORT === 'true') ? SERVE_DEFAULT_PORT : SERVE_CUSTOM_PORT,
+  { PORT = 8080 } = process.env,
   express = require('express'),
   path = require('path'),
+  rootEnvPath = `${__dirname}`,
   { configureExpress } = require('./config/express'),
   { createSemiSecureApplication } = require('./config/express/opt/security'),
   { openDatabaseConnection } = require('./config/db'),
@@ -19,7 +16,7 @@ const Application = createSemiSecureApplication();
 
 let serverList = { expressServer: null, dbServer: null }; // To Track All Servers That Are Opened
 
-configureExpress(Application, __dirname); // Configure The Express Server
+configureExpress(Application, rootEnvPath); // Configure The Express Server
 
 serverList.dbServer = openDatabaseConnection(); // Open Connection To DB
 
@@ -27,14 +24,13 @@ serverList.dbServer = openDatabaseConnection(); // Open Connection To DB
 Application.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID));
 Application.use('/api/upload', uploadProductImageRoute);
 
-const ___dirname = path.resolve(__dirname);
-Application.use('/uploads', express.static(path.join(___dirname, '/uploads')));
+Application.use('/uploads', express.static(path.join(rootEnvPath, '/uploads')));
 
 let PROD_PORT;
 if (process.env.NODE_ENV === 'production') {
   PROD_PORT = process.env.PORT || 8080;
   console.log("PREP FOR DEV ENV - PRD1", PROD_PORT);
-  let staticProdPath = path.join(___dirname, '/client/build');
+  let staticProdPath = path.join(rootEnvPath, '/client/build');
   console.log("Point Path To: ", staticProdPath);
   Application.use(express.static(staticProdPath));
 }
