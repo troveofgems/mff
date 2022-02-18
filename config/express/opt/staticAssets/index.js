@@ -1,6 +1,6 @@
 module.exports.serveStaticAssetsFrom = (App, projectDir, express) => {
   const
-    pathTo_ExpressServer_PublicFolder = `${projectDir}/public`,
+    pathTo_ExpressServer_PublicFolder = process.env.NODE_ENV === "production" ? "client/build" : `${projectDir}/public`,
     configurableOptions = {};
 
   configurableOptions.index = process.env.PUBLIC_SERVE_INDEX || false;

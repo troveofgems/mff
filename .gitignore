@@ -2,6 +2,7 @@
 .idea/
 
 # Developer Specific
+build
 sandbox/concepts/*
 
 # Logs

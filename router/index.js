@@ -1,3 +1,4 @@
+const path = require("path");
 module.exports.mountRouterToApplication = Application => {
   const // This is the main mainRouter. It bundles all sub-routes and mounts them to the application
     eb_designator = process.env.API_DESIGNATOR || '/api/',
@@ -25,6 +26,14 @@ module.exports.mountRouterToApplication = Application => {
         require(`./routes${ef_designator}${route}.route`))
       )
     );
+
+  if (process.env.NODE_ENV === "production") {
+    Application.get("*", (req, res) => {
+      let projectPath = path.resolve(__dirname, '..', 'client', 'build', 'index.html');
+      console.log('Try to send file back', projectPath);
+      return res.sendFile(projectPath);
+    });
+  }
 
   return Application;
 }

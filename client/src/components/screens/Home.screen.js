@@ -53,12 +53,10 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    console.log('Page change!');
     printProducts();
   }, [currentPage]);
 
   const handleChangeToPageState = pageNumber => {
-    console.log('Request For: ', );
     setCurrentPage(pageNumber);
   }
 
@@ -72,11 +70,11 @@ const HomeScreen = () => {
         </Notification>
       ) : (<>
         <Row className={"pb-5"}>
-          {location === null || (location && (!location.state || !location.state.search)) && (
+          {/*{location === null || (location && (!location.state || !location.state.search)) && (
             <div className={"text-center"}>
               <ProductCarousel />
             </div>
-          )}
+          )}*/}
           <h2 className={'text-center my-5'}>Latest Products</h2>
           {advResults && printProducts()}
           {/*{products.map((product, index) => (
