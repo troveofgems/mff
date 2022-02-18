@@ -27,7 +27,7 @@ serverList.dbServer = openDatabaseConnection(); // Open Connection To DB
 Application.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID));
 Application.use('/api/upload', uploadProductImageRoute);
 
-const ___dirname = path.resolve();
+const ___dirname = path.resolve(__dirname);
 Application.use('/uploads', express.static(path.join(___dirname, '/uploads')));
 
 let PROD_PORT;
