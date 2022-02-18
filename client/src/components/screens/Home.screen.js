@@ -70,11 +70,9 @@ const HomeScreen = () => {
         </Notification>
       ) : (<>
         <Row className={"pb-5"}>
-          {!location && (!location.state || !location.state.search) && (
             <div className={"text-center"}>
               <ProductCarousel />
             </div>
-          )}
           <h2 className={'text-center my-5'}>Latest Products</h2>
           {advResults && printProducts()}
           {/*{products.map((product, index) => (
