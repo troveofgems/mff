@@ -6,7 +6,7 @@ const
   } = require('./opt').securityPolicies;
 
 module.exports.createSemiSecureApplication = () => {
-  const SecuredExpressApp = express().use(helmetize()); // Create The Express App With Helmet
+  const SecuredExpressApp = express()//.use(helmetize()); // Create The Express App With Helmet
 
   // Configure All Other Security Policies
   enableHPP(SecuredExpressApp);

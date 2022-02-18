@@ -31,7 +31,6 @@ if (process.env.NODE_ENV === 'production') {
   PROD_PORT = process.env.PORT || 8080;
   console.log("PREP FOR DEV ENV - PRD1", PROD_PORT);
   let staticProdPath = path.join(rootEnvPath, '/client/build');
-  console.log("Point Path To: ", staticProdPath);
   Application.use(express.static(staticProdPath));
 }
 
