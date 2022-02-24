@@ -28,11 +28,11 @@ const ProductCarousel = () => {
 
   return loadingTopProducts ? <Loader /> :
     errorLoadingTopProducts ? <h2>Print Error</h2> : (
-      <Carousel pause={"hover"} className={"bg-dark"} style={{maxWidth: "50%", margin: "0 auto"}}>
+      <Carousel pause={"hover"} className={"bg-dark"} style={{maxWidth: "40%", margin: "0 auto"}}>
         {topProductsList && topProductsList.map(product => (
           <Carousel.Item key={product._id} className={"text-center bg-gradient bg-black"}>
             <Link to={`/product/${product._id}`}>
-              <Image src={`img/${product.image}`} alt={product.name} style={{height: "500px"}} fluid />
+              <Image src={`img/${product.image}`} alt={product.name} style={{height: "350px"}} fluid />
               <Carousel.Caption className={"carousel-caption"}>
                 <h3 className={"style_" + product._id}>
                   {product.name} - {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(product.price)}

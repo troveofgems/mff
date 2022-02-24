@@ -20,6 +20,7 @@ import {
 } from "../../../redux/actions/auth.actions";
 import {useDispatch} from "react-redux";
 
+import "../style/Login.scss";
 const LoginFeature = () => {
   const
     dispatch = useDispatch(),
@@ -70,6 +71,7 @@ const LoginFeature = () => {
                 minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
                 id={'login_email'} name={'login_email'}
                 type='email' placeholder='jerry@fricknfish.com'
+                inputstyle={"input-field-class"}
               />
             </div>
           </div>
@@ -79,16 +81,17 @@ const LoginFeature = () => {
               minLength={PASSWORD_MIN_LEN} maxLength={PASSWORD_MAX_LEN}
               id={'login_pwd'} name={'login_pwd'}
               type='password' placeholder='*****************'
+              className={"login-form-item"} inputstyle={"input-field-class"}
             />
           </div>
         </div>
         <div className="form-actions full py-4 pb-4">
-          <button type="submit" className="button full text-black login-btn">
+          <button type="submit" className="button full text-black login-btn login-form-item" >
             Login Now!
           </button>
         </div>
         <div className="form-confirm-row">
-          <Link to="/forgotPassword" className="link-text-form blue">
+          <Link to="/forgotPassword" className="link-text-form login-form-item">
             Forgot Password?
           </Link>
         </div>

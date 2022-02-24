@@ -30,7 +30,7 @@ const ShippingAddressWidget = ({formikValues, onlyUseShipping}) => {
 
   return (
     <>
-      <small>
+      <small style={{letterSpacing: ".15rem", fontSize: "1rem"}}>
         Current Shipping Address:
       </small>
       <div className={"mb-2"}>
@@ -44,7 +44,8 @@ const ShippingAddressWidget = ({formikValues, onlyUseShipping}) => {
                 <Col md={6}>
                   <FormikTextInput
                     label='First Name'
-                    type='text' id={`${addressType}_ship_to_first_name`} className={"mb-2 shippingInput"}
+                    type='text' id={`${addressType}_ship_to_first_name`} inputstyle={"mb-2 shippingInput"}
+                    style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                     name={`${addressType}_ship_to_first_name`}
                     minLength={FIRST_NAME_MIN_LEN} maxLength={FIRST_NAME_MAX_LEN}
                     placeholder={'Michael'}
@@ -53,7 +54,8 @@ const ShippingAddressWidget = ({formikValues, onlyUseShipping}) => {
                 <Col md={6}>
                   <FormikTextInput
                     label='Last Name'
-                    type='text' id={`${addressType}_bill_to_last_name`} className={"mb-2 shippingInput"}
+                    type='text' id={`${addressType}_bill_to_last_name`} inputstyle={"mb-2 shippingInput"}
+                    style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                     minLength={LAST_NAME_MIN_LEN} maxLength={LAST_NAME_MAX_LEN}
                     name={`${addressType}_ship_to_last_name`}
                     placeholder={'Fish'}
@@ -63,42 +65,47 @@ const ShippingAddressWidget = ({formikValues, onlyUseShipping}) => {
               <div className={"addressWidget"}>
                 <FormikTextInput
                   label='Address Line 1'
-                  type='text' id={`${addressType}_address_line_1`} className={"mb-2 shippingInput"}
-                  style={{width: "100%!important"}}
+                  type='text' id={`${addressType}_address_line_1`} inputstyle={"mb-2 shippingInput"}
+                  style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                   name={`${addressType}_address_line_1`}
                   minLength={ADDRESS_LINE_1_MIN_LEN} maxLength={ADDRESS_LINE_1_MAX_LEN}
                   placeholder={'123 Misty Lagoon Ln'}
                 />
                 <FormikTextInput
                   label='Address Line 2'
-                  type='text' id={`${addressType}_address_line_2`} className={"mb-2 shippingInput"}
+                  type='text' id={`${addressType}_address_line_2`} inputstyle={"mb-2 shippingInput"}
                   name={`${addressType}_address_line_2`} placeholder={"P.O. Box 50"}
+                  style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                   minLength={ADDRESS_LINE_2_MIN_LEN} maxLength={ADDRESS_LINE_2_MAX_LEN}
                 />
                 <FormikTextInput
                   label='City'
-                  type='text' className={"mb-2 shippingInput"}
+                  type='text' inputstyle={"mb-2 shippingInput"}
                   id={`${addressType}_city`} name={`${addressType}_city`}
                   minLength={ADDRESS_CITY_MIN_LEN} maxLength={ADDRESS_CITY_MAX_LEN}
+                  style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                   placeholder={'Ballonea'}
                 />
                 <FormikDropdown
                   label={"State"} className={"mb-2"}
                   id={`${addressType}_state`} name={`${addressType}_state`}
+                  style={{minWidth: "100%", fontSize: "1.25rem", letterSpacing: ".15rem"}}
                   options={usTerritories}
                 />
                 <FormikTextInput
                   label='Postal Code'
-                  type='text' id={`${addressType}_postalCode`} className={"mb-2 shippingInput"}
+                  type='text' id={`${addressType}_postalCode`} inputstyle={"mb-2 shippingInput"}
                   name={`${addressType}_postalCode`}
+                  style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                   minLength={ADDRESS_POSTAL_CODE_MIN_LEN}
                   maxLength={ADDRESS_POSTAL_CODE_MAX_LEN}
                   placeholder={'97229'}
                 />
                 <FormikTextInput
                   label='Country'
-                  type='text' id={`${addressType}_country`} className={"mb-2 shippingInput"}
+                  type='text' id={`${addressType}_country`} inputstyle={"mb-2 shippingInput"}
                   name={`${addressType}_country`}
+                  style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                   minLength={ADDRESS_COUNTRY_MIN_LEN} maxLength={ADDRESS_COUNTRY_MAX_LEN}
                   placeholder={'USA'} value={'USA'} disabled
                 />

@@ -16,7 +16,11 @@ const Paginate = ({pages = 1, page = 1, keyword = "", changePageContents}) => {
         <Link key={pageProps + 1} to={/*keyword ? `/search/${keyword}/page/${pageProps + 1}` : `/page/${pageProps + 1}`*/"#"}
           style={{padding: "0 5px"}}
         >
-          <Pagination.Item active={(pageProps + 1) === page} onClick={() => handleRequestToGetNextSetOfResults(pageProps + 1)}>
+          <Pagination.Item
+            className={"pb-2"}
+            active={(pageProps + 1) === page}
+            onClick={() => handleRequestToGetNextSetOfResults(pageProps + 1)}
+          >
             {pageProps + 1}
           </Pagination.Item>
         </Link>

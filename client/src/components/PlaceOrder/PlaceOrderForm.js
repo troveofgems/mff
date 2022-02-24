@@ -146,15 +146,15 @@ const PlaceOrderForm = () => {
                             <h2>Order Details</h2>
                             <Row>
                               <Col md={6} sm={12}>
-                                <h4 className={"mt-3"}>
+                                <h4 className={"mt-3"} style={{fontSize: "1.25rem", letterSpacing: ".25rem"}}>
                                   Shipping Information
                                 </h4>
                                 {(!location || !location.state || !location.state.address) ? message_NDA() : (
-                                  <>
-                                    <p>
+                                  <div style={{fontSize: "1rem", letterSpacing: ".05rem", border: "1px solid black", padding: "0 1rem"}}>
+                                    <p style={{fontSize: "1rem", letterSpacing: ".25rem"}}>
                                       Shipping To:{' '}
                                     </p>
-                                    <p>
+                                    <p style={{fontSize: "1rem", letterSpacing: ".15rem"}}>
                                       {location.state.address.mailing_ship_to_first_name}{' '}
                                       {location.state.address.mailing_ship_to_last_name},{' '}
                                       {location.state.address.mailing_address_line_1},{' '}
@@ -171,11 +171,11 @@ const PlaceOrderForm = () => {
                                       {
                                         location.state.address.billing_address_line_1 ===
                                         location.state.address.mailing_address_line_1 ? false : (
-                                          <>
-                                          <p>
+                                          <div style={{fontSize: "1rem", letterSpacing: ".05rem", border: "1px solid black", padding: "0 1rem"}}>
+                                          <p style={{fontSize: "1rem", letterSpacing: ".25rem",}}>
                                             Billing To:{' '}
                                           </p>
-                                            <p>
+                                            <p style={{fontSize: "1rem", letterSpacing: ".15rem",}}>
                                               {location.state.address.billing_bill_to_first_name}{' '}
                                               {location.state.address.billing_bill_to_last_name},{' '}
                                               {location.state.address.billing_address_line_1},{' '}
@@ -189,16 +189,16 @@ const PlaceOrderForm = () => {
                                               {location.state.address.billing_postalCode}{' '}
                                               {location.state.address.billing_country.toUpperCase()}
                                             </p>
-                                          </>
+                                          </div>
                                         )}
-                                  </>
+                                  </div>
                                 )}
-                                <h4 className={"mt-3"}>
+                                <h4 className={"mt-3"} style={{fontSize: "1.25rem", letterSpacing: ".25rem"}}>
                                   Payment Method
                                 </h4>
                                 {(!location || !location.state) ? message_NDA() :
                                   (location.state.paymentMethod === 0) && (
-                                    <p>
+                                    <p style={{fontSize: "1rem", letterSpacing: ".05rem"}}>
                                       Paypal/Credit Card
                                     </p>
                                   )}
@@ -232,26 +232,30 @@ const PlaceOrderForm = () => {
                                             <Image src={`/img/${item.image}`} alt={item.name} fluid rounded/>
                                           </Col>
                                           <Col md={2}>
-                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                            <Link to={`/product/${item.product}`}
+                                                  style={{fontSize: "1rem", letterSpacing: ".25rem"}}
+                                            >{item.name}</Link>
                                           </Col>
-                                          <Col md={1}>
-                                            ${item.price.toFixed(2)}
+                                          <Col
+                                               style={{fontSize: "1rem", letterSpacing: ".25rem"}}
+                                          >
+                                            {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(item.price)}
                                           </Col>
-                                          <Col md={2}>
+                                          <Col style={{fontSize: "1rem", letterSpacing: ".25rem"}}>
                                             Qty: {item.quantityRequested}
                                           </Col>
                                           {item.sizeRequested && (
-                                            <Col>
+                                            <Col style={{fontSize: "1rem", letterSpacing: ".25rem"}}>
                                               {item.sizeRequested}
                                             </Col>
                                           )}
                                           {item.hueRequested && (
-                                            <Col>
+                                            <Col style={{fontSize: "1rem", letterSpacing: ".25rem"}}>
                                               {item.hueRequested}
                                             </Col>
                                           )}
-                                          <Col md={2}>
-                                            ${(item.quantityRequested * item.price).toFixed(2)}
+                                          <Col>
+                                            {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(item.quantityRequested * item.price)}
                                           </Col>
                                         </Row>
                                       </ListGroup.Item>
@@ -266,31 +270,31 @@ const PlaceOrderForm = () => {
                                   Order Summary
                                 </h4>
                                 {(
-                                  <Row>
-                                    <Col md={1}>
+                                  <Row style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}>
+                                    <Col md={2}>
                                       <h6>Shipping</h6>
                                     </Col>
-                                    <Col md={1}>
-                                      ${shippingCost}
+                                    <Col>
+                                      {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(shippingCost)}
                                     </Col>
                                   </Row>
                                 )}
                                 {(
-                                  <Row>
-                                    <Col md={1}>
+                                  <Row style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}>
+                                    <Col md={2}>
                                       <h6>Cart Total</h6>
                                     </Col>
-                                    <Col md={1}>
-                                      ${cartCost}
+                                    <Col>
+                                      {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(cartCost)}
                                     </Col>
                                   </Row>
                                 )}
                                 {(
-                                  <Row>
-                                    <Col md={1}>
+                                  <Row style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}>
+                                    <Col md={2}>
                                       <h6>Taxes @ 5.6%</h6>
                                     </Col>
-                                    <Col md={1}>
+                                    <Col>
                                       {!location || !location.state || location.state.promoCode !== null ? (
                                         <>
                                           {setTaxCost(0.00)}
@@ -298,19 +302,19 @@ const PlaceOrderForm = () => {
                                         </>
                                       ) : (
                                         <>
-                                          ${taxCost}
+                                          {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(taxCost)}
                                         </>
                                       )}
                                     </Col>
                                   </Row>
                                 )}
                                 {(
-                                  <Row>
-                                    <Col md={1}>
+                                  <Row style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}>
+                                    <Col md={2}>
                                       <h6>Total</h6>
                                     </Col>
-                                    <Col md={1}>
-                                      ${(shippingCost + taxCost + cartCost).toFixed(2)}
+                                    <Col>
+                                      {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(shippingCost + taxCost + cartCost)}
                                     </Col>
                                   </Row>
                                 )}
@@ -319,12 +323,13 @@ const PlaceOrderForm = () => {
                             <div className="form-actions full py-4 pb-4">
                               <h3 className={"text-center pb-3"}>Ready To Pay & Place Your Order?</h3>
                                 <div className={"paypalBtnContainer"} style={{display: "flex", justifyContent: "center"}}>
-                                  {sdkReady && (
+                                  {(
                                     <PayPalButton
-                                      amount={(shippingCost + taxCost + cartCost)}
+                                      amount={(shippingCost + taxCost + cartCost).toFixed(2)}
                                       onSuccess={successPaymentHandler}
                                     />
                                   )}
+
                                 </div>
                               <button
                                 type="submit" className="button text-black full login-btn"

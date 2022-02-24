@@ -6,9 +6,9 @@ const FormikTextInput = ({ label, ...props }) => {
   return (
     <>
       <div>
-        <label htmlFor={props.id || props.name}>{label}</label>
+        <label htmlFor={props.id || props.name} className={props.labelstyle}>{label}</label>
       </div>
-      <input {...field} {...props} className={"w-100"} />
+      <input {...field} {...props} className={props.inputstyle} />
       {meta.touched && meta.error ? (
         <div className={"formikErrorMessage"}>
           <i className={"fas fa-exclamation-triangle"} />{' '}

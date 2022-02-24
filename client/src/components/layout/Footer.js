@@ -10,19 +10,22 @@ const Footer = () => {
     foundingYear = 2021,
     showYearRange = (currentYear !== foundingYear);
   return (
-    <footer>
+    <footer className={"py-3"}>
       <Container>
         <Row>
           <Col md={6} className={'text-center py-3'}>
             <h4>Learn More About The Ocean & Conservation Efforts</h4>
             <ul>
               <li>
-                Our Biggest Threat - Climate Change
-                {/*https://climate.nasa.gov*/}
+                Our Biggest Threat -
+                <a href={"https://climate.nasa.gov"} target={"_blank"}
+                   rel={"noopener noreferrer"} style={{color: "#2A9CBE"}}
+                >
+                Climate Change
+              </a>
               </li>
               <li>
-                Our Oceans by Oceana
-                {/*https://oceana.org*/}
+                Our Oceans
               </li>
             </ul>
           </Col>
@@ -35,8 +38,11 @@ const Footer = () => {
           </Col>
         </Row>
         <Row>
-          <Col className={'text-center py-3'}>
+          <Col md={12} className={'text-center'}>
             Copyright &copy; Frickn' Fish 12/{foundingYear} {showYearRange ? ` - ${currentYear}` : false  }
+          </Col>
+          <Col md={12} className={'text-center py-1'}>
+            1.0.0-alpha
           </Col>
         </Row>
       </Container>

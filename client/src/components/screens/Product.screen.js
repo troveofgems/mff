@@ -176,22 +176,22 @@ const ProductScreen = () => {
                 }}
                 />
               </ListGroup.Item>
-              <ListGroup.Item variant={"flush"}>
+              <ListGroup.Item variant={"flush"} style={{padding: "1.25rem", letterSpacing: ".25rem"}}>
                 Price: {new Intl.NumberFormat("en-US", {style: "currency", currency: "USD"}).format(product.price)}
               </ListGroup.Item>
-              <ListGroup.Item variant={"flush"}>
+              <ListGroup.Item variant={"flush"} style={{padding: "1.25rem", letterSpacing: ".25rem", fontSize: "1.25rem"}}>
                 {product.description}
               </ListGroup.Item>
             </ListGroup>
           </Col>
-          <Col md={6}>
-            <Image src={`/img/${product.image}`} alt={product.name} fluid />
+          <Col md={6} style={{display: "flex", justifyContent: "center"}}>
+            <Image src={`/img/${product.image}`} alt={product.name} fluid style={{borderRadius: "75%", height: "750px"}} />
           </Col>
           <Col md={3}>
             <Card className={"makePurchase-card"}>
               <ListGroup variant={"flush"}>
                 <ListGroup.Item>
-                  <Row>
+                  <Row style={{letterSpacing: ".25rem"}}>
                     <Col>Price:</Col>
                     <Col>
                       <strong>
@@ -203,7 +203,7 @@ const ProductScreen = () => {
               </ListGroup>
               <ListGroup variant={"flush"}>
                 <ListGroup.Item>
-                  <Row>
+                  <Row style={{letterSpacing: ".25rem"}}>
                     <Col>Status:</Col>
                     <Col>
                       <strong>
@@ -219,6 +219,7 @@ const ProductScreen = () => {
               <ListGroup variant={"flush"}>
                 <ListGroup.Item className={"text-center"}>
                   <Button className={"btn-block"} type={"button"}
+                          style={{fontSize: "1rem", letterSpacing: ".25rem"}}
                           disabled={!(product.stockType === 0 || (product.stockType === 2 && product.stockCount > 0))} onClick={addToCartHandler}
                   >
                     Add To Cart
@@ -287,7 +288,8 @@ const ProductScreen = () => {
                                   {
                                     backgroundColor: `${option.bgColor}`,
                                     width: "20px",
-                                    height: "20px"
+                                    height: "20px",
+                                    borderRadius: "100%"
                                   }
                                 }>{''}</div>
                               </div>
@@ -303,11 +305,11 @@ const ProductScreen = () => {
           </Col>
         </Row>
         <Row className={"p-5"}>
-          <h3>{showProductReviewForm ? "Leave A Review" : "Reviews"}</h3>
+          <h3 style={{letterSpacing: ".25rem", paddingBottom: "0"}}>{showProductReviewForm ? "Leave A Review" : "Reviews"}</h3>
           {loadingProductReviewDetailsError && <Notification variant={"danger"}>{loadingProductReviewDetailsError.message}</Notification> }
-          <Col className={"p-3"} >
-            {product.reviews.length === 0 && (<Notification children={"No Reviews Available"}/>)}
-            <ListGroup variant={"flush"} className={"mb-3"}>
+          <Col>
+            {product.reviews.length === 0 && (<Notification children={"No Written Reviews Available"} style={{fontSize: "1.25rem", letterSpacing: ".25rem"}} />)}
+            <ListGroup variant={"flush"} className={"mb-3"} hidden={product.reviews.length === 0}>
               {product.reviews.map(review => (
                 <ListGroup.Item key={review._id}>
                   <div>

@@ -22,6 +22,7 @@ const
 // @access PUBLIC
 const serveSanityCheck = asyncHandler(async (req, res, next) => {
   let response = buildAPIBodyResponse('/authenticate');
+
   return res
     .status(200)
     .json(response);

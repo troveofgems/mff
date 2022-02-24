@@ -19,7 +19,7 @@ const _evaluateAndSetText = (checkToPerform, placeholderValue, actualValue, comp
 };
 
 const AddressBreadCrumb = ({formikValues, onlyUseShipping, addressType}) => (
-  <strong>
+  <strong style={{letterSpacing: ".15rem", fontSize: "1rem"}}>
     {(addressType === ADDRESS_TYPE_MAIL || onlyUseShipping) ? // Address Line 1
       _evaluateAndSetText(
         formikValues.mailing_address_line_1,

@@ -34,12 +34,7 @@ const PaymentMethodForm = () => {
     await _addPaypalScript();
   }, []);
 
-  useEffect(async () => {
-    if (!sdkReady) {
-      setSDKReady(true);
-    }
-  }, [sdkReady]);
-
+  // TODO: Plug this functionality in once everyone has discussed how it should work.
   let baseSchema = {
     promoCode: ''
   };
@@ -80,7 +75,7 @@ const PaymentMethodForm = () => {
                             <h2>Payment Method</h2>
                             <Row>
                               <Col md={4} sm={12}>
-                                <h5 className={"mt-3"}>
+                                <h5 className={"mt-3"} style={{fontSize: '1.25rem', letterSpacing: ".15rem"}}>
                                   Method
                                 </h5>
                                 <FormikRadioGroup
@@ -92,11 +87,14 @@ const PaymentMethodForm = () => {
                                 />
                               </Col>
                               <Col md={4} sm={12}>
-                                <h5 className={"mt-3"}>
+                                <h5 className={"mt-3"}
+                                    style={{letterSpacing: ".15rem"}}
+                                >
                                   Have a Promo Code?
                                 </h5>
                                 <FormikTextInput
-                                  label='Promo Code' style={{width: "100%!important"}}
+                                  inputstyle={"w-75"}
+                                  labelstyle={{letterSpacing: ".15rem"}}
                                   id={'promoCode'} name={'promoCode'} stylesOverride={{width: "85%"}}
                                   type='text' placeholder='PC-MidnightZone@4000meters'
                                   minLength={0} maxLength={100}
@@ -109,29 +107,31 @@ const PaymentMethodForm = () => {
                                       className="button text-black full login-btn my-3"
                                       onClick={() => handleRequestToAcceptPromoCode(formik.values.promoCode)}
                                       disabled={!formik.isValid || formik.isSubmitting}
+                                      style={{margin: ".2rem", fontSize: '1.25rem', letterSpacing: ".15rem"}}
                                     >
                                       Add My Promo Code
                                     </button>
                                   </>
                                 )}
                                 {promoCodeAccepted && (
-                                  <div className={"my-2"} style={{color: 'Green', fontSize: '1.25rem'}}>
+                                  <div className={"my-2"} style={{color: 'Green', fontSize: '1.25rem', letterSpacing: ".15rem"}}>
                                     Promo Code Accepted!
                                   </div>
                                 )}
                                 {promoCodeDenied && (
-                                  <div className={"my-2"} style={{color: 'red', fontSize: '1.25rem'}}>
+                                  <div className={"my-2"} style={{color: 'red', fontSize: '1.25rem', letterSpacing: ".15rem"}}>
                                     Promo Code Denied!
                                   </div>
                                 )}
                               </Col>
                               <Col md={4} sm={12}>
-                                <h5 className={"mt-3"}>
+                                <h5 className={"mt-3"} style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}>
                                   Ready To Continue?
                                 </h5>
                                 <div className="form-actions full py-4 pb-4">
                                   <button
                                     type="submit" className="button text-black full login-btn"
+                                    style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                                     disabled={!formik.isValid || formik.isSubmitting}
                                   >
                                     Confirm Order & Pay

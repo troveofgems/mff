@@ -28,8 +28,10 @@ const Rating = ({ starFillColor = '#006994', productRatingInfo: { productRating,
   return (
     <div className={"rating"}>
       {_printStars()}
-      {productReviewCount && (
-        <span> of {productReviewCount} reviews.</span>
+      {productReviewCount > 0 ? (
+        <span style={{letterSpacing: ".15rem"}}> of {productReviewCount} reviews.</span>
+      ) : (
+        <span style={{letterSpacing: ".15rem"}}> - No Reviews</span>
       )}
     </div>
   );

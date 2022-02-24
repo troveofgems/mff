@@ -107,18 +107,18 @@ const ShippingForm = () => {
             <CheckoutBreadcrumb step_1 step_2 sa={1}/>
             {(!auth || typeof auth === 'string') && (
               <>
-                <div className={"text-center"}>
+                <div className={"text-center"} style={{fontSize: "1.25rem", letterSpacing: ".25rem"}}>
                   <p className={"text-black mb-0 border-top py-1"}>
                     Returning Customer?
-                    <Link to={"/login"}>{' '}Click Here</Link> to log in and complete your order.
+                    <Link to={"/login"}>{' '}Click Here</Link> to log in before completing your order!
                   </p>
                   <p className={"text-black border-bottom pb-1"}>
-                    If you are new, create an account in just a few minutes!
+                    If you are new, create an account in just a few minutes <Link to={"/login"}>{' '}Here</Link>!
                   </p>
-                  <div className={"w-50 m-auto"}>
+                  <div>
                     <FormikTextInput
                       label='Guest Email'
-                      type='text' id={`guest_email`} className={"mb-2 shippingInput"}
+                      type='text' id={`guest_email`} inputstyle={"w-50"}
                       name={`guest_email`} required={(!auth || typeof auth === 'string')}
                       minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
                       placeholder={'mff@fricknfish.net'}
@@ -135,7 +135,7 @@ const ShippingForm = () => {
                       <div className="form-box">
                         <div className="form-wrap">
                           <div className={"form-row mt-3"}>
-                            <h2 className={"pb-3"}>Shipping Information</h2>
+                            <h2 className={"pb-3"} style={{letterSpacing: ".15rem"}}>Shipping Information</h2>
                             <Row>
                               <Col>
                                 <FormikCheckbox
@@ -144,10 +144,12 @@ const ShippingForm = () => {
                                     'My Billing Address Matches Shipping'
                                   }
                                   id={"fill_billingAddress"} name={"fill_billingAddress"}
+                                  labelstyle={{letterSpacing: ".15rem", fontSize: "1rem", maxHeight: 'inherit', display: 'flex'}}
                                   onClick={() => setOnlyUseShipping(!onlyUseShipping)}
                                 />
                                 <FormikCheckbox
                                   children={'Allow Browser To Remember This Information'}
+                                  labelstyle={{letterSpacing: ".15rem", fontSize: "1rem", maxHeight: 'inherit', display: 'flex'}}
                                   id={"remember_my_address"} name={"remember_my_address"}
                                   onClick={() => setRememberMyAddress(!rememberMyAddress)}
                                 />
@@ -163,6 +165,7 @@ const ShippingForm = () => {
                               <div className="form-actions full py-4 pb-4">
                                 <button
                                   type="submit" className="button text-black full login-btn"
+                                  style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                                   disabled={!formik.isValid || formik.isSubmitting}
                                 >
                                   Proceed To Billing
@@ -171,6 +174,7 @@ const ShippingForm = () => {
                                 {false}
                                 <button
                                   type="button" className="button text-black full login-btn"
+                                  style={{fontSize: "1.25rem", letterSpacing: ".15rem"}}
                                   onClick={() => handleRequestToPrefillAddress(formik.values)}
                                   disabled={formik.isSubmitting}
                                 >

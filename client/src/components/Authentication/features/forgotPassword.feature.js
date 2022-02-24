@@ -13,6 +13,7 @@ import {useDispatch} from "react-redux";
 
 import {sendEmailToResetPassword} from "../../../redux/actions/auth.actions";
 
+import "../style/Login.scss";
 const ForgotPasswordFeature = () => {
   const
     dispatch = useDispatch(),
@@ -34,7 +35,7 @@ const ForgotPasswordFeature = () => {
       <Form className="form-box form-wrap content-wrapper text-center">
         <div className="section-title-wrap blue">
           <h2 className="section-title medium text-black">
-            Send A Request To Reset Your Password
+            {!formSubmitted ? ("Send A Request To Reset Your Password") : ("Request Submitted Successfully")}
           </h2>
           <div className="section-title-separator">{}</div>
           {globalError && (
@@ -46,13 +47,13 @@ const ForgotPasswordFeature = () => {
             {!formSubmitted && (
               <div className="form-item login-form-item mb-3">
                 <FormikTextInput
-                  label='Email Address'
+                  label='Email Address' inputstyle={"input-field-class"}
                   minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
                   id={'forgotPassword_email'} name={'forgotPassword_email'}
                   type='email' placeholder='jerry@fricknfish.com'
                 />
                 <div className="form-actions full py-4 pb-4">
-                  <button type="submit" className="button full text-black login-btn">
+                  <button type="submit" className="button full text-black login-btn login-form-item">
                     Send Reset Email
                   </button>
                 </div>
@@ -60,21 +61,16 @@ const ForgotPasswordFeature = () => {
             )}
             {formSubmitted && (
               <>
-                <p>
-                  <small>
+                <p className={"input-field-class"}>
                     If your account exists with the supplied email address, you should receive an email within
                     the next 3 minutes that contains instructions with how to change your password.
-                  </small>
                 </p>
-                <p>
-                  <small>
+                <p className={"input-field-class"}>
                     Otherwise,
-                  </small>
                 </p>
-                <p>
-                  <small>
-                    No longer have access to your email address? It happens. Please reach out to our support staff.
-                  </small>
+                <p className={"input-field-class"}>
+                    If you no longer have access to your email address, we understand...it happens.
+                  Please reach out to our support staff to help recover your account.
                 </p>
               </>
             )}

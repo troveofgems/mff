@@ -69,15 +69,14 @@ const HomeScreen = () => {
           {productListError}
         </Notification>
       ) : (<>
-        <Row className={"pb-5"}>
+        <Row className={"pb-2 justify-content-center"}>
             <div className={"text-center"}>
               <ProductCarousel />
             </div>
-          <h2 className={'text-center my-5'}>Latest Products</h2>
+          <h2 className={'text-center my-5 mb-0'}>Latest Products</h2>
           {advResults && printProducts()}
         </Row>
         <Paginate
-          className={"pb-5"}
           pages={advResults && advResults.pagination && advResults.pagination.totalPages ? advResults.pagination.totalPages : 1 }
           page={currentPage}
           keyword={location && location.state && location.state.search ? location.state.search : ""}

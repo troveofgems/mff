@@ -45,8 +45,11 @@ const CartScreen = () => {
       <Col md={8}>
         {cartItems.length === 0 ? (
           <Notification>
-            <div>Your cart is empty{' '}😭</div>
-            <Link to={"/"}>Go Back</Link>
+            <div className={"text-center"}>
+              <h2>Your cart is empty</h2>
+              <h3>😭{' '}So are the Frickn' Fish's Teams' Tummies{' '}😭</h3>
+              <Link to={"/"}>Buy Some Stuff!</Link>
+            </div>
           </Notification>
         ) : (
           <ListGroup variant={"flush"}>
@@ -57,23 +60,23 @@ const CartScreen = () => {
                     <Image src={`/img/${item.image}`} alt={item.name} fluid rounded />
                   </Col>
                   <Col md={2}>
-                    <Link to={`/product/${item.product}`}>{item.name}</Link>
+                    <Link to={`/product/${item.product}`} style={{letterSpacing: ".25rem", fontSize: "1rem"}}>{item.name}</Link>
                   </Col>
-                  <Col md={1}>
+                  <Col md={1} style={{letterSpacing: ".15rem", fontSize: "1rem"}}>
                     {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(item.price)}
                   </Col>
                   <Col md={6}>
                     <Row className={"text-center"}>
-                      <Col md={4}>
+                      <Col md={4} style={{letterSpacing: ".15rem", fontSize: "1rem"}}>
                         Qty: {item.quantityRequested}
                       </Col>
                       {item.sizeRequested && (
-                        <Col md={4}>
+                        <Col md={4} style={{letterSpacing: ".15rem", fontSize: "1rem"}}>
                           {translateSizeOptionLabel(item.sizeRequested)}
                         </Col>
                       )}
                       {item.hueRequested && (
-                        <Col md={4}>
+                        <Col md={4} style={{letterSpacing: ".15rem", fontSize: "1rem"}}>
                          {decodeURI(item.hueRequested)}
                         </Col>
                       )}
@@ -93,20 +96,22 @@ const CartScreen = () => {
         )}
       </Col>
       <Col md={4}>
-        <Card>
+        <Card style={{background: "transparent", border: "none"}}>
           <ListGroup variant={"flush"}>
             <ListGroup.Item>
-              <h3>Subtotal ({cartItems.reduce((acc, item) => acc + parseInt(item.quantityRequested), 0)}) Items</h3>
+              <h3 style={{letterSpacing: ".15rem", fontSize: "1.25rem"}}>
+                Subtotal ({cartItems.reduce((acc, item) => acc + parseInt(item.quantityRequested), 0)}) Items
+              </h3>
             </ListGroup.Item>
             <ListGroup.Item>
-              <p>
+              <span style={{letterSpacing: ".15rem", fontSize: "1.25rem"}}>
                 {new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(cartItems.reduce((acc, item) => acc + (item.quantityRequested * item.price), 0))}
-              </p>
+              </span>
             </ListGroup.Item>
             <ListGroup.Item>
               <Button
                 type={"button"} className={"btn-block"} disabled={cartItems.length === 0}
-                onClick={checkoutHandler}
+                onClick={checkoutHandler} style={{letterSpacing: ".15rem", fontSize: "1.25rem"}}
               >
                 Proceed To Checkout
               </Button>

@@ -27,6 +27,7 @@ import Loader from "../../layout/Loader";
 import { registerUser } from '../../../redux/actions/auth.actions';
 import { buildDynamicYearList } from '../../../utils/buildDynamicYearList.utils';
 
+import "../style/Registration.scss";
 const RegistrationForm = () => {
   const
     dispatch = useDispatch(),
@@ -113,7 +114,7 @@ const RegistrationForm = () => {
                             <div className="form-row">
                               <div className="form-item registration-form-item">
                                 <FormikTextInput
-                                  label='First Name'
+                                  label='First Name' inputstyle={"input-field-class"}
                                   id={'register_firstName'} name={'register_firstName'}
                                   type='text' placeholder='Your First Name Here...'
                                   minLength={FIRST_NAME_MIN_LEN} maxLength={FIRST_NAME_MAX_LEN}
@@ -124,7 +125,7 @@ const RegistrationForm = () => {
                             <div className="form-row">
                               <div className="form-item registration-form-item">
                                 <FormikTextInput
-                                  label='Last Name'
+                                  label='Last Name' inputstyle={"input-field-class"}
                                   id={'register_lastName'} name={'register_lastName'}
                                   type='text' placeholder='Your Last Name Here...'
                                   minLength={LAST_NAME_MIN_LEN} maxLength={LAST_NAME_MAX_LEN}
@@ -135,7 +136,7 @@ const RegistrationForm = () => {
                             <div className="form-row">
                               <div className="form-item registration-form-item">
                                 <FormikTextInput
-                                  label='Email Address'
+                                  label='Email Address' inputstyle={"input-field-class"}
                                   id={'register_email'} name={'register_email'}
                                   type='email' placeholder='Your Email Here...'
                                   minLength={EMAIL_MIN_LEN} maxLength={EMAIL_MAX_LEN}
@@ -146,15 +147,16 @@ const RegistrationForm = () => {
                             <div className="form-row">
                               <div className="form-item registration-form-item">
                                 <FormikDropdown
-                                  name={"register_birth_month"} label={"Birth Month"}
+                                  name={"register_birth_month"} label={"Birth Month" + " 🎂"}
                                   options={monthList} key={"birthMonthList"}
+                                  className={"registration-form-item registration-form-select-item"}
                                 />
-                                <small className={"text-black"} style={{display: "block", width: "60%", margin: ".5rem auto"}}>
+                                <small className={"text-black info-text"}>
                                   <i className={"fas fa-info-circle"} />{' '}
                                   <span>
                                     Help us get to know you: we'll send you discounts, coupons, and prizes
-                                    at the arrival of your birth month!
-                                  </span>{' '}🎂{' '}🎉
+                                    at the arrival of your birth month! 🎉
+                                  </span>
                                 </small>
                               </div>
                             </div>
@@ -164,11 +166,14 @@ const RegistrationForm = () => {
                                 <FormikDropdown
                                   name={"register_birth_year"} label={"Birth Year"}
                                   options={yearList} key={"birthYearList"}
+                                  className={"registration-form-item registration-form-select-item"}
                                 />
-                                <small className={"text-black"} style={{display: "block", width: "60%", margin: ".5rem auto"}}>
+                                <small className={"text-black"}>
                                   <i className={"fas fa-info-circle"} />{' '}
-                                  Your birth year will not be stored as part of your user account data. This is
-                                  for anonymous statistics only.
+                                  <span>
+                                    Your birth year will not be stored as part of your user account data. This is
+                                    for anonymous statistics only.
+                                  </span>
                                 </small>
                               </div>
                             </div>
@@ -176,7 +181,7 @@ const RegistrationForm = () => {
                             <div className="form-row">
                               <div className="form-item registration-form-item">
                                 <FormikTextInput
-                                  label='Password'
+                                  label='Password' inputstyle={"input-field-class"}
                                   id={'register_pwd'} name={'register_pwd'}
                                   type='password' placeholder='Your Password Here...'
                                   minLength={PASSWORD_MIN_LEN} maxLength={PASSWORD_MAX_LEN}
@@ -187,22 +192,22 @@ const RegistrationForm = () => {
                             <div className="form-row pb-3">
                               <div className="form-item registration-form-item">
                                 <FormikTextInput
-                                  label='Repeat Password'
+                                  label='Repeat Password' inputstyle={"input-field-class"}
                                   id={'register_pwd_repeat'} name={'register_pwd_repeat'}
                                   type='password' placeholder='Retype Your Password Here...'
                                   minLength={PASSWORD_MIN_LEN} maxLength={PASSWORD_MAX_LEN}
                                 />
                               </div>
                             </div>
-                            <div className="form-row pb-3">
+                            <div className="form-row registration-form-item pb-2">
                               <small className={"text-black"}>
                                 <i className={"fas fa-info-circle"} />{' '}
                                 By creating an account, you agree to our terms of use, privacy policy, and general
                                 disclaimers of site use.
                               </small>
                             </div>
-                            <div className="form-actions full py-4 pb-4">
-                              <button type="submit" className="button text-black full login-btn">
+                            <div className="form-actions py-2">
+                              <button type="submit" className="button text-black full login-btn registration-form-item">
                                 Create your account!
                               </button>
                             </div>

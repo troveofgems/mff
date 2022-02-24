@@ -9,7 +9,7 @@ const FormikRadioGroup = ({label, name, options, idPrefix, currentlySelectedOpti
       <div role={"group"} aria-labelledby={name}>
         {options.map((opt, index) => (
           <label
-            style={{padding: "5px"}}
+            style={{fontSize: "1.25rem", letterSpacing: ".15rem", padding: "5px"}}
             htmlFor={`${idPrefix}_${opt.valueLabel.toLowerCase()}`}
             key={`key-${idPrefix}_${opt.valueLabel.toLowerCase()}`}
           >

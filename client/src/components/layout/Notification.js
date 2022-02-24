@@ -4,7 +4,9 @@ import { Alert } from 'react-bootstrap';
 const Notification = ({ children, variant }) => {
   return (
     <Alert variant={variant}>
-      {children}
+      <p style={{paddingBottom: "0", marginBottom: "0", letterSpacing: ".15rem"}}>
+        {children}
+      </p>
     </Alert>
   );
 };
